@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using bonneTable.Services.Interfaces;
+using bonneTable.Services.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +29,9 @@ namespace bonneTable.API
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
+
+            services.AddScoped<IBookingServie, BookingService>();
+            services.AddScoped<IRepository, MongoDbRepositorySerivce>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
