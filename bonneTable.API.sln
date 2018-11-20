@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2050
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bonneTable.API", "bonneTable.API\bonneTable.API.csproj", "{FDCBFA7D-DF07-450B-9E0D-69A29C8515C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bonneTalble.Models", "bonneTalble.Models\bonneTalble.Models.csproj", "{F21D89D9-DAD6-4761-A6F9-5F18D728F2E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bonneTable.Services", "bonneTable.Services\bonneTable.Services.csproj", "{6BE5F409-F8EE-413C-948F-7EE4AA47AAD3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FDCBFA7D-DF07-450B-9E0D-69A29C8515C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDCBFA7D-DF07-450B-9E0D-69A29C8515C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDCBFA7D-DF07-450B-9E0D-69A29C8515C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDCBFA7D-DF07-450B-9E0D-69A29C8515C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F21D89D9-DAD6-4761-A6F9-5F18D728F2E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F21D89D9-DAD6-4761-A6F9-5F18D728F2E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F21D89D9-DAD6-4761-A6F9-5F18D728F2E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F21D89D9-DAD6-4761-A6F9-5F18D728F2E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BE5F409-F8EE-413C-948F-7EE4AA47AAD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BE5F409-F8EE-413C-948F-7EE4AA47AAD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BE5F409-F8EE-413C-948F-7EE4AA47AAD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BE5F409-F8EE-413C-948F-7EE4AA47AAD3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0D837971-62E9-4970-BDD8-C77AEC7E3C71}
+	EndGlobalSection
+EndGlobal
