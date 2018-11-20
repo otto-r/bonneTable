@@ -18,14 +18,44 @@ namespace bonneTable.Services.Services
             _repository = repository;
         }
 
-        public Task AdminBookTable(BookingRequestModel bookingRequest)
+        public async Task<BookingViewModel> AdminBookTable(BookingRequestModel bookingRequest)
         {
-            throw new NotImplementedException();
+            if (bookingRequest == null)
+            {
+                return new BookingViewModel { Success = false, ErrorMessage = "Bad request" };
+            }
+
+            if (bookingRequest.Seats <= 0)
+            {
+                return new BookingViewModel { Success = false, ErrorMessage = "Bad number of seats" };
+            }
+
+            // logic to see if seats are available
+            // Get bookings and tables to see how many available
+            // seats and time slots there are
+            var datesBookings = _repository.GetDatesBookings(bookingRequest.Time);
+
+
+
+            Booking booking = new Booking
+            {
+                Seats = bookingRequest.Seats,
+                PhoneNumber = bookingRequest.PhoneNumber,
+                CustomerName = bookingRequest.CustomerName,
+                Time = bookingRequest.Time,
+                Email = bookingRequest.Email,
+                //select table
+            };
+
+            await _repository.Add(booking);
+
+            return new BookingViewModel { Success = true };
         }
 
-        public Task AdminCancelBooking(int id)
+        public async Task AdminCancelBooking(Guid id)
         {
             throw new NotImplementedException();
+            //await _repository.Delete(id);
         }
 
         public async Task<BookingViewModel> ClientBookTable(BookingRequestModel bookingRequest)
@@ -57,21 +87,28 @@ namespace bonneTable.Services.Services
                 return new BookingViewModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
             }
 
+            // logic to see if seats are available
+            // Get bookings and tables to see how many available
+            // seats and time slots there are
+            var datesBookings = _repository.GetDatesBookings(bookingRequest.Time);
+
+
             Booking booking = new Booking
             {
                 Seats = bookingRequest.Seats,
                 PhoneNumber = bookingRequest.PhoneNumber,
                 CustomerName = bookingRequest.CustomerName,
                 Time = bookingRequest.Time,
+                Email = bookingRequest.Email,
+                //select table
             };
 
             await _repository.Add(booking);
 
             return new BookingViewModel { Success = true };
-            
         }
 
-        public Task EditBooking(BookingRequestModel bookingRequest, int id)
+        public Task EditBooking(BookingRequestModel bookingRequest, Guid id)
         {
             throw new NotImplementedException();
         }

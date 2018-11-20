@@ -10,8 +10,8 @@ namespace bonneTable.Services.Interfaces
     public interface IBookingService
     {
         Task<BookingViewModel> ClientBookTable(BookingRequestModel bookingRequest);
-        Task AdminBookTable(BookingRequestModel bookingRequest);
-        Task AdminCancelBooking(int id);
-        Task EditBooking(BookingRequestModel bookingRequest, int id);
+        Task<BookingViewModel> AdminBookTable(BookingRequestModel bookingRequest);
+        Task AdminCancelBooking(Guid id);
+        Task EditBooking(BookingRequestModel bookingRequest, Guid id);
     }
 }
