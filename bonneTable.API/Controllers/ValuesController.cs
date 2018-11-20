@@ -14,7 +14,6 @@ namespace bonneTable.API.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            var tables = _tablesService.get();
             return new string[] { "value1", "value2" };
         }
 

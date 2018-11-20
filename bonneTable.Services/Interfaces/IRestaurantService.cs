@@ -1,4 +1,5 @@
-﻿using System;
+﻿using bonneTalble.Models.RequestModels;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
