@@ -1,4 +1,5 @@
 ﻿using bonneTable.Services.Interfaces;
+using bonneTalble.Models;
 using bonneTalble.Models.RequestModels;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,14 @@ namespace bonneTable.Services.Services
 {
     public class BookingService : IBookingServie
     {
-        public Task AdminBookTable(BookingRequestModel booking)
+        private readonly IRepository _repository;
+
+        public BookingService(IRepository repository)
+        {
+            _repository = repository;
+        }
+
+        public Task AdminBookTable(BookingRequestModel bookingRequest)
         {
             throw new NotImplementedException();
         }
@@ -19,12 +27,20 @@ namespace bonneTable.Services.Services
             throw new NotImplementedException();
         }
 
-        public Task ClientBookTable(BookingRequestModel booking)
+        public async Task ClientBookTableAsync(BookingRequestModel bookingRequest)
         {
-            throw new NotImplementedException();
+            Booking booking = new Booking
+            { 
+                Seats = bookingRequest.Seats,
+                PhoneNumber = bookingRequest.PhoneNumber,
+                CustomerName = bookingRequest.CustomerName,
+                Time = bookingRequest.Time,
+            };
+
+            await _repository.Add(booking);
         }
 
-        public Task EditBooking(BookingRequestModel booking, int id)
+        public Task EditBooking(BookingRequestModel bookingRequest, int id)
         {
             throw new NotImplementedException();
         }
