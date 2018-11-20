@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using bonneTable.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace bonneTable.API.Controllers
@@ -10,6 +11,12 @@ namespace bonneTable.API.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        private readonly IBookingServie _bookingService;
+
+        public ValuesController(IBookingServie bookingServie)
+        {
+            _bookingService = bookingServie;
+        }
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
