@@ -68,6 +68,7 @@ namespace bonneTable.Services.Services
             await _repository.Add(booking);
 
             return new BookingViewModel { Success = true };
+            
         }
 
         public Task EditBooking(BookingRequestModel bookingRequest, int id)
