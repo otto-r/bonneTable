@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\bonneTalble.Models\bonneTalble.Models.csproj" />
+    <ProjectReference Include="..\bonneTalble.Models\bonneTable.Models.csproj" />
   </ItemGroup>
 
 </Project>

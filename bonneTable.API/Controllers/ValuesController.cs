@@ -11,9 +11,9 @@ namespace bonneTable.API.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        private readonly IBookingServie _bookingService;
+        private readonly IBookingService _bookingService;
 
-        public ValuesController(IBookingServie bookingServie)
+        public ValuesController(IBookingService bookingServie)
         {
             _bookingService = bookingServie;
         }

@@ -30,7 +30,7 @@ namespace bonneTable.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
 
-            services.AddScoped<IBookingServie, BookingService>();
+            services.AddScoped<IBookingService, BookingService>();
             services.AddScoped<IRepository, MongoDbRepositorySerivce>();
         }
 

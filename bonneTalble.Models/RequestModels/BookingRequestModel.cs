@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace bonneTalble.Models.RequestModels
+namespace bonneTable.Models.RequestModels
 {
     public class BookingRequestModel
     {

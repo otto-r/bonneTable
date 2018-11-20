@@ -1,4 +1,4 @@
-﻿namespace bonneTalble.Models.ViewModels
+﻿namespace bonneTable.Models.ViewModels
 {
     public class BookingViewModel
     {

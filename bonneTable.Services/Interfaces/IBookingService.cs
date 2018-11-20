@@ -1,5 +1,5 @@
-﻿using bonneTalble.Models.RequestModels;
-using bonneTalble.Models.ViewModels;
+﻿using bonneTable.Models.RequestModels;
+using bonneTable.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace bonneTable.Services.Interfaces
 {
-    public interface IBookingServie
+    public interface IBookingService
     {
         Task<BookingViewModel> ClientBookTable(BookingRequestModel bookingRequest);
         Task AdminBookTable(BookingRequestModel bookingRequest);

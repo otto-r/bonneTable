@@ -1,4 +1,4 @@
-﻿using bonneTalble.Models.RequestModels;
+﻿using bonneTable.Models.RequestModels;
 using System;
 using System.Collections.Generic;
 using System.Text;

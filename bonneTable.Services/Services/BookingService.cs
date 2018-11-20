@@ -1,7 +1,7 @@
 ﻿using bonneTable.Services.Interfaces;
-using bonneTalble.Models;
-using bonneTalble.Models.RequestModels;
-using bonneTalble.Models.ViewModels;
+using bonneTable.Models;
+using bonneTable.Models.RequestModels;
+using bonneTable.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace bonneTable.Services.Services
 {
-    public class BookingService : IBookingServie
+    public class BookingService : IBookingService
     {
         private readonly IRepository _repository;
 
