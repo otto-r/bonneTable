@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using bonneTable.Services;
-using bonneTable.Services.Interfaces;
-using bonneTable.Services.Services;
-using bonneTalble.Models;
+﻿using bonneTable.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -37,6 +30,9 @@ namespace bonneTable.API
 
             //services.AddTransient<IRepository<TableServiceRepository>,TableServiceRepository>();
             services.AddTransient<IRepository<Table>, TableServiceRepository>();
+
+            services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<IRepository, MongoDbRepositorySerivce>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
