@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace bonneTable.Models
+namespace bonneTalble.Models
 {
     public class RestaurantAdmin
     {

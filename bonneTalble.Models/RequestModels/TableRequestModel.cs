@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace bonneTable.Models.RequestModels
+namespace bonneTalble.Models.RequestModels
 {
     public class TableRequestModel
     {
