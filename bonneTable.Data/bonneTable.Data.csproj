@@ -9,7 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\bonneTable.Data\bonneTable.Data.csproj" />
     <ProjectReference Include="..\bonneTalble.Models\bonneTable.Models.csproj" />
   </ItemGroup>
 

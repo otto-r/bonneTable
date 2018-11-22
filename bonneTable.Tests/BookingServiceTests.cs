@@ -13,12 +13,12 @@ namespace bonneTable.Tests
     public class BookingServiceTests
     {
         private Fixture _fixture;
-        private IMock<IRepository> _repository;
+        private IMock<IBookingRepository> _repository;
 
         public BookingServiceTests()
         {
             _fixture = new Fixture();
-            _repository = new Mock<IRepository>();
+            _repository = new Mock<IBookingRepository>();
         }
 
         [Fact]
