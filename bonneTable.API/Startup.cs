@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using bonneTable.Models;
 using bonneTable.Services.Interfaces;
 using bonneTable.Services.Services;
 using Microsoft.AspNetCore.Builder;
@@ -27,11 +28,18 @@ namespace bonneTable.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<Settings>(options =>
+            {
+                options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
+                options.Database = Configuration.GetSection("MongoConnection:Database").Value;
+            });
+
+            services.AddTransient<IRepository<Table>, TableRepository>();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
 
             services.AddScoped<IBookingService, BookingService>();
-            services.AddScoped<IRepository, MongoDbRepositorySerivce>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -11,9 +11,9 @@ namespace bonneTable.Services.Services
 {
     public class BookingService : IBookingService
     {
-        private readonly IRepository _repository;
+        private readonly IBookingRepository _repository;
 
-        public BookingService(IRepository repository)
+        public BookingService(IBookingRepository repository)
         {
             _repository = repository;
         }
@@ -65,7 +65,7 @@ namespace bonneTable.Services.Services
                 Time = bookingRequest.Time,
             };
 
-            await _repository.Add(booking);
+            await _repository.AddAsync(booking);
 
             return new BookingViewModel { Success = true };
             
