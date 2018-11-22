@@ -1,9 +1,12 @@
-﻿namespace bonneTable.Models.ViewModels
+﻿using System;
+
+namespace bonneTable.Models.ViewModels
 {
     public class BookingViewModel
     {
-        public bool Success { get; set; }
-        public string ErrorMessage { get; set; }
-        public string ConfirmationNumber { get; set; }
+        public Guid Id { get; set; }
+        public DateTime Time { get; set; }
+        public int Seats { get; set; }
+        public Table Table { get; set; }
     }
 }
