@@ -12,6 +12,5 @@ namespace bonneTable.Services.Interfaces
         Task<bool> EditAsync(Guid ID, T entity);
         Task Delete(Guid ID);
         Task Commit();
-
     }
 }

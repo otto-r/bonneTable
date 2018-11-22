@@ -34,12 +34,22 @@ namespace bonneTable.Services.Services
             throw new NotImplementedException();
         }
 
+        public Task<List<Booking>> GetByDate(DateTime dateTime)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Booking> GetByEmail(string email)
         {
             throw new NotImplementedException();
         }
 
         public Task<Booking> GetByID(Guid ID)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<List<Booking>> IBookingRepository.GetByEmail(string email)
         {
             throw new NotImplementedException();
         }

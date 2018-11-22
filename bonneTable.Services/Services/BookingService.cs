@@ -33,7 +33,7 @@ namespace bonneTable.Services.Services
             // logic to see if seats are available
             // Get bookings and tables to see how many available
             // seats and time slots there are
-            var datesBookings = _repository.GetDatesBookings(bookingRequest.Time);
+            var datesBookings = _repository.GetByDate(bookingRequest.Time);
 
 
 
@@ -47,15 +47,14 @@ namespace bonneTable.Services.Services
                 //select table
             };
 
-            await _repository.Add(booking);
+            await _repository.AddAsync(booking);
 
             return new BookingsResponseModel { Success = true };
         }
 
         public async Task AdminCancelBooking(Guid id)
         {
-            throw new NotImplementedException();
-            //await _repository.Delete(id);
+            await _repository.Delete(id);
         }
 
         public async Task<BookingsResponseModel> ClientBookTable(BookingRequestModel bookingRequest)
@@ -90,7 +89,7 @@ namespace bonneTable.Services.Services
             // logic to see if seats are available
             // Get bookings and tables to see how many available
             // seats and time slots there are
-            var datesBookings = _repository.GetDatesBookings(bookingRequest.Time);
+            var datesBookings = _repository.GetByDate(bookingRequest.Time);
 
 
             Booking booking = new Booking
