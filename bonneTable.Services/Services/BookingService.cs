@@ -6,16 +6,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace bonneTable.Services.Services
 {
     public class BookingService : IBookingService
     {
-        private readonly IBookingRepository _repository;
+        private readonly IBookingRepository _bookingRepository;
+        private readonly IRepository<Table> _tableRepository;
 
-        public BookingService(IBookingRepository repository)
+        public BookingService(IBookingRepository bookingRepository, IRepository<Table> tableRepository)
         {
-            _repository = repository;
+            _bookingRepository = bookingRepository;
+            _tableRepository = tableRepository;
         }
 
         public async Task<BookingsResponseModel> AdminBookTable(BookingRequestModel bookingRequest)
@@ -33,9 +36,33 @@ namespace bonneTable.Services.Services
             // logic to see if seats are available
             // Get bookings and tables to see how many available
             // seats and time slots there are
-            var datesBookings = _repository.GetByDate(bookingRequest.Time);
+            var bookingsOnDate = await _bookingRepository.GetByDate(bookingRequest.Time);
+            var tables = await _tableRepository.GetAll();
 
+            List<Table> freeTables = new List<Table>();
 
+            foreach (var table in tables)
+            {
+                if (!bookingsOnDate.Any(b => b.Id == table.Id))
+                {
+                    freeTables.Add(table);
+                }
+            }
+
+            freeTables.Sort((x, y) => x.Seats.CompareTo(y.Seats));
+            Table selectedTable;
+
+            foreach (var table in freeTables)
+            {
+                if (bookingRequest.Seats <= table.Seats)
+                {
+                    selectedTable = table;
+                }
+                else
+                {
+                    return new BookingsResponseModel { Success = false, ErrorMessage = "Bad request" };
+                }
+            }
 
             Booking booking = new Booking
             {
@@ -44,17 +71,17 @@ namespace bonneTable.Services.Services
                 CustomerName = bookingRequest.CustomerName,
                 Time = bookingRequest.Time,
                 Email = bookingRequest.Email,
-                //select table
+                Table = selectedTable
             };
 
-            await _repository.AddAsync(booking);
+            await _bookingRepository.AddAsync(booking);
 
             return new BookingsResponseModel { Success = true };
         }
 
         public async Task AdminCancelBooking(Guid id)
         {
-            await _repository.Delete(id);
+            await _bookingRepository.Delete(id);
         }
 
         public async Task<BookingsResponseModel> ClientBookTable(BookingRequestModel bookingRequest)
@@ -89,7 +116,7 @@ namespace bonneTable.Services.Services
             // logic to see if seats are available
             // Get bookings and tables to see how many available
             // seats and time slots there are
-            var datesBookings = _repository.GetByDate(bookingRequest.Time);
+            var datesBookings = _bookingRepository.GetByDate(bookingRequest.Time);
 
 
             Booking booking = new Booking
@@ -102,7 +129,7 @@ namespace bonneTable.Services.Services
                 //select table
             };
 
-            await _repository.AddAsync(booking);
+            await _bookingRepository.AddAsync(booking);
 
             return new BookingsResponseModel { Success = true };
         }
