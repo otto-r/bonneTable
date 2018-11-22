@@ -118,7 +118,7 @@ namespace bonneTable.Services.Services
             throw new NotImplementedException();
         }
 
-        public Task SearchByEmail(string email)
+        public Task<List<Booking>> SearchByEmail(string email)
         {
             throw new NotImplementedException();
         }
