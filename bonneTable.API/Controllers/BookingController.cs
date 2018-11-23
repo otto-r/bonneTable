@@ -12,26 +12,30 @@ namespace bonneTable.API.Controllers
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
-        
+
 
         public BookingController(IBookingService bookingServie)
         {
             _bookingService = bookingServie;
-            
+
         }
 
         // GET tables from requested date 
         [HttpGet]
-        public ActionResult<IEnumerable<Booking>> Get(DateTime dateTime)
+        public async System.Threading.Tasks.Task<ActionResult<IEnumerable<Booking>>> GetAsync(DateTime dateTime)
         {
-            return _bookingService.GetBookigsByDate(dateTime);
+            var bookings = await _bookingService.Get(dateTime);
+
+            return bookings;
         }
 
         // POST AKA ADD
         [HttpPost]
         public void Post([FromBody] string value)
         {
-            _bookingService.Add("Add this booking To The Current Date");
+            BookingRequestModel temprequest = new BookingRequestModel();
+
+            _bookingService.ClientBookTable(temprequest);
         }
 
         // PUT AKA EDIT
