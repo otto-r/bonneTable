@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace bonneTable.Models.ViewModels
 {
     public class TableResponseFeedbackModel
     {
         public bool Success { get; set; }
-        public string ErrorMessage { get; set; 
-
+        public string ErrorMessage { get; set; }
     }
 }

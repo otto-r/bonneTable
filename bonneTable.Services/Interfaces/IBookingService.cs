@@ -11,9 +11,10 @@ namespace bonneTable.Services.Interfaces
     {
         Task<BookingsResponseModel> ClientBookTable(BookingRequestModel bookingRequest);
         Task<BookingsResponseModel> AdminBookTable(BookingRequestModel bookingRequest);
-        Task<List<Booking>> GetBookigsByDate(DateTime dateTime);
-        Task AdminCancelBooking(Guid id);
-        Task EditBooking(BookingRequestModel bookingRequest, Guid id);
+        Task<BookingsResponseModel> EditBooking(BookingRequestModel bookingRequest, Guid id);
+        Task<List<Booking>> Get(DateTime dateTime);
+        Task<Booking> Get(Guid id);
         Task<List<Booking>> SearchByEmail(string email);
+        Task AdminCancelBooking(Guid id);
     }
 }
