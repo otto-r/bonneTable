@@ -27,22 +27,46 @@ namespace bonneTable.Services.Services
                 return new BookingsResponseModel { Success = false, ErrorMessage = "Bad request" };
             }
 
-            if (bookingRequest.Seats <= 0)
+            if (bookingRequest.Seats <= 0 || bookingRequest.Seats > 6)
             {
                 return new BookingsResponseModel { Success = false, ErrorMessage = "Bad number of seats" };
+            }
+
+            var nameGreaterThan1 = bookingRequest.CustomerName.Length <= 1 ? true : false;
+            var nameNotLongerThan50 = bookingRequest.CustomerName.Length > 50 ? true : false;
+            var phoneNotShorterThan6 = bookingRequest.PhoneNumber.Length < 6 ? true : false;
+            var phoneNotLongerThan25 = bookingRequest.PhoneNumber.Length > 25 ? true : false;
+
+            if (nameGreaterThan1 || nameNotLongerThan50 || phoneNotShorterThan6 || phoneNotLongerThan25)
+            {
+                return new BookingsResponseModel { Success = false, ErrorMessage = "Invalid name or phone number" };
+            }
+
+            var now = DateTime.Now;
+
+            if (bookingRequest.Time < now)
+            {
+                return new BookingsResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
             }
 
             var bookingsOnDate = await _bookingRepository.GetByDate(bookingRequest.Time);
             var tables = await _tableRepository.GetAll();
 
             List<Table> freeTables = new List<Table>();
-            
-            // Not date but specific timespan
 
+            List<Booking> bookingsDuring2hInterval = new List<Booking>();
+
+            foreach (var bookingDuringTimeSpan in bookingsOnDate)
+            {
+                if (bookingDuringTimeSpan.Time >= bookingRequest.Time || bookingDuringTimeSpan.Time < (bookingRequest.Time.AddHours(2)))
+                {
+                    bookingsDuring2hInterval.Add(bookingDuringTimeSpan);
+                }
+            }
 
             foreach (var table in tables)
             {
-                if (!bookingsOnDate.Any(b => b.Table.Id == table.Id))
+                if (!bookingsDuring2hInterval.Any(b => b.Table.Id == table.Id))
                 {
                     freeTables.Add(table);
                 }
