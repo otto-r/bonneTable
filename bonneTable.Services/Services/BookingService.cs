@@ -105,9 +105,11 @@ namespace bonneTable.Services.Services
             return new BookingsResponseModel { Success = true };
         }
 
-        public async Task AdminCancelBooking(Guid id)
+        public async Task<BookingsResponseModel> AdminCancelBooking(Guid id)
         {
+            //Hantering av error från databasen
             await _bookingRepository.Delete(id);
+            return new BookingsResponseModel { Success = true };
         }
 
         public async Task<BookingsResponseModel> ClientBookTable(BookingRequestModel bookingRequest)
@@ -235,19 +237,22 @@ namespace bonneTable.Services.Services
             return new BookingsResponseModel { Success = true };
         }
 
-        public Task<List<Booking>> Get(DateTime dateTime)
+        public async Task<List<Booking>> Get(DateTime dateTime)
         {
-            throw new NotImplementedException();
+            var bookings = await _bookingRepository.GetAll();
+            return bookings;
         }
 
-        public Task<Booking> Get(Guid id)
+        public async Task<Booking> Get(Guid id)
         {
-            throw new NotImplementedException();
+            var booking = await _bookingRepository.GetByID(id);
+            return booking;
         }
 
-        public Task<List<Booking>> SearchByEmail(string email)
+        public async Task<List<Booking>> SearchByEmail(string email)
         {
-            throw new NotImplementedException();
+            var bookings = await _bookingRepository.GetByEmail(email);
+            return bookings;
         }
     }
 }
