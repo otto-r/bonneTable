@@ -56,11 +56,14 @@ namespace bonneTable.Services.Services
 
             List<Booking> bookingsDuring2hInterval = new List<Booking>();
 
-            foreach (var bookingDuringTimeSpan in bookingsOnDate)
+            foreach (var bookingTime in bookingsOnDate)
             {
-                if (bookingDuringTimeSpan.Time >= bookingRequest.Time || bookingDuringTimeSpan.Time < (bookingRequest.Time.AddHours(2)))
+                var bookingOverlapEarly = bookingTime.Time <= bookingRequest.Time && bookingTime.Time.AddHours(2) > bookingRequest.Time ? true : false;
+                var bookingOverlapLate = bookingTime.Time >= bookingRequest.Time && bookingTime.Time.AddHours(2) < bookingRequest.Time ? true : false;
+
+                if (bookingOverlapLate || bookingOverlapLate)
                 {
-                    bookingsDuring2hInterval.Add(bookingDuringTimeSpan);
+                    bookingsDuring2hInterval.Add(bookingTime);
                 }
             }
 
