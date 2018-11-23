@@ -1,12 +1,11 @@
-﻿using bonneTable.Services.Interfaces;
-using bonneTable.Models;
+﻿using bonneTable.Models;
 using bonneTable.Models.RequestModels;
 using bonneTable.Models.ViewModels;
+using bonneTable.Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace bonneTable.Services.Services
 {
@@ -43,14 +42,14 @@ namespace bonneTable.Services.Services
 
             foreach (var table in tables)
             {
-                if (!bookingsOnDate.Any(b => b.Id == table.Id))
+                if (!bookingsOnDate.Any(b => b.Table.Id == table.Id))
                 {
                     freeTables.Add(table);
                 }
             }
 
             freeTables.Sort((x, y) => x.Seats.CompareTo(y.Seats));
-            Table selectedTable;
+            Table selectedTable = new Table();
 
             foreach (var table in freeTables)
             {
@@ -60,10 +59,10 @@ namespace bonneTable.Services.Services
                 }
                 else
                 {
-                    return new BookingsResponseModel { Success = false, ErrorMessage = "Bad request" };
+                    return new BookingsResponseModel { Success = false, ErrorMessage = "No table available" };
                 }
             }
-
+             
             Booking booking = new Booking
             {
                 Seats = bookingRequest.Seats,
