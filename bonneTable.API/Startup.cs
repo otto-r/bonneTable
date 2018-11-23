@@ -40,6 +40,7 @@ namespace bonneTable.API
             services.AddCors();
 
             services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<IRepository<Table>, TableRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
