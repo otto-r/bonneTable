@@ -1,4 +1,5 @@
-﻿using bonneTable.Models.ViewModels;
+﻿using bonneTable.Models;
+using bonneTable.Models.ViewModels;
 using bonneTable.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -9,29 +10,91 @@ namespace bonneTable.Services.Services
 {
     public class TableService : ITableService
     {
-        public Task<TableResponseModel> Add(int numberOfSeats)
+        private readonly IRepository<Table> _repository;
+
+        public TableService(IRepository<Table> repository)
         {
-            throw new NotImplementedException();
+            _repository = repository;
         }
 
-        public Task<TableResponseModel> Delete(Guid id)
+        public async Task<TableResponseModel> Add(int numberOfSeats)
         {
-            throw new NotImplementedException();
+            if (numberOfSeats <= 0)
+            {
+                return new TableResponseModel() { ErrorMessage = "Seats cannot be less than or equal to 0", Success = false, Tables = null };
+            }
+
+            var table = new Table() { Seats = numberOfSeats };
+            try
+            {
+                await _repository.AddAsync(table);
+            }
+            catch (Exception e)
+            {
+                return new TableResponseModel() { ErrorMessage = e.Message, Success = false, Tables = null };
+            }
+            return new TableResponseModel() { ErrorMessage = null, Success = true, Tables = null };
         }
 
-        public Task<TableResponseModel> Edit(Guid id)
+        public async Task<TableResponseModel> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _repository.Delete(id);
+            }
+            catch (Exception e)
+            {
+                return new TableResponseModel() { ErrorMessage = e.Message, Success = false, Tables = null };
+            }
+            return new TableResponseModel() { ErrorMessage = null, Success = true, Tables = null };
         }
 
-        public Task<TableResponseFeedbackModel> Get(Guid id)
+        public async Task<TableResponseModel> Edit(Guid id, Table table)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _repository.EditAsync(id, table);
+            }
+            catch (Exception e)
+            {
+                return new TableResponseModel() { ErrorMessage = e.Message, Success = false, Tables = null };
+            }
+            return new TableResponseModel() { ErrorMessage = null, Success = true, Tables = null };
         }
 
-        public Task<TableResponseFeedbackModel> Get()
+        public async Task<TableResponseModel> Get(Guid id)
         {
-            throw new NotImplementedException();
+            Table table;
+            try
+            {
+                table = await _repository.GetByID(id);
+            }
+            catch (Exception e)
+            {
+                return new TableResponseModel() { ErrorMessage = e.Message, Success = false, Tables = null };
+            }
+
+            if (table == null)
+            {
+                return new TableResponseModel() { ErrorMessage = $"Unable to find table with Id {id}", Success = false, Tables = null };
+            }
+
+            return new TableResponseModel() { ErrorMessage = null, Success = true, Tables = new List<Table>() { table } };
+        }
+
+        public async Task<TableResponseModel> Get()
+        {
+            List<Table> tables;
+            try
+            {
+                tables = await _repository.GetAll();
+            }
+            catch (Exception e)
+            {
+                return new TableResponseModel() { ErrorMessage = e.Message, Success = false, Tables = null };
+            }
+
+            return new TableResponseModel() { ErrorMessage = null, Success = true, Tables = tables };
         }
     }
 }
