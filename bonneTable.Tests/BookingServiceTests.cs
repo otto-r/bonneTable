@@ -15,18 +15,21 @@ namespace bonneTable.Tests
     public class BookingServiceTests
     {
         private Fixture _fixture;
-        private IBookingRepository _repository;
+        private IBookingRepository _bookingRepository;
+        private IRepository<Table> _tableRepository;
+        private IBookingService _service;
 
         public BookingServiceTests()
         {
             _fixture = new Fixture();
-            _repository = Substitute.For<IBookingRepository>();
+            _bookingRepository = Substitute.For<IBookingRepository>();
+            _tableRepository = Substitute.For<IRepository<Table>>();
+            _service = new BookingService(_bookingRepository, _tableRepository);
         }
 
         [Fact]
         public async void ClientBookTable_WithValidValues_ReturnsSuccessViewModel()
         {
-            var bookingService = new BookingService(_repository);
             var bookingRequest = new BookingRequestModel()
             {
                 Seats = 2,
@@ -36,7 +39,7 @@ namespace bonneTable.Tests
                 PhoneNumber = "3758374"
             };
 
-            var actual = await bookingService.ClientBookTable(bookingRequest);
+            var actual = await _service.ClientBookTable(bookingRequest);
 
             actual.Success.Should().BeTrue();
         }
@@ -44,7 +47,6 @@ namespace bonneTable.Tests
         [Fact]
         public async void ClientBookTable_WithValidValues_CallsRepositoryAddAsync()
         {
-            var bookingService = new BookingService(_repository);
             var bookingRequest = new BookingRequestModel()
             {
                 Seats = 2,
@@ -54,15 +56,14 @@ namespace bonneTable.Tests
                 PhoneNumber = "3758374"
             };
 
-            await bookingService.ClientBookTable(bookingRequest);
+            await _service.ClientBookTable(bookingRequest);
 
-            await _repository.Received(1).AddAsync(Arg.Any<Booking>());
+            await _bookingRepository.Received(1).AddAsync(Arg.Any<Booking>());
         }
 
         [Fact]
         public async void ClientBookTable_WithNegativeSeats_ReturnsFailureViewModel()
         {
-            var bookingService = new BookingService(_repository);
             var bookingRequest = new BookingRequestModel()
             {
                 Seats = -2,
@@ -72,7 +73,7 @@ namespace bonneTable.Tests
                 PhoneNumber = "3758374"
             };
 
-            var actual = await bookingService.ClientBookTable(bookingRequest);
+            var actual = await _service.ClientBookTable(bookingRequest);
 
             actual.Success.Should().BeFalse();
         }
@@ -80,7 +81,6 @@ namespace bonneTable.Tests
         [Fact]
         public async void ClientBookTable_WithTooManySeats_ReturnsFailureViewModel()
         {
-            var bookingService = new BookingService(_repository);
             var bookingRequest = new BookingRequestModel()
             {
                 Seats = 7,
@@ -90,7 +90,7 @@ namespace bonneTable.Tests
                 PhoneNumber = "3758374"
             };
 
-            var actual = await bookingService.ClientBookTable(bookingRequest);
+            var actual = await _service.ClientBookTable(bookingRequest);
 
             actual.Success.Should().BeFalse();
         }
@@ -98,7 +98,6 @@ namespace bonneTable.Tests
         [Fact]
         public async void ClientBookTable_WithEmptyName_ReturnsFailureViewModel()
         {
-            var bookingService = new BookingService(_repository);
             var bookingRequest = new BookingRequestModel()
             {
                 Seats = 2,
@@ -108,7 +107,7 @@ namespace bonneTable.Tests
                 PhoneNumber = "3758374"
             };
 
-            var actual = await bookingService.ClientBookTable(bookingRequest);
+            var actual = await _service.ClientBookTable(bookingRequest);
 
             actual.Success.Should().BeFalse();
         }
@@ -116,7 +115,6 @@ namespace bonneTable.Tests
         [Fact]
         public async void ClientBookTable_WithBadTime_ReturnsFailureViewModel()
         {
-            var bookingService = new BookingService(_repository);
             var bookingRequest = new BookingRequestModel()
             {
                 Seats = 2,
@@ -126,7 +124,7 @@ namespace bonneTable.Tests
                 PhoneNumber = "3758374"
             };
 
-            var actual = await bookingService.ClientBookTable(bookingRequest);
+            var actual = await _service.ClientBookTable(bookingRequest);
 
             actual.Success.Should().BeFalse();
         }
@@ -134,10 +132,9 @@ namespace bonneTable.Tests
         [Fact]
         public async void ClientBookTable_WithNullBookingRequest_ReturnsFailureViewModel()
         {
-            var bookingService = new BookingService(_repository);
             BookingRequestModel bookingRequest = null;
 
-            var actual = await bookingService.ClientBookTable(bookingRequest);
+            var actual = await _service.ClientBookTable(bookingRequest);
 
             actual.Success.Should().BeFalse();
         }
@@ -145,17 +142,14 @@ namespace bonneTable.Tests
         [Fact]
         public async void AdminCancelBooking_CallsRepositoryDelete()
         {
-            var bookingService = new BookingService(_repository);
+            await _service.AdminCancelBooking(new Guid());
 
-            await bookingService.AdminCancelBooking(new Guid());
-
-            await _repository.Received(1).Delete(Arg.Any<Guid>());
+            await _bookingRepository.Received(1).Delete(Arg.Any<Guid>());
         }
 
         [Fact]
         public async void EditBooking_CallsRepositoryEditAsync()
         {
-            var bookingService = new BookingService(_repository);
             var guid = _fixture.Create<Guid>();
             var bookingRequest = _fixture.Create<BookingRequestModel>();
             var booking = new Booking()
@@ -168,31 +162,29 @@ namespace bonneTable.Tests
                 Time = bookingRequest.Time
             };
 
-            await bookingService.EditBooking(bookingRequest, guid);
+            await _service.EditBooking(bookingRequest, guid);
 
-            await _repository.Received(1).EditAsync(guid, booking);
+            await _bookingRepository.Received(1).EditAsync(guid, booking);
         }
 
         [Fact]
         public async void GetBookingsByDate_CallsRepositoryGetByDate()
         {
-            var bookingService = new BookingService(_repository);
             var date = new DateTime();
 
-            await bookingService.GetBookigsByDate(date);
+            await _service.Get(date);
 
-            await _repository.Received(1).GetByDate(date);
+            await _bookingRepository.Received(1).GetByDate(date);
         }
 
         [Fact]
         public async void SearchByEmail_CallsRepositoryGetByEmail()
         {
-            var bookingService = new BookingService(_repository);
             var email = _fixture.Create<string>();
 
-            await bookingService.SearchByEmail(email);
+            await _service.SearchByEmail(email);
 
-            await _repository.Received(1).GetByEmail(email);
+            await _bookingRepository.Received(1).GetByEmail(email);
         }
     }
 }
