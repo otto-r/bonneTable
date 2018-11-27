@@ -106,12 +106,13 @@ namespace bonneTable.Services.Services
         {
             try
             {
+               
+
                 var filter = Builders<Booking>.Filter.Eq(t => t.Id, ID);
-                var update = Builders<Booking>.Update.Set(x => x.Seats, entity.Seats);
+                ReplaceOneResult replaceOneResult = await _context.Booking.ReplaceOneAsync(filter, entity,
+                    new UpdateOptions { IsUpsert = true });
 
-                var updateResult = await _context.Booking.UpdateOneAsync(filter, update, new UpdateOptions { IsUpsert = true });
-
-                return updateResult.IsAcknowledged && updateResult.MatchedCount > 0;
+                return replaceOneResult.IsAcknowledged && replaceOneResult.MatchedCount > 0;
             }
             catch (Exception ex)
             {
