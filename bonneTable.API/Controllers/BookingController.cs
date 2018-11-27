@@ -4,6 +4,7 @@ using bonneTable.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using bonneTable.Models;
 using bonneTable.Models.RequestModels;
+using System.Threading.Tasks;
 
 namespace bonneTable.API.Controllers
 {
@@ -22,27 +23,29 @@ namespace bonneTable.API.Controllers
 
         // GET tables from requested date 
         [HttpGet]
-        public async System.Threading.Tasks.Task<ActionResult<IEnumerable<Booking>>> GetAsync(DateTime dateTime)
+        public async Task<ActionResult<IEnumerable<Booking>>> GetAsync(DateTime dateTime)
         {
             var bookings = await _bookingService.Get(dateTime);
 
-            return bookings;
+            return Ok(bookings);
         }
 
         // POST AKA ADD
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] string value)
         {
             BookingRequestModel temprequest = new BookingRequestModel();
 
-            _bookingService.ClientBookTable(temprequest);
+            await _bookingService.ClientBookTable(temprequest);
+            return Ok();
         }
 
         // PUT AKA EDIT
         [HttpPut("{id}")]
-        public void Put(BookingRequestModel bookingValue, Guid guid)
+        public async Task<IActionResult> Put(BookingRequestModel bookingValue, Guid guid)
         {
-            _bookingService.EditBooking(bookingValue, guid);
+            await _bookingService.EditBooking(bookingValue, guid);
+            return Ok();
         }
 
         // DELETE api/values/5
