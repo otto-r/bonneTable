@@ -61,7 +61,7 @@ namespace bonneTable.Services.Services
                 var bookingOverlapEarly = bookingTime.Time <= bookingRequest.Time && bookingTime.Time.AddHours(2) > bookingRequest.Time ? true : false;
                 var bookingOverlapLate = bookingTime.Time >= bookingRequest.Time && bookingTime.Time.AddHours(2) < bookingRequest.Time ? true : false;
 
-                if (bookingOverlapLate || bookingOverlapLate)
+                if (!bookingOverlapLate || !bookingOverlapLate)
                 {
                     bookingsDuring2hInterval.Add(bookingTime);
                 }
@@ -78,9 +78,11 @@ namespace bonneTable.Services.Services
             freeTables.Sort((x, y) => x.Seats.CompareTo(y.Seats));
             Table selectedTable = new Table();
 
+            if (!freeTables.Any()) { return new BookingsResponseModel { Success = false, ErrorMessage = "No table available" }; };
+
             foreach (var table in freeTables)
             {
-                if (bookingRequest.Seats <= table.Seats)
+                if (freeTables.Any() && bookingRequest.Seats <= table.Seats)
                 {
                     selectedTable = table;
                 }
@@ -144,7 +146,7 @@ namespace bonneTable.Services.Services
             // logic to see if seats are available
             // Get bookings and tables to see how many available
             // seats and time slots there are
-            var datesBookings = _bookingRepository.GetByDate(bookingRequest.Time);
+            var datesBookings = await _bookingRepository.GetByDate(bookingRequest.Time);
 
 
             Booking booking = new Booking
@@ -232,7 +234,15 @@ namespace bonneTable.Services.Services
             oldBooking.Email = bookingRequest.Email;
             oldBooking.Table = selectedTable;
 
-            await _bookingRepository.EditAsync(id, oldBooking);
+            try
+            {
+                await _bookingRepository.EditAsync(id, oldBooking);
+            }
+            catch (Exception)
+            {
+                return new BookingsResponseModel { Success = false, ErrorMessage = "Error connectting to the database" };
+                // log errors
+            }
 
             return new BookingsResponseModel { Success = true };
         }

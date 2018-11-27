@@ -9,6 +9,9 @@ using AutoFixture.Kernel;
 using bonneTable.Models;
 using NSubstitute;
 using Xunit;
+using System.Collections.Generic;
+using System.Linq;
+using bonneTable.Tests.Fakes;
 
 namespace bonneTable.Tests
 {
@@ -186,5 +189,32 @@ namespace bonneTable.Tests
 
             await _bookingRepository.Received(1).GetByEmail(email);
         }
+
+        [Fact]
+        public async void AdminBookTable_TableFull_ReturnsSuccessFalse()
+        {
+            var tablesGetAll = FakeTables.GetAll3x2Tables();
+            var bookingsGetByDate = FakeBookings.Get3Bookings();
+
+            _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+            _tableRepository.GetAll().Returns(tablesGetAll);
+
+            var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
+            var bookingRequest = new BookingRequestModel()
+            {
+                Seats = 2,
+                Email = "wow@wow.se",
+                CustomerName = "Coolguy",
+                Time = DateTime.Now.AddHours(1),
+                PhoneNumber = "3758374"
+            };
+
+            var actual = await bookingService.AdminBookTable(bookingRequest);
+
+            actual.Success.Should().BeFalse();
+        }
     }
 }
+
+
