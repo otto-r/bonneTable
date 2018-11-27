@@ -1,6 +1,7 @@
 ﻿using bonneTable.Models.ViewModels;
 using System;
 using System.Threading.Tasks;
+using bonneTable.Models;
 
 namespace bonneTable.Services.Interfaces
 {
@@ -8,8 +9,8 @@ namespace bonneTable.Services.Interfaces
     {
         Task<TableResponseModel> Add(int numberOfSeats);
         Task<TableResponseModel> Delete(Guid id);
-        Task<TableResponseFeedbackModel> Get(Guid id);
-        Task<TableResponseFeedbackModel> Get();
-        Task<TableResponseModel> Edit(Guid id);
+        Task<TableResponseModel> Get(Guid id);
+        Task<TableResponseModel> Get();
+        Task<TableResponseModel> Edit(Guid id, Table table);
     }
 }
