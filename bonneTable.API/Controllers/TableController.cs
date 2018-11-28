@@ -1,8 +1,6 @@
 ﻿using bonneTable.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace bonneTable.API.Controllers
 {
@@ -10,33 +8,52 @@ namespace bonneTable.API.Controllers
     {
         private readonly ITableService _tableService;
 
-        Guid testGuid = new Guid();
+        // To get key:
+
+        // [Route("{key:int}")] to get key
+        // [HttpGet]
+        // public ... Get(int key)
+
+        Guid tempGuid = new Guid(); // TEMP
+        Models.Table tempTable = new Models.Table(); // TEMP
 
         public TableController(ITableService tableService)
         {
             _tableService = tableService;
         }
 
-        public void Add()
+        [Route("api/books")]
+        [HttpPost]
+        public void Add(int numberOfSeats)
         {
-            _tableService.Add(1);
+            _tableService.Add(numberOfSeats);
         }
 
-        public void Delete()
+        [Route("{id:guid}")]
+        [HttpDelete]
+        public void Delete(Guid id)
         {
-            _tableService.Delete(testGuid);
+            _tableService.Delete(tempGuid);
         }
 
-        public void Edit()
+        [Route("{id:guid}")]
+        [HttpPut]
+        public void Edit(Guid id)
         {
-            _tableService.Edit(testGuid);
+            _tableService.Edit(id, tempTable);
         }
 
-        public void Get()
+        [Route("{id:guid}")]
+        [HttpGet]
+        public void GetTablebyId(Guid id)
         {
+            _tableService.Get(id);
+        }
 
-
-            _tableService.Get(testGuid);
+        [HttpGet]
+        public void GetAll()
+        {
+            _tableService.Get();
         }
     }
 }

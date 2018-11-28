@@ -11,8 +11,10 @@ namespace bonneTable.API.Controllers
     [ApiController]
     public class BookingController : ControllerBase
     {
-        private readonly IBookingService _bookingService;
+        // Temporary objects will be replaced later on
 
+
+        private readonly IBookingService _bookingService;
 
         public BookingController(IBookingService bookingServie)
         {
@@ -33,16 +35,16 @@ namespace bonneTable.API.Controllers
         [HttpPost]
         public void Post([FromBody] string value)
         {
-            BookingRequestModel temprequest = new BookingRequestModel();
-
-            _bookingService.ClientBookTable(temprequest);
+            BookingRequestModel temprequest = new BookingRequestModel(); // TEMP
+            _bookingService.ClientBookTable(temprequest); // TEMP
         }
 
         // PUT AKA EDIT
+        [Route("{id:guid}")]
         [HttpPut("{id}")]
-        public void Put(BookingRequestModel bookingValue, Guid guid)
+        public void Put(BookingRequestModel bookingValue, Guid id)
         {
-            _bookingService.EditBooking(bookingValue, guid);
+            _bookingService.EditBooking(bookingValue, id);
         }
 
         // DELETE api/values/5
