@@ -102,16 +102,31 @@ namespace bonneTable.Services.Services
                 Table = selectedTable
             };
 
-            await _bookingRepository.AddAsync(booking);
+            try
+            {
+                await _bookingRepository.AddAsync(booking);
+            }
+            catch (Exception)
+            {
+                return new BookingsResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+                // log error and method
+            }
 
             return new BookingsResponseModel { Success = true };
         }
 
         public async Task<BookingsResponseModel> AdminCancelBooking(Guid id)
         {
-            //Hantering av error från databasen
-            await _bookingRepository.Delete(id);
-            return new BookingsResponseModel { Success = true };
+            try
+            {
+                await _bookingRepository.Delete(id);
+                return new BookingsResponseModel { Success = true };
+            }
+            catch (Exception)
+            {
+                return new BookingsResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+                // log exception and method
+            }
         }
 
         public async Task<BookingsResponseModel> ClientBookTable(BookingRequestModel bookingRequest)
@@ -240,7 +255,7 @@ namespace bonneTable.Services.Services
             }
             catch (Exception)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Error connectting to the database" };
+                return new BookingsResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
                 // log errors
             }
 

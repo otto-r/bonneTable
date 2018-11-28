@@ -205,7 +205,7 @@ namespace bonneTable.Tests
             {
                 Seats = 2,
                 Email = "wow@wow.se",
-                CustomerName = "Coolguy",
+                CustomerName = "notCoolguy",
                 Time = DateTime.Now.AddHours(1),
                 PhoneNumber = "3758374"
             };
@@ -213,6 +213,31 @@ namespace bonneTable.Tests
             var actual = await bookingService.AdminBookTable(bookingRequest);
 
             actual.Success.Should().BeFalse();
+        }
+
+        [Fact]
+        public async void AdminBookTable_TableAvailable_ReturnsSuccessTrue()
+        {
+            var tablesGetAll = FakeTables.GetAll4x2Tables();
+            var bookingsGetByDate = FakeBookings.Get3Bookings();
+
+            _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+            _tableRepository.GetAll().Returns(tablesGetAll);
+
+            var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
+            var bookingRequest = new BookingRequestModel()
+            {
+                Seats = 2,
+                Email = "wow@wow.se",
+                CustomerName = "slightlyCoolguy",
+                Time = DateTime.Now.AddHours(1),
+                PhoneNumber = "3758374"
+            };
+
+            var actual = await bookingService.AdminBookTable(bookingRequest);
+
+            actual.Success.Should().BeTrue();
         }
     }
 }
