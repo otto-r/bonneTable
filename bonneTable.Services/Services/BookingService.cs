@@ -42,7 +42,14 @@ namespace bonneTable.Services.Services
                 return new BookingsResponseModel { Success = false, ErrorMessage = "Invalid name or phone number" };
             }
 
+            bookingRequest.Time = bookingRequest.Time.AddMilliseconds(-bookingRequest.Time.Millisecond);
+            bookingRequest.Time = bookingRequest.Time.AddSeconds(-bookingRequest.Time.Second);
+
+
             var now = DateTime.Now;
+            now = now.AddMilliseconds(-now.Millisecond);
+            now = now.AddSeconds(-now.Second - 1);
+
 
             if (bookingRequest.Time < now)
             {
@@ -56,14 +63,22 @@ namespace bonneTable.Services.Services
 
             List<Booking> bookingsDuring2hInterval = new List<Booking>();
 
-            foreach (var bookingTime in bookingsOnDate)
+            foreach (var previousBooking in bookingsOnDate)
             {
-                var bookingOverlapEarly = bookingTime.Time <= bookingRequest.Time && bookingTime.Time.AddHours(2) > bookingRequest.Time ? true : false;
-                var bookingOverlapLate = bookingTime.Time >= bookingRequest.Time && bookingTime.Time.AddHours(2) < bookingRequest.Time ? true : false;
 
-                if (!bookingOverlapLate || !bookingOverlapLate)
+                var oldBookingEnd = previousBooking.Time.AddHours(2);
+                var newBookingStart = bookingRequest.Time.AddMinutes(-1);
+                var newBookingAfterOld = oldBookingEnd > newBookingStart;
+
+                var oldBookingStart = previousBooking.Time.AddMinutes(1);
+                var newBookingEnd = bookingRequest.Time.AddHours(2);
+                var newBookingBeforeOld = oldBookingStart < newBookingEnd;
+
+                var betweenTimes = (newBookingStart > oldBookingStart) && (newBookingStart < oldBookingEnd);
+
+                if (betweenTimes)
                 {
-                    bookingsDuring2hInterval.Add(bookingTime);
+                    bookingsDuring2hInterval.Add(previousBooking);
                 }
             }
 
