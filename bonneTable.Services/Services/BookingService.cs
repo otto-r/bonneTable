@@ -20,16 +20,16 @@ namespace bonneTable.Services.Services
             _tableRepository = tableRepository;
         }
 
-        public async Task<BookingsResponseModel> AdminBookTable(BookingRequestModel bookingRequest)
+        public async Task<BookingResponseModel> AdminBookTable(BookingRequestModel bookingRequest)
         {
             if (bookingRequest == null)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Bad request" };
+                return new BookingResponseModel { Success = false, ErrorMessage = "Bad request" };
             }
 
             if (bookingRequest.Seats <= 0 || bookingRequest.Seats > 6)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Bad number of seats" };
+                return new BookingResponseModel { Success = false, ErrorMessage = "Bad number of seats" };
             }
 
             var nameGreaterThan1 = bookingRequest.CustomerName.Length <= 1 ? true : false;
@@ -39,21 +39,19 @@ namespace bonneTable.Services.Services
 
             if (nameGreaterThan1 || nameNotLongerThan50 || phoneNotShorterThan6 || phoneNotLongerThan25)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Invalid name or phone number" };
+                return new BookingResponseModel { Success = false, ErrorMessage = "Invalid name or phone number" };
             }
 
             bookingRequest.Time = bookingRequest.Time.AddMilliseconds(-bookingRequest.Time.Millisecond);
             bookingRequest.Time = bookingRequest.Time.AddSeconds(-bookingRequest.Time.Second);
 
-
             var now = DateTime.Now;
             now = now.AddMilliseconds(-now.Millisecond);
             now = now.AddSeconds(-now.Second - 1);
 
-
             if (bookingRequest.Time < now)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
+                return new BookingResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
             }
 
             var bookingsOnDate = await _bookingRepository.GetByDate(bookingRequest.Time);
@@ -63,22 +61,22 @@ namespace bonneTable.Services.Services
 
             List<Booking> bookingsDuring2hInterval = new List<Booking>();
 
-            foreach (var previousBooking in bookingsOnDate)
+            foreach (var oldBooking in bookingsOnDate)
             {
+                var newBookingStart = bookingRequest.Time.AddMinutes(1);
+                var newBookingEnd = bookingRequest.Time.AddHours(2).AddMinutes(-1);
 
-                var oldBookingEnd = previousBooking.Time.AddHours(2);
-                var newBookingStart = bookingRequest.Time.AddMinutes(-1);
-                var newBookingAfterOld = oldBookingEnd > newBookingStart;
+                var oldBookingStart = oldBooking.Time.AddMinutes(1);
+                var oldBookingEnd = oldBooking.Time.AddHours(2).AddMinutes(-1);
 
-                var oldBookingStart = previousBooking.Time.AddMinutes(1);
-                var newBookingEnd = bookingRequest.Time.AddHours(2);
-                var newBookingBeforeOld = oldBookingStart < newBookingEnd;
+                // if these are true add to interval
+                var overlapOldBookingFirst = newBookingStart < oldBookingEnd && newBookingStart > oldBookingStart;
+                var overlapNewBookingFirst = newBookingEnd > oldBookingStart && newBookingEnd < oldBookingEnd;
 
-                var betweenTimes = (newBookingStart > oldBookingStart) && (newBookingStart < oldBookingEnd);
 
-                if (betweenTimes)
+                if (overlapNewBookingFirst || overlapOldBookingFirst)
                 {
-                    bookingsDuring2hInterval.Add(previousBooking);
+                    bookingsDuring2hInterval.Add(oldBooking);
                 }
             }
 
@@ -91,20 +89,21 @@ namespace bonneTable.Services.Services
             }
 
             freeTables.Sort((x, y) => x.Seats.CompareTo(y.Seats));
-            Table selectedTable = new Table();
+            Table selectedTable = null;
 
-            if (!freeTables.Any()) { return new BookingsResponseModel { Success = false, ErrorMessage = "No table available" }; };
+            if (!freeTables.Any()) { return new BookingResponseModel { Success = false, ErrorMessage = "No table available" }; };
 
             foreach (var table in freeTables)
             {
-                if (freeTables.Any() && bookingRequest.Seats <= table.Seats)
+                if (bookingRequest.Seats <= table.Seats)
                 {
                     selectedTable = table;
                 }
-                else
-                {
-                    return new BookingsResponseModel { Success = false, ErrorMessage = "No table available" };
-                }
+            }
+
+            if (selectedTable == null)
+            {
+                return new BookingResponseModel { Success = false, ErrorMessage = "No table available with correct amount of seats" };
             }
 
             Booking booking = new Booking
@@ -123,37 +122,37 @@ namespace bonneTable.Services.Services
             }
             catch (Exception)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
                 // log error and method
+                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
             }
 
-            return new BookingsResponseModel { Success = true };
+            return new BookingResponseModel { Success = true };
         }
 
-        public async Task<BookingsResponseModel> AdminCancelBooking(Guid id)
+        public async Task<BookingResponseModel> AdminCancelBooking(Guid id)
         {
             try
             {
                 await _bookingRepository.Delete(id);
-                return new BookingsResponseModel { Success = true };
+                return new BookingResponseModel { Success = true };
             }
             catch (Exception)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
                 // log exception and method
+                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
             }
         }
 
-        public async Task<BookingsResponseModel> ClientBookTable(BookingRequestModel bookingRequest)
+        public async Task<BookingResponseModel> ClientBookTable(BookingRequestModel bookingRequest)
         {
             if (bookingRequest == null)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Bad request" };
+                return new BookingResponseModel { Success = false, ErrorMessage = "Bad request" };
             }
 
             if (bookingRequest.Seats <= 0 || bookingRequest.Seats > 6)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Bad number of seats" };
+                return new BookingResponseModel { Success = false, ErrorMessage = "Bad number of seats" };
             }
 
             var nameGreaterThan1 = bookingRequest.CustomerName.Length <= 1 ? true : false;
@@ -163,21 +162,72 @@ namespace bonneTable.Services.Services
 
             if (nameGreaterThan1 || nameNotLongerThan50 || phoneNotShorterThan6 || phoneNotLongerThan25)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Invalid name or phone number" };
+                return new BookingResponseModel { Success = false, ErrorMessage = "Invalid name or phone number" };
             }
 
+            bookingRequest.Time = bookingRequest.Time.AddMilliseconds(-bookingRequest.Time.Millisecond);
+            bookingRequest.Time = bookingRequest.Time.AddSeconds(-bookingRequest.Time.Second);
+
             var now = DateTime.Now;
+            now = now.AddMilliseconds(-now.Millisecond);
+            now = now.AddSeconds(-now.Second - 1);
 
             if (bookingRequest.Time < now)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
+                return new BookingResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
             }
 
-            // logic to see if seats are available
-            // Get bookings and tables to see how many available
-            // seats and time slots there are
-            var datesBookings = await _bookingRepository.GetByDate(bookingRequest.Time);
+            var bookingsOnDate = await _bookingRepository.GetByDate(bookingRequest.Time);
+            var tables = await _tableRepository.GetAll();
 
+            List<Table> freeTables = new List<Table>();
+
+            List<Booking> bookingsDuring2hInterval = new List<Booking>();
+
+            foreach (var oldBooking in bookingsOnDate)
+            {
+                var newBookingStart = bookingRequest.Time.AddMinutes(1);
+                var newBookingEnd = bookingRequest.Time.AddHours(2).AddMinutes(-1);
+
+                var oldBookingStart = oldBooking.Time.AddMinutes(1);
+                var oldBookingEnd = oldBooking.Time.AddHours(2).AddMinutes(-1);
+
+                // if these are true add to interval
+                var overlapOldBookingFirst = newBookingStart < oldBookingEnd && newBookingStart > oldBookingStart;
+                var overlapNewBookingFirst = newBookingEnd > oldBookingStart && newBookingEnd < oldBookingEnd;
+
+
+                if (overlapNewBookingFirst || overlapOldBookingFirst)
+                {
+                    bookingsDuring2hInterval.Add(oldBooking);
+                }
+            }
+
+            foreach (var table in tables)
+            {
+                if (!bookingsDuring2hInterval.Any(b => b.Table.Id == table.Id))
+                {
+                    freeTables.Add(table);
+                }
+            }
+
+            freeTables.Sort((x, y) => x.Seats.CompareTo(y.Seats));
+            Table selectedTable = null;
+
+            if (!freeTables.Any()) { return new BookingResponseModel { Success = false, ErrorMessage = "No table available" }; };
+
+            foreach (var table in freeTables)
+            {
+                if (bookingRequest.Seats <= table.Seats)
+                {
+                    selectedTable = table;
+                }
+            }
+
+            if (selectedTable == null)
+            {
+                return new BookingResponseModel { Success = false, ErrorMessage = "No table available with correct amount of seats" };
+            }
 
             Booking booking = new Booking
             {
@@ -186,24 +236,32 @@ namespace bonneTable.Services.Services
                 CustomerName = bookingRequest.CustomerName,
                 Time = bookingRequest.Time,
                 Email = bookingRequest.Email,
-                //select table
+                Table = selectedTable
             };
 
-            await _bookingRepository.AddAsync(booking);
+            try
+            {
+                await _bookingRepository.AddAsync(booking);
+            }
+            catch (Exception)
+            {
+                // log error and method
+                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+            }
 
-            return new BookingsResponseModel { Success = true };
+            return new BookingResponseModel { Success = true };
         }
 
-        public async Task<BookingsResponseModel> EditBooking(BookingRequestModel bookingRequest, Guid id)
+        public async Task<BookingResponseModel> EditBooking(BookingRequestModel bookingRequest, Guid id)
         {
             if (bookingRequest == null)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Bad request" };
+                return new BookingResponseModel { Success = false, ErrorMessage = "Bad request" };
             }
 
             if (bookingRequest.Seats <= 0 || bookingRequest.Seats > 6)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Bad number of seats" };
+                return new BookingResponseModel { Success = false, ErrorMessage = "Bad number of seats" };
             }
 
             var nameGreaterThan1 = bookingRequest.CustomerName.Length <= 1 ? true : false;
@@ -213,14 +271,14 @@ namespace bonneTable.Services.Services
 
             if (nameGreaterThan1 || nameNotLongerThan50 || phoneNotShorterThan6 || phoneNotLongerThan25)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Invalid name or phone number" };
+                return new BookingResponseModel { Success = false, ErrorMessage = "Invalid name or phone number" };
             }
 
             var now = DateTime.Now;
 
             if (bookingRequest.Time < now)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
+                return new BookingResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
             }
 
             var oldBooking = await _bookingRepository.GetByID(id);
@@ -253,7 +311,7 @@ namespace bonneTable.Services.Services
                 }
                 else
                 {
-                    return new BookingsResponseModel { Success = false, ErrorMessage = "No table available" };
+                    return new BookingResponseModel { Success = false, ErrorMessage = "No table available" };
                 }
             }
 
@@ -270,17 +328,25 @@ namespace bonneTable.Services.Services
             }
             catch (Exception)
             {
-                return new BookingsResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
-                // log errors
+                // log error
+                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
             }
 
-            return new BookingsResponseModel { Success = true };
+            return new BookingResponseModel { Success = true };
         }
 
-        public async Task<List<Booking>> Get(DateTime dateTime)
+        public async Task<BookingResponseModel> Get(DateTime dateTime)
         {
-            var bookings = await _bookingRepository.GetAll();
-            return bookings;
+            try
+            {
+                var bookings = await _bookingRepository.GetByDate(dateTime);
+                return new BookingResponseModel { Success = true, Bookings = bookings };
+            }
+            catch (Exception)
+            {
+                // log error
+                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+            }
         }
 
         public async Task<Booking> Get(Guid id)

@@ -33,18 +33,80 @@ namespace bonneTable.Tests
         public class ClientTests : BookingServiceTests
         {
             [Fact]
-            public async void WithValidValues_ReturnsSuccessViewModel()
+            public async void WithValidValues_ReturnsTrue()
             {
+                var tablesGetAll = FakeTables.GetAll4x2Tables();
+                var bookingsGetByDate = FakeBookings.Get3Bookings();
+
+                _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+                _tableRepository.GetAll().Returns(tablesGetAll);
+
+                var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
+                var bookingRequest = ValidBooking(0);
+
+                var actual = await bookingService.ClientBookTable(bookingRequest);
+
+                actual.Success.Should().BeTrue();
+            }
+
+            [Fact]
+            public async void Booking_AvailableTableTooSmall_ReturnsFalse()
+            {
+                var tablesGetAll = FakeTables.GetAll4x2Tables();
+                var bookingsGetByDate = FakeBookings.Get3Bookings();
+
+                _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+                _tableRepository.GetAll().Returns(tablesGetAll);
+
+                var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
                 var bookingRequest = new BookingRequestModel()
                 {
-                    Seats = 2,
+                    Seats = 4,
                     Email = "wow@wow.se",
-                    CustomerName = "Coolguy",
-                    Time = DateTime.Now.AddHours(2),
+                    CustomerName = "notCoolguy",
+                    Time = DateTime.Now,
                     PhoneNumber = "3758374"
                 };
 
-                var actual = await _service.ClientBookTable(bookingRequest);
+                var actual = await bookingService.ClientBookTable(bookingRequest);
+
+                actual.Success.Should().BeFalse();
+            }
+
+            [Fact]
+            public async void BookingEndToEnd_ReturnsTrue()
+            {
+                var tablesGetAll = FakeTables.GetAll3x2Tables();
+                var bookingsGetByDate = FakeBookings.Get3Bookings();
+
+                _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+                _tableRepository.GetAll().Returns(tablesGetAll);
+
+                var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
+                var bookingRequest = ValidBooking(2);
+
+                var actual = await bookingService.ClientBookTable(bookingRequest);
+
+                actual.Success.Should().BeTrue();
+            }
+
+            [Fact]
+            public async void BookingEndToEndBefore_ReturnsTrue()
+            {
+                var tablesGetAll = FakeTables.GetAll3x2Tables();
+                var bookingsGetByDate = FakeBookings.Get3Bookings2HoursLater();
+
+                _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+                _tableRepository.GetAll().Returns(tablesGetAll);
+
+                var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
+                var bookingRequest = ValidBooking(0);
+
+                var actual = await bookingService.ClientBookTable(bookingRequest);
 
                 actual.Success.Should().BeTrue();
             }
@@ -52,22 +114,23 @@ namespace bonneTable.Tests
             [Fact]
             public async void BookTable_WithValidValues_CallsRepositoryAddAsync()
             {
-                var bookingRequest = new BookingRequestModel()
-                {
-                    Seats = 2,
-                    Email = "wow@wow.se",
-                    CustomerName = "Coolguy",
-                    Time = DateTime.Now.AddHours(2),
-                    PhoneNumber = "3758374"
-                };
+                var tablesGetAll = FakeTables.GetAll4x2Tables();
+                var bookingsGetByDate = FakeBookings.Get3Bookings();
 
-                await _service.ClientBookTable(bookingRequest);
+                _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+                _tableRepository.GetAll().Returns(tablesGetAll);
+
+                var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
+                var bookingRequest = ValidBooking(0);
+
+                var actual = await bookingService.ClientBookTable(bookingRequest);
 
                 await _bookingRepository.Received(1).AddAsync(Arg.Any<Booking>());
             }
 
             [Fact]
-            public async void BookTable_WithNegativeSeats_ReturnsFailureViewModel()
+            public async void BookTable_WithNegativeSeats_ReturnsFalse()
             {
                 var bookingRequest = new BookingRequestModel()
                 {
@@ -84,7 +147,7 @@ namespace bonneTable.Tests
             }
 
             [Fact]
-            public async void BookTable_WithTooManySeats_ReturnsFailureViewModel()
+            public async void BookTable_WithTooManySeats_ReturnsFalse()
             {
                 var bookingRequest = new BookingRequestModel()
                 {
@@ -101,7 +164,7 @@ namespace bonneTable.Tests
             }
 
             [Fact]
-            public async void ClientBookTable_WithEmptyName_ReturnsFailureViewModel()
+            public async void ClientBookTable_WithEmptyName_ReturnsFalse()
             {
                 var bookingRequest = new BookingRequestModel()
                 {
@@ -118,16 +181,9 @@ namespace bonneTable.Tests
             }
 
             [Fact]
-            public async void BookTable_WithBadTime_ReturnsFailureViewModel()
+            public async void BookTable_WithBadTime_ReturnsFalse()
             {
-                var bookingRequest = new BookingRequestModel()
-                {
-                    Seats = 2,
-                    Email = "wow@wow.se",
-                    CustomerName = "Coolguy",
-                    Time = DateTime.Now.AddHours(-2),
-                    PhoneNumber = "3758374"
-                };
+                var bookingRequest = ValidBooking(-2);
 
                 var actual = await _service.ClientBookTable(bookingRequest);
 
@@ -135,7 +191,7 @@ namespace bonneTable.Tests
             }
 
             [Fact]
-            public async void BookTable_WithNullBookingRequest_ReturnsFailureViewModel()
+            public async void BookTable_WithNullBookingRequest_ReturnsFalse()
             {
                 BookingRequestModel bookingRequest = null;
 
@@ -160,14 +216,25 @@ namespace bonneTable.Tests
 
                     var bookingService = new BookingService(_bookingRepository, _tableRepository);
 
-                    var bookingRequest = new BookingRequestModel()
-                    {
-                        Seats = 2,
-                        Email = "wow@wow.se",
-                        CustomerName = "notCoolguy",
-                        Time = DateTime.Now.AddHours(1),
-                        PhoneNumber = "3758374"
-                    };
+                    var bookingRequest = ValidBooking(1);
+
+                    var actual = await bookingService.AdminBookTable(bookingRequest);
+
+                    actual.Success.Should().BeFalse();
+                }
+
+                [Fact]
+                public async void TableFull_3BookingsOnSameTime_ReturnsFalse()
+                {
+                    var tablesGetAll = FakeTables.GetAll3x2Tables();
+                    var bookingsGetByDate = FakeBookings.Get3Bookings();
+
+                    _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+                    _tableRepository.GetAll().Returns(tablesGetAll);
+
+                    var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
+                    var bookingRequest = ValidBooking(0);
 
                     var actual = await bookingService.AdminBookTable(bookingRequest);
 
@@ -185,14 +252,7 @@ namespace bonneTable.Tests
 
                     var bookingService = new BookingService(_bookingRepository, _tableRepository);
 
-                    var bookingRequest = new BookingRequestModel()
-                    {
-                        Seats = 2,
-                        Email = "wow@wow.se",
-                        CustomerName = "slightlyCoolguy",
-                        Time = DateTime.Now.AddHours(1),
-                        PhoneNumber = "3758374"
-                    };
+                    var bookingRequest = ValidBooking(1);
 
                     var actual = await bookingService.AdminBookTable(bookingRequest);
 
@@ -200,7 +260,7 @@ namespace bonneTable.Tests
                 }
 
                 [Fact]
-                public async void TableAvailable_TableBookedAfter_ReturnsFalse()
+                public async void TableAvailable_TableBookedAfter_ReturnsTrue()
                 {
                     var tablesGetAll = FakeTables.GetAll3x2Tables();
                     var bookingsGetByDate = FakeBookings.Get3Bookings1Late();
@@ -210,14 +270,7 @@ namespace bonneTable.Tests
 
                     var bookingService = new BookingService(_bookingRepository, _tableRepository);
 
-                    var bookingRequest = new BookingRequestModel()
-                    {
-                        Seats = 2,
-                        Email = "wow@wow.se",
-                        CustomerName = "notCoolguy",
-                        Time = DateTime.Now,
-                        PhoneNumber = "3758374"
-                    };
+                    BookingRequestModel bookingRequest = ValidBooking(0);
 
                     var actual = await bookingService.AdminBookTable(bookingRequest);
 
@@ -225,7 +278,7 @@ namespace bonneTable.Tests
                 }
 
                 [Fact]
-                public async void BookTable_TableBookedBefore_returnsTrue()
+                public async void TableAvailable_TableBookedBefore_returnsTrue()
                 {
                     var tablesGetAll = FakeTables.GetAll3x2Tables();
                     var bookingsGetByDate = FakeBookings.Get3Bookings1Early();
@@ -235,9 +288,70 @@ namespace bonneTable.Tests
 
                     var bookingService = new BookingService(_bookingRepository, _tableRepository);
 
+                    var bookingRequest = ValidBooking(0);
+
+                    var actual = await bookingService.AdminBookTable(bookingRequest);
+
+                    actual.Success.Should().BeTrue();
+                }
+
+                [Fact]
+                public async void TableFull_TableOverlap1Hour_returnsTrue()
+                {
+                    var tablesGetAll = FakeTables.GetAll3x2Tables();
+                    var bookingsGetByDate = FakeBookings.Get3Bookings1Overlap();
+
+                    _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+                    _tableRepository.GetAll().Returns(tablesGetAll);
+
+                    var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
+                    var bookingRequest = ValidBooking(0);
+
+                    var actual = await bookingService.AdminBookTable(bookingRequest);
+
+                    actual.Success.Should().BeFalse();
+                }
+
+                [Fact]
+                public async void Booking_AvailableTableTooSmall_ReturnsFalse()
+                {
+                    var tablesGetAll = FakeTables.GetAll4x2Tables();
+                    var bookingsGetByDate = FakeBookings.Get3Bookings();
+
+                    _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+                    _tableRepository.GetAll().Returns(tablesGetAll);
+
+                    var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
                     var bookingRequest = new BookingRequestModel()
                     {
-                        Seats = 2,
+                        Seats = 4,
+                        Email = "wow@wow.se",
+                        CustomerName = "Coolguy",
+                        Time = DateTime.Now,
+                        PhoneNumber = "3758374"
+                    };
+
+                    var actual = await bookingService.AdminBookTable(bookingRequest);
+
+                    actual.Success.Should().BeFalse();
+                }
+
+                [Fact]
+                public async void TableAvailable_2TablesAvailable_1TooSmall_ReturnsFalse()
+                {
+                    var tablesGetAll = FakeTables.GetAll4x2And1x4Tables();
+                    var bookingsGetByDate = FakeBookings.Get3Bookings();
+
+                    _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+                    _tableRepository.GetAll().Returns(tablesGetAll);
+
+                    var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
+                    var bookingRequest = new BookingRequestModel()
+                    {
+                        Seats = 4,
                         Email = "wow@wow.se",
                         CustomerName = "notCoolguy",
                         Time = DateTime.Now,
@@ -301,7 +415,17 @@ namespace bonneTable.Tests
                 }
             }
         }
+
+        private static BookingRequestModel ValidBooking(int addHours)
+        {
+            return new BookingRequestModel()
+            {
+                Seats = 2,
+                Email = "wow@wow.se",
+                CustomerName = "Coolguy",
+                Time = DateTime.Now.AddHours(addHours),
+                PhoneNumber = "3758374"
+            };
+        }
     }
 }
-
-
