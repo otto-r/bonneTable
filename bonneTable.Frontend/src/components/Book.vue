@@ -8,6 +8,7 @@
                     <b-button :disabled="guestsButtonDisabled" @click="guestsClick()">Guests</b-button>
                     <b-button :disabled="timeButtonDisabled" @click="timeClick()">Time</b-button>
                     <b-button :disabled="confirmButtonDisabled" @click="confirmClick()">Confirm</b-button>
+                </b-button-group>{{$store.state.date}}
                 <router-view></router-view>
             </div>
         </div>
