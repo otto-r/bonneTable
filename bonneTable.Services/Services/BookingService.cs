@@ -331,7 +331,7 @@ namespace bonneTable.Services.Services
                     bookingsDuring2hInterval.Add(oldBooking);
                 }
             }
-            
+
             var oldBookingToChange = await _bookingRepository.GetByID(bookingId);
 
             foreach (var table in tables)
@@ -395,16 +395,33 @@ namespace bonneTable.Services.Services
             }
         }
 
-        public async Task<Booking> Get(Guid id)
+        public async Task<BookingResponseModel> Get(Guid id)
         {
-            var booking = await _bookingRepository.GetByID(id);
-            return booking;
+            try
+            {
+                var booking = await _bookingRepository.GetByID(id);
+                List<Booking> bookings = new List<Booking> { booking };
+                return new BookingResponseModel { Success = true, Bookings = bookings };
+            }
+            catch (Exception)
+            {
+                // log error
+                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+            }
         }
 
-        public async Task<List<Booking>> SearchByEmail(string email)
+        public async Task<BookingResponseModel> SearchByEmail(string email)
         {
+            try
+            {
             var bookings = await _bookingRepository.GetByEmail(email);
-            return bookings;
+                return new BookingResponseModel { Success = true, Bookings = bookings };
+            }
+            catch (Exception)
+            {
+                // log error
+                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+            }
         }
     }
 }
