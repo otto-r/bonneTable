@@ -45,7 +45,7 @@ namespace bonneTable.Services.Services
             bookingRequest.Time = bookingRequest.Time.AddMilliseconds(-bookingRequest.Time.Millisecond);
             bookingRequest.Time = bookingRequest.Time.AddSeconds(-bookingRequest.Time.Second);
 
-            var now = DateTime.Now;
+            var now = DateTime.Now.AddMinutes(-5);
             now = now.AddMilliseconds(-now.Millisecond);
             now = now.AddSeconds(-now.Second - 1);
 
@@ -168,7 +168,7 @@ namespace bonneTable.Services.Services
             bookingRequest.Time = bookingRequest.Time.AddMilliseconds(-bookingRequest.Time.Millisecond);
             bookingRequest.Time = bookingRequest.Time.AddSeconds(-bookingRequest.Time.Second);
 
-            var now = DateTime.Now;
+            var now = DateTime.Now.AddMinutes(-5);
             now = now.AddMilliseconds(-now.Millisecond);
             now = now.AddSeconds(-now.Second - 1);
 
@@ -177,8 +177,18 @@ namespace bonneTable.Services.Services
                 return new BookingResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
             }
 
-            var bookingsOnDate = await _bookingRepository.GetByDate(bookingRequest.Time);
-            var tables = await _tableRepository.GetAll();
+            List<Booking> bookingsOnDate;
+            List<Table> tables;
+            try
+            {
+                bookingsOnDate = await _bookingRepository.GetByDate(bookingRequest.Time);
+                tables = await _tableRepository.GetAll();
+            }
+            catch (Exception)
+            {
+                // logg error
+                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+            }
 
             List<Table> freeTables = new List<Table>();
 
@@ -252,7 +262,7 @@ namespace bonneTable.Services.Services
             return new BookingResponseModel { Success = true };
         }
 
-        public async Task<BookingResponseModel> EditBooking(BookingRequestModel bookingRequest, Guid id)
+        public async Task<BookingResponseModel> EditBooking(BookingRequestModel bookingRequest, Guid bookingId)
         {
             if (bookingRequest == null)
             {
@@ -274,27 +284,63 @@ namespace bonneTable.Services.Services
                 return new BookingResponseModel { Success = false, ErrorMessage = "Invalid name or phone number" };
             }
 
-            var now = DateTime.Now;
+            bookingRequest.Time = bookingRequest.Time.AddMilliseconds(-bookingRequest.Time.Millisecond);
+            bookingRequest.Time = bookingRequest.Time.AddSeconds(-bookingRequest.Time.Second);
+
+            var now = DateTime.Now.AddMinutes(-5);
+            now = now.AddMilliseconds(-now.Millisecond);
+            now = now.AddSeconds(-now.Second - 1);
 
             if (bookingRequest.Time < now)
             {
                 return new BookingResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
             }
 
-            var oldBooking = await _bookingRepository.GetByID(id);
-
-            oldBooking.Table = null;
-
-            await _bookingRepository.EditAsync(id, oldBooking);
-
-            var bookingsOnDate = await _bookingRepository.GetByDate(bookingRequest.Time);
-            var tables = await _tableRepository.GetAll();
+            List<Booking> bookingsOnDate;
+            List<Table> tables;
+            try
+            {
+                bookingsOnDate = await _bookingRepository.GetByDate(bookingRequest.Time);
+                tables = await _tableRepository.GetAll();
+            }
+            catch (Exception)
+            {
+                // logg error
+                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+            }
 
             List<Table> freeTables = new List<Table>();
 
+            List<Booking> bookingsDuring2hInterval = new List<Booking>();
+
+            foreach (var oldBooking in bookingsOnDate)
+            {
+                var newBookingStart = bookingRequest.Time.AddMinutes(1);
+                var newBookingEnd = bookingRequest.Time.AddHours(2).AddMinutes(-1);
+
+                var oldBookingStart = oldBooking.Time.AddMinutes(1);
+                var oldBookingEnd = oldBooking.Time.AddHours(2).AddMinutes(-1);
+
+                // if these are true add to interval
+                var overlapOldBookingFirst = newBookingStart < oldBookingEnd && newBookingStart > oldBookingStart;
+                var overlapNewBookingFirst = newBookingEnd > oldBookingStart && newBookingEnd < oldBookingEnd;
+
+
+                if (overlapNewBookingFirst || overlapOldBookingFirst)
+                {
+                    bookingsDuring2hInterval.Add(oldBooking);
+                }
+            }
+            
+            var oldBookingToChange = await _bookingRepository.GetByID(bookingId);
+
             foreach (var table in tables)
             {
-                if (!bookingsOnDate.Any(b => b.Table.Id == table.Id))
+                if (oldBookingToChange.Table.Id == table.Id)
+                {
+                    freeTables.Add(table);
+                }
+                else if (!bookingsOnDate.Any(b => b.Table.Id == table.Id))
                 {
                     freeTables.Add(table);
                 }
@@ -315,16 +361,16 @@ namespace bonneTable.Services.Services
                 }
             }
 
-            oldBooking.Seats = bookingRequest.Seats;
-            oldBooking.PhoneNumber = bookingRequest.PhoneNumber;
-            oldBooking.CustomerName = bookingRequest.CustomerName;
-            oldBooking.Time = bookingRequest.Time;
-            oldBooking.Email = bookingRequest.Email;
-            oldBooking.Table = selectedTable;
+            oldBookingToChange.Seats = bookingRequest.Seats;
+            oldBookingToChange.PhoneNumber = bookingRequest.PhoneNumber;
+            oldBookingToChange.CustomerName = bookingRequest.CustomerName;
+            oldBookingToChange.Time = bookingRequest.Time;
+            oldBookingToChange.Email = bookingRequest.Email;
+            oldBookingToChange.Table = selectedTable;
 
             try
             {
-                await _bookingRepository.EditAsync(id, oldBooking);
+                await _bookingRepository.EditAsync(bookingId, oldBookingToChange);
             }
             catch (Exception)
             {

@@ -339,7 +339,7 @@ namespace bonneTable.Tests
                 }
 
                 [Fact]
-                public async void TableAvailable_2TablesAvailable_1TooSmall_ReturnsFalse()
+                public async void TableAvailable_2TablesAvailable_1TooSmall_ReturnsTrue()
                 {
                     var tablesGetAll = FakeTables.GetAll4x2And1x4Tables();
                     var bookingsGetByDate = FakeBookings.Get3Bookings();
@@ -375,23 +375,90 @@ namespace bonneTable.Tests
                 }
 
                 [Fact]
-                public async void EditBooking_CallsRepositoryEditAsync()
+                public async void EditTable_ChangeBookingFrom2to4_ReturnsTrue()
                 {
-                    var guid = _fixture.Create<Guid>();
-                    var bookingRequest = _fixture.Create<BookingRequestModel>();
-                    var booking = new Booking()
+                    var tablesGetAll = FakeTables.GetAll2x2And1x4Tables();
+                    var bookingsGetByDate = FakeBookings.Get3Bookings();
+
+                    _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+                    _tableRepository.GetAll().Returns(tablesGetAll);
+                    var booking1 = bookingsGetByDate.Where(b => b.CustomerName == "Jane").First();
+                    _bookingRepository.GetByID(Arg.Any<Guid>()).Returns(booking1);
+
+                    var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
+                    var bookingRequest = new BookingRequestModel()
                     {
-                        CustomerName = bookingRequest.CustomerName,
-                        Email = bookingRequest.Email,
-                        Id = guid,
-                        PhoneNumber = bookingRequest.PhoneNumber,
-                        Seats = bookingRequest.Seats,
-                        Time = bookingRequest.Time
+                        Seats = 4,
+                        Email = "wow@wow.se",
+                        CustomerName = "Jane",
+                        Time = DateTime.Now,
+                        PhoneNumber = "3758374"
                     };
 
-                    await _service.EditBooking(bookingRequest, guid);
+                    Guid guid = new Guid("3BFD706B-869A-40DE-910A-4D0CDB0FA095");
 
-                    await _bookingRepository.Received(1).EditAsync(guid, booking);
+                    var actual = await bookingService.EditBooking(bookingRequest, guid);
+
+                    actual.Success.Should().BeTrue();
+                }
+
+                [Fact]
+                public async void EditTable_ChangeBookingFrom2to1_ReturnsTrue()
+                {
+                    var tablesGetAll = FakeTables.GetAll3x2Tables();
+                    var bookingsGetByDate = FakeBookings.Get3Bookings();
+
+                    _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+                    _tableRepository.GetAll().Returns(tablesGetAll);
+                    var booking1 = bookingsGetByDate.Where(b => b.CustomerName == "Jane").First();
+                    _bookingRepository.GetByID(Arg.Any<Guid>()).Returns(booking1);
+
+                    var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
+                    var bookingRequest = new BookingRequestModel()
+                    {
+                        Seats = 1,
+                        Email = "Jane@Doe.se",
+                        CustomerName = "Jane",
+                        Time = DateTime.Now,
+                        PhoneNumber = "133337"
+                    };
+
+                    Guid guid = new Guid("3BFD706B-869A-40DE-910A-4D0CDB0FA095");
+
+                    var actual = await bookingService.EditBooking(bookingRequest, guid);
+
+                    actual.Success.Should().BeTrue();
+                }
+
+                [Fact]
+                public async void EditTable_ChangeBookingFrom2to3_ReturnsFalse()
+                {
+                    var tablesGetAll = FakeTables.GetAll3x2Tables();
+                    var bookingsGetByDate = FakeBookings.Get3Bookings();
+
+                    _bookingRepository.GetByDate(Arg.Any<DateTime>()).Returns(bookingsGetByDate);
+                    _tableRepository.GetAll().Returns(tablesGetAll);
+                    var booking1 = bookingsGetByDate.Where(b => b.CustomerName == "Jane").First();
+                    _bookingRepository.GetByID(Arg.Any<Guid>()).Returns(booking1);
+
+                    var bookingService = new BookingService(_bookingRepository, _tableRepository);
+
+                    var bookingRequest = new BookingRequestModel()
+                    {
+                        Seats = 4,
+                        Email = "Jane@Doe.se",
+                        CustomerName = "Jane",
+                        Time = DateTime.Now,
+                        PhoneNumber = "133337"
+                    };
+
+                    Guid guid = new Guid("3BFD706B-869A-40DE-910A-4D0CDB0FA095");
+
+                    var actual = await bookingService.EditBooking(bookingRequest, guid);
+
+                    actual.Success.Should().BeFalse();
                 }
 
                 [Fact]
