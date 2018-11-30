@@ -34,6 +34,7 @@ namespace bonneTable.API
                 options.Database = Configuration.GetSection("MongoConnection:Database").Value;
             });
 
+
             services.AddTransient<IRepository<Table>, TableRepository>();
             services.AddTransient<IBookingRepository, BookingRepository>();
 
@@ -41,6 +42,7 @@ namespace bonneTable.API
             services.AddCors();
 
             services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<ITableService, TableService>();
             services.AddScoped<IRepository<Table>, TableRepository>();
         }
 
