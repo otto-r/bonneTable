@@ -35,6 +35,7 @@ namespace bonneTable.API
             });
 
             services.AddTransient<IRepository<Table>, TableRepository>();
+            services.AddTransient<IBookingRepository, BookingRepository>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
