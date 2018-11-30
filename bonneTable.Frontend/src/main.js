@@ -1,7 +1,10 @@
 import Vue from 'vue'
+import Vuex from 'vuex'
 import BootstrapVue from "bootstrap-vue"
 import App from './App'
 import VueRouter from 'vue-router'
+import VCalendar from 'v-calendar';
+import 'v-calendar/lib/v-calendar.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
@@ -13,7 +16,11 @@ import TimeSelect from './components/TimeSelect.vue'
 import ConfirmSelect from './components/ConfirmSelect.vue'
 
 Vue.use(BootstrapVue)
-Vue.use(VueRouter);
+Vue.use(VueRouter)
+Vue.use(Vuex)
+Vue.use(VCalendar, {
+  firstDayOfWeek: 2
+})
 
 Vue.config.productionTip = false
 
@@ -41,9 +48,41 @@ const router = new VueRouter({
   mode: 'history'
 })
 
+const store = new Vuex.Store({
+  state: {
+    date: new Date(),
+    guests: null,
+    time: null,
+    name: null,
+    email: null,
+    phoneNumber: null
+  },
+  mutations: {
+    setDate (state, newDate) {
+      state.date = newDate;
+    },
+    setGuests (state, newGuests) {
+      state.guests = newGuests
+    },
+    setTime (state, newTime) {
+      state.time = newTime
+    },
+    setName (state, newName) {
+      state.name = newName
+    },
+    setEmail (state, newEmail) {
+      state.email = newEmail
+    },
+    setPhoneNumber (state, newPhoneNumber) {
+      state.phoneNumber = newPhoneNumber
+    },
+  }
+})
+
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App }
 })
