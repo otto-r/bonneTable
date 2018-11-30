@@ -9,12 +9,12 @@ namespace bonneTable.Services.Interfaces
 {
     public interface IBookingService
     {
-        Task<BookingsResponseModel> ClientBookTable(BookingRequestModel bookingRequest);
-        Task<BookingsResponseModel> AdminBookTable(BookingRequestModel bookingRequest);
-        Task<BookingsResponseModel> EditBooking(BookingRequestModel bookingRequest, Guid id);
-        Task<List<Booking>> Get(DateTime dateTime);
-        Task<Booking> Get(Guid id);
+        Task<BookingResponseModel> ClientBookTable(BookingRequestModel bookingRequest);
+        Task<BookingResponseModel> AdminBookTable(BookingRequestModel bookingRequest);
+        Task<BookingResponseModel> EditBooking(BookingRequestModel bookingRequest, Guid id);
+        Task<BookingResponseModel> Get(DateTime dateTime);
+        Task<Booking> Get(Guid bookingId);
         Task<List<Booking>> SearchByEmail(string email);
-        Task AdminCancelBooking(Guid id);
+        Task<BookingResponseModel> AdminCancelBooking(Guid id);
     }
 }
