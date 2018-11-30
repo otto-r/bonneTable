@@ -41,6 +41,7 @@ namespace bonneTable.API
             services.AddCors();
 
             services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<ITableService, TableService>();
             services.AddScoped<IRepository<Table>, TableRepository>();
         }
 
