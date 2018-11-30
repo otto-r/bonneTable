@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using bonneTable.Models;
 using bonneTable.Models.RequestModels;
 using System.Threading.Tasks;
+using bonneTable.Models.ViewModels;
 
 namespace bonneTable.API.Controllers
 {
@@ -20,16 +21,19 @@ namespace bonneTable.API.Controllers
         public BookingController(IBookingService bookingServie)
         {
             _bookingService = bookingServie;
-
         }
 
         // GET tables from requested date
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetAsync(DateTime dateTime)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<BookingResponseModel>> GetByDate(DateTime dateTime)
         {
-            var bookings = await _bookingService.Get(dateTime);
+            var getBookings = await _bookingService.Get(dateTime);
+            if (!getBookings.Success)
+            {
+                return BadRequest();
+            }
 
-            return Ok(bookings);
+            return Ok(getBookings);
         }
 
         // POST AKA ADD
@@ -38,24 +42,26 @@ namespace bonneTable.API.Controllers
         {
             BookingRequestModel temprequest = new BookingRequestModel();
 
-            await _bookingService.ClientBookTable(temprequest);
-            return Ok();
+            var bookTable = await _bookingService.ClientBookTable(temprequest);
+            if (!bookTable.Success)
+            {
+                return BadRequest();
+            }
+
+            return Ok(bookTable);
         }
 
         // PUT AKA EDIT
-        [Route("{id:guid}")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(BookingRequestModel bookingValue, Guid guid)
         {
-            await _bookingService.EditBooking(bookingValue, guid);
-            return Ok();
-        }
+            var ediTable = await _bookingService.EditBooking(bookingValue, guid);
+            if (!ediTable.Success)
+            {
+                return BadRequest();
+            }
 
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-            //_bookingService.Delete(id, DateTime???);
+            return Ok(ediTable);
         }
     }
 }

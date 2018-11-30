@@ -34,6 +34,10 @@ namespace bonneTable.API
                 options.Database = Configuration.GetSection("MongoConnection:Database").Value;
             });
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9898340fb0d78bb08f49f8bbdb67b42819a27b5a
             services.AddTransient<IRepository<Table>, TableRepository>();
             services.AddTransient<IBookingRepository, BookingRepository>();
 
