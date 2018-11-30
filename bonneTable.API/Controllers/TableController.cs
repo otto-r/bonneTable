@@ -1,59 +1,85 @@
-﻿using bonneTable.Services.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using bonneTable.Models;
+using bonneTable.Models.ViewModels;
+using bonneTable.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace bonneTable.API.Controllers
 {
-    public class TableController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class TableController : ControllerBase
     {
         private readonly ITableService _tableService;
-
-        // To get key:
-
-        // [Route("{key:int}")] to get key
-        // [HttpGet]
-        // public ... Get(int key)
-
-        Guid tempGuid = new Guid(); // TEMP
-        Models.Table tempTable = new Models.Table(); // TEMP
 
         public TableController(ITableService tableService)
         {
             _tableService = tableService;
         }
 
-        [Route("api/books")]
+        // GET: api/Table
+        [HttpGet]
+        public async Task<ActionResult<TableResponseModel>> GetAll()
+        {
+            var tableResponseModel = await _tableService.Get();
+            if (!tableResponseModel.Success)
+            {
+                return BadRequest();
+            }
+            return Ok(tableResponseModel);
+        }
+
+        // GET: api/Table/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TableResponseModel>> GetByID(Guid id)
+        {
+            var tableResponseModel = await _tableService.Get(id);
+            if (!tableResponseModel.Success)
+            {
+                return BadRequest();
+            }
+            return Ok(tableResponseModel);
+        }
+
+        // POST: api/Table
         [HttpPost]
-        public void Add(int numberOfSeats)
+        public async Task<IActionResult> Post([FromBody] int numberOfSeats)
         {
-            _tableService.Add(numberOfSeats);
+            var tableToAdd = await _tableService.Add(numberOfSeats);
+            if (!tableToAdd.Success)
+            {
+                return BadRequest();
+            }
+            return Ok(tableToAdd);
         }
 
-        [Route("{id:guid}")]
-        [HttpDelete]
-        public void Delete(Guid id)
+        // PUT: api/Table/5
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Put(Guid id, [FromBody] Table table)
         {
-            _tableService.Delete(tempGuid);
+            var tableToUpdate = await _tableService.Edit(id, table);
+
+            if (!tableToUpdate.Success)
+            {
+                return BadRequest();
+            }
+            return Ok(tableToUpdate);
         }
 
-        [Route("{id:guid}")]
-        [HttpPut]
-        public void Edit(Guid id)
+        // DELETE: api/ApiWithActions/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(Guid id)
         {
-            _tableService.Edit(id, tempTable);
-        }
-
-        [Route("{id:guid}")]
-        [HttpGet]
-        public void GetTablebyId(Guid id)
-        {
-            _tableService.Get(id);
-        }
-
-        [HttpGet]
-        public void GetAll()
-        {
-            _tableService.Get();
+            var tableToDelete = await _tableService.Delete(id);
+            if (!tableToDelete.Success)
+            {
+                return BadRequest();
+            }
+            return Ok(tableToDelete);
         }
     }
 }

@@ -34,12 +34,13 @@ namespace bonneTable.API
                 options.Database = Configuration.GetSection("MongoConnection:Database").Value;
             });
 
-            services.AddTransient<IRepository<Table>, TableRepository>();
+            //services.AddTransient<IRepository<Table>, TableRepository>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
 
             services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<ITableService, TableService>();
             services.AddScoped<IRepository<Table>, TableRepository>();
         }
 
