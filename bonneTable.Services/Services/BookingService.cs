@@ -383,69 +383,66 @@ namespace bonneTable.Services.Services
 
         public async Task<BookingResponseModel> Get()
         {
+            List<Booking> bookings;
             try
-            {
-                var bookings = await _bookingRepository.GetAll();
-                return new BookingResponseModel { Success = true, Bookings = bookings };
-            }
-            catch (Exception)
-            {
-                // log error
-                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
-            }
-        }
-List<Booking> bookings;
-try
             {
                 bookings = await _bookingRepository.GetAll();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // log error
-                return new BookingResponseModel { Success = false, ErrorMessage = e.message };
+                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
             }
-return new BookingResponseModel { Success = true, Bookings = bookings };
+            return new BookingResponseModel { Success = true, Bookings = bookings };
+        }
+
         public async Task<BookingResponseModel> Get(DateTime dateTime)
         {
+            List<Booking> bookings;
+
             try
             {
-                var bookings = await _bookingRepository.GetByDate(dateTime);
-                return new BookingResponseModel { Success = true, Bookings = bookings };
+                bookings = await _bookingRepository.GetByDate(dateTime);
             }
             catch (Exception)
             {
                 // log error
                 return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
             }
+            return new BookingResponseModel { Success = true, Bookings = bookings };
         }
 
         public async Task<BookingResponseModel> Get(Guid id)
         {
+            List<Booking> bookings;
+
             try
             {
                 var booking = await _bookingRepository.GetByID(id);
-                List<Booking> bookings = new List<Booking> { booking };
-                return new BookingResponseModel { Success = true, Bookings = bookings };
+                bookings = new List<Booking> { booking };
             }
             catch (Exception)
             {
                 // log error
                 return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
             }
+            return new BookingResponseModel { Success = true, Bookings = bookings };
         }
 
         public async Task<BookingResponseModel> SearchByEmail(string email)
         {
+            List<Booking> bookings;
+
             try
             {
-            var bookings = await _bookingRepository.GetByEmail(email);
-                return new BookingResponseModel { Success = true, Bookings = bookings };
+                bookings = await _bookingRepository.GetByEmail(email);
             }
             catch (Exception)
             {
                 // log error
                 return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
             }
+            return new BookingResponseModel { Success = true, Bookings = bookings };
         }
     }
 }
