@@ -34,13 +34,18 @@ namespace bonneTable.Services.Services
 
         public async Task<List<Booking>> GetByDate(DateTime dateTime)
         {
+            var dateTimeStripped = dateTime.AddMinutes(-dateTime.Minute);
+            dateTimeStripped = dateTime.AddHours(-dateTime.Hour);
+
+            var time2359 = dateTimeStripped.AddHours(23);
+            var time0001 = dateTimeStripped.AddMinutes(1);
+
             try
             {
-                return await _context.Booking.Find(b => b.Time == dateTime).ToListAsync();
+                return await _context.Booking.Find(b => b.Time > time0001 && b.Time < time2359).ToListAsync();
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
