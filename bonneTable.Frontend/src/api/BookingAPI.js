@@ -38,3 +38,15 @@ export async function book(request) {
     console.log(error);
   }
 }
+
+export async function cancel(id) {
+  try {
+    const response = await axios({
+      method: "delete",
+      url: baseUrl + id
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}

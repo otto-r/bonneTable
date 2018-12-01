@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using bonneTable.Models;
 using bonneTable.Models.RequestModels;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace bonneTable.API.Controllers
 {
@@ -63,9 +64,11 @@ namespace bonneTable.API.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
-            //_bookingService.Delete(id, DateTime???);
+            id = Regex.Replace(id, @"[ ! ]", "-");
+            Guid.TryParse(id, out Guid gid);
+            _bookingService.AdminCancelBooking(gid);
         }
     }
 }
