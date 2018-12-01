@@ -381,6 +381,20 @@ namespace bonneTable.Services.Services
             return new BookingResponseModel { Success = true };
         }
 
+        public async Task<BookingResponseModel> Get()
+        {
+            try
+            {
+                var bookings = await _bookingRepository.GetAll();
+                return new BookingResponseModel { Success = true, Bookings = bookings };
+            }
+            catch (Exception)
+            {
+                // log error
+                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+            }
+        }
+
         public async Task<BookingResponseModel> Get(DateTime dateTime)
         {
             try

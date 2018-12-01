@@ -23,6 +23,16 @@ namespace bonneTable.API.Controllers
 
         }
 
+        //GETALL for testing mainly. Perhaps useful for admin
+        [Route("getall")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Booking>>> Getall()
+        {
+            var bookings = await _bookingService.Get();
+
+            return Ok(bookings);
+        }
+
         // GET tables from requested date
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Booking>>> GetAsync(DateTime dateTime)
@@ -34,12 +44,11 @@ namespace bonneTable.API.Controllers
 
         // POST AKA ADD
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] BookingRequestModel bookingRequestModel)
         {
-            BookingRequestModel temprequest = new BookingRequestModel();
 
-            await _bookingService.ClientBookTable(temprequest);
-            return Ok();
+            var bookingresponse = await _bookingService.ClientBookTable(bookingRequestModel);
+            return Ok(bookingresponse);
         }
 
         // PUT AKA EDIT
