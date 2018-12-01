@@ -3,6 +3,7 @@ using bonneTable.Models;
 using bonneTable.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
