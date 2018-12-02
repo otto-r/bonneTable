@@ -26,6 +26,18 @@ export async function getByDate(dateTime) {
   }
 }
 
+export async function getByEmail(email) {
+  try {
+    const response = await axios({
+      method: "get",
+      url: baseUrl + "/getbyemail/" + "?email=" + email
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export async function book(request) {
   try {
     const response = await axios({

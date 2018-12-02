@@ -77,11 +77,6 @@ namespace bonneTable.Services.Services
             }
         }
 
-        Task<List<Booking>> IBookingRepository.GetByEmail(string email)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task AddAsync(Booking entity)
         {
             try

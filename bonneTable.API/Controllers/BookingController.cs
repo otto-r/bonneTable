@@ -35,7 +35,16 @@ namespace bonneTable.API.Controllers
             return Ok(bookings);
         }
 
-        // GET tables from requested date
+        [Route("getbyemail")]
+        [HttpGet]
+        public async Task<ActionResult> Getall(string email)
+        {
+            var bookings = await _bookingService.SearchByEmail(email);
+
+            return Ok(bookings);
+        }
+
+        // GET bookings from requested date
         [HttpGet]
         public async Task<ActionResult> GetAsync(DateTime dateTime)
         {
@@ -56,9 +65,9 @@ namespace bonneTable.API.Controllers
         // PUT AKA EDIT
         [Route("{id:guid}")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(BookingRequestModel bookingValue, Guid guid)
+        public async Task<IActionResult> Put([FromBody] BookingRequestModel bookingRequestModel, Guid guid)
         {
-            await _bookingService.EditBooking(bookingValue, guid);
+            await _bookingService.EditBooking(bookingRequestModel, guid);
             return Ok();
         }
 

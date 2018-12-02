@@ -15,7 +15,8 @@
 </template>
 
 <script>
-import { getAll, book, getByDate, cancel } from "@/api/BookingAPI";
+import { getAll, book, getByDate, getByEmail, cancel } from "@/api/BookingAPI";
+import { formatTime } from "@/api/TimeFormatter";
 
 export default {
   name: "Admin",
@@ -24,7 +25,8 @@ export default {
       date: " ",
       list: [{ item: "hej" }, { item: "hej2" }],
       requestTest: {
-        time: "12-11-2018 12:00:00",
+        // time: "12-11-2018 12:00:00",
+        time: formatTime(new Date()),
         Seats: 2,
         customerName: "Otto",
         PhoneNumber: "0808076054",
@@ -33,11 +35,14 @@ export default {
     };
   },
   methods: {
-    async deleter(){
+    async deleter() {
       await cancel("639d6164!c010!487f!9a13!6a53707b644e");
     },
     async printReturnINfo() {
-      var data = await getByDate(this.requestTest.time);
+      console.log(formatTime(new Date()))
+      var data = await getByEmail(this.requestTest.Email)
+      // var data = await getByDate(this.requestTest.time);
+      // var data = await getAll();
       console.log(data.bookings);
       this.list = data.bookings;
     },
@@ -53,7 +58,7 @@ export default {
   },
   created() {
     this.printReturnINfo();
-    this.deleter();
+    // this.deleter();
   }
 };
 </script>
