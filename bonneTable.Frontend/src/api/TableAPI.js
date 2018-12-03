@@ -8,7 +8,7 @@ export async function getTables() {
       method: "get",
       url: baseUrl
     });
-    console.log(response.data)
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -21,7 +21,7 @@ export async function getById(id) {
       method: "get",
       url: baseUrl + "?id=" + id
     });
-    console.log(response.data)
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -35,7 +35,7 @@ export async function removeTable(id) {
       url: baseUrl,
       data: id
     });
-    console.log(response.data)
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -44,12 +44,13 @@ export async function removeTable(id) {
 
 export async function addTable(seats) {
   try {
+    console.log("in apis: " + seats);
     const response = await axios({
       method: "post",
       url: baseUrl,
       data: seats
     });
-    console.log(response.data)
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.log(error);
@@ -63,7 +64,7 @@ export async function editTable(seats) {
       url: baseUrl,
       data: seats
     });
-    console.log(response.data)
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.log(error);
