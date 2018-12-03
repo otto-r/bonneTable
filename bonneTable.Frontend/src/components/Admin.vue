@@ -2,13 +2,44 @@
   <div>
     <h1>Admin</h1>
     <h3>{{ date }}</h3>
+    <div>
+      <div class="container-fluid mt-3">
+        <div class="row">
+          <div class="col-4 mx-auto">
+            <b-button-group>
+              <b-button @click="bookingMenu()">Booking</b-button>
+              <b-button @click="tablesMenu()">Tables</b-button>
+            </b-button-group>
+            <b-button-group v-if="bookingsMenuDisplayed">
+              <b-button :disabled="dateButtonDisabled" @click="dateClick()">Book</b-button>
+              <b-button :disabled="guestsButtonDisabled" @click="guestsClick()">Edit Booking</b-button>
+              <b-button :disabled="timeButtonDisabled" @click="timeClick()">Remove Booking</b-button>
+              <b-button :disabled="confirmButtonDisabled" @click="confirmClick()">By Date</b-button>
+            </b-button-group>
+            <b-button-group v-if="tablesMenuDisplayed">
+              <b-button :disabled="dateButtonDisabled" @click="dateClick()">Add Table</b-button>
+              <b-button :disabled="guestsButtonDisabled" @click="guestsClick()">Edit Table</b-button>
+              <b-button :disabled="timeButtonDisabled" @click="timeClick()">Remove Table</b-button>
+              <b-button :disabled="confirmButtonDisabled" @click="confirmClick()">List Tables</b-button>
+            </b-button-group>
+            {{$store.state.date}}
+            <router-view></router-view>
+          </div>
+        </div>
+        <div>
+          hej
+          <input id="age" v-model="age" type="number" name="age" min="0">
+        </div>
+      </div>
+    </div>
+
     <div class="List">
       <!-- <input type="text" placeholder="Enter item name here..." v-model="item"> -->
       <ul>
         <li
           v-for="(list, index) in list"
           :key="index"
-        >{{ list.customerName }} - {{ convertDate(list.time) }}</li>
+        >{{ list.customerName }} - {{ convertDate(list.time) }} {{ list.seats }}</li>
       </ul>
     </div>
   </div>
@@ -16,12 +47,15 @@
 
 <script>
 import { getAll, book, getByDate, getByEmail, cancel } from "@/api/BookingAPI";
+import { getTables } from "@/api/TableAPI";
 import { formatTime } from "@/api/TimeFormatter";
 
 export default {
   name: "Admin",
   data() {
     return {
+      bookingsMenuDisplayed: true,
+      tablesMenuDisplayed: false,
       date: " ",
       list: [{ item: "hej" }, { item: "hej2" }],
       requestTest: {
@@ -35,16 +69,29 @@ export default {
     };
   },
   methods: {
+    bookingMenu() {
+      self = this;
+      self.bookingsMenuDisplayed = true;
+      self.tablesMenuDisplayed = false;
+      // self.$router.push({path: '/book/date'});
+    },
+    tablesMenu() {
+      self = this;
+      self.tablesMenuDisplayed = true;
+      self.bookingsMenuDisplayed = false;
+      // self.$router.push({path: '/book/date'});
+    },
     async deleter() {
       await cancel("639d6164!c010!487f!9a13!6a53707b644e");
     },
     async printReturnINfo() {
-      console.log(formatTime(new Date()))
-      var data = await getByEmail(this.requestTest.Email)
+      console.log(formatTime(new Date()));
+      // var data = await getByEmail(this.requestTest.Email)
+      var data = await getTables();
       // var data = await getByDate(this.requestTest.time);
       // var data = await getAll();
-      console.log(data.bookings);
-      this.list = data.bookings;
+      console.log("data.tables" + data.tables);
+      this.list = data.tables;
     },
     convertDate(dateTime) {
       var date = new Date(dateTime);
