@@ -60,9 +60,9 @@ namespace bonneTable.API.Controllers
 
         // PUT: api/Table/5
         [HttpPut("{id}")]
-        public async Task<ActionResult> Put(Guid id, [FromBody] Table table)
+        public async Task<ActionResult> Put(Guid id, [FromBody] TableRequestModel tableRequest)
         {
-            var tableToUpdate = await _tableService.Edit(id, table);
+            var tableToUpdate = await _tableService.Edit(id, tableRequest);
 
             if (!tableToUpdate.Success)
             {

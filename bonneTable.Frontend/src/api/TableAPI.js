@@ -19,7 +19,7 @@ export async function getById(id) {
   try {
     const response = await axios({
       method: "get",
-      url: baseUrl + "?id=" + id  //?id= behövs inte
+      url: baseUrl + "?id=" + id //?id= behövs inte
     });
     console.log(response.data);
     return response.data;
@@ -43,25 +43,24 @@ export async function removeTable(id) {
 
 export async function addTable(tableRequest) {
   try {
-    console.log("in apis: " + tableRequest);
     const response = await axios({
       method: "post",
       url: baseUrl,
       data: tableRequest
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.log(error);
   }
 }
 
-export async function editTable(seats) {
+export async function editTable(table) {
   try {
+    console.log(table.seats);
     const response = await axios({
       method: "put",
-      url: baseUrl,
-      data: seats
+      url: baseUrl + table.id,
+      data: { numberOfSeats: table.seats }
     });
     console.log(response.data);
     return response.data;
