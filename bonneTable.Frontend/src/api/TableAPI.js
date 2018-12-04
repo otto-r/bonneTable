@@ -19,7 +19,7 @@ export async function getById(id) {
   try {
     const response = await axios({
       method: "get",
-      url: baseUrl + "?id=" + id
+      url: baseUrl + "?id=" + id  //?id= behövs inte
     });
     console.log(response.data);
     return response.data;
@@ -32,8 +32,7 @@ export async function removeTable(id) {
   try {
     const response = await axios({
       method: "delete",
-      url: baseUrl,
-      data: id
+      url: baseUrl + id
     });
     console.log(response.data);
     return response.data;

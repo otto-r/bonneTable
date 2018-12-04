@@ -7,6 +7,7 @@
       data-vv-as="field"
       name="seats_field"
       type="text"
+      class="form-control"
       :class="{'has-error': errors.has('seats_field')}"
     >
     <button class="btn btn-secondary" @click="onClickAddTable()">Add</button>
