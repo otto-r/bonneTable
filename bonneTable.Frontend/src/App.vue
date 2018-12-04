@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Admin from './components/Admin.vue'
+import Admin from './components/admin/Admin.vue'
 import Book from './components/Book.vue'
 
 export default {

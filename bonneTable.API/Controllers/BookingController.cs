@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using bonneTable.Models;
 using bonneTable.Models.RequestModels;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace bonneTable.API.Controllers
 {
@@ -24,18 +25,28 @@ namespace bonneTable.API.Controllers
         }
 
         //GETALL for testing mainly. Perhaps useful for admin
+        // api/booking/getall
         [Route("getall")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Booking>>> Getall()
+        public async Task<ActionResult> Getall()
         {
             var bookings = await _bookingService.Get();
 
             return Ok(bookings);
         }
 
-        // GET tables from requested date
+        [Route("getbyemail")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetAsync(DateTime dateTime)
+        public async Task<ActionResult> Getall(string email)
+        {
+            var bookings = await _bookingService.SearchByEmail(email);
+
+            return Ok(bookings);
+        }
+
+        // GET bookings from requested date
+        [HttpGet]
+        public async Task<ActionResult> GetAsync(DateTime dateTime)
         {
             var bookings = await _bookingService.Get(dateTime);
 
@@ -54,17 +65,19 @@ namespace bonneTable.API.Controllers
         // PUT AKA EDIT
         [Route("{id:guid}")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(BookingRequestModel bookingValue, Guid guid)
+        public async Task<IActionResult> Put([FromBody] BookingRequestModel bookingRequestModel, Guid guid)
         {
-            await _bookingService.EditBooking(bookingValue, guid);
+            await _bookingService.EditBooking(bookingRequestModel, guid);
             return Ok();
         }
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
-            //_bookingService.Delete(id, DateTime???);
+            id = Regex.Replace(id, @"[ ! ]", "-");
+            Guid.TryParse(id, out Guid gid);
+            _bookingService.AdminCancelBooking(gid);
         }
     }
 }
