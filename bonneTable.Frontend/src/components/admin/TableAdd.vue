@@ -3,7 +3,7 @@
     <label for="seats">Seats</label>
     <input
       v-validate="'numeric'"
-      v-model="seats"
+      v-model="tableRequest.numberOfSeats"
       data-vv-as="field"
       name="seats_field"
       type="text"
@@ -23,6 +23,7 @@ export default {
   name: "TableAdd",
   data() {
     return {
+      tableRequest: { numberOfSeats: 0 },
       seats: 0,
       success: false,
       showSuccess: false
@@ -30,11 +31,11 @@ export default {
   },
   methods: {
     onClickAddTable() {
-      addTable(this.seats)
+      addTable(this.tableRequest)
         .then(response => {
-          console.log(this.seats)
+          console.log(this.tableRequest);
           this.success = response.success;
-          this.showSuccess = true
+          this.showSuccess = true;
           this.seats = 0;
         })
         .catch(error => {

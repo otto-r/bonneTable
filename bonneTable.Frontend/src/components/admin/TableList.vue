@@ -28,7 +28,7 @@ export default {
     }
   },
   created() {
-    // this.getAllTables();
+    this.getAllTables();
   }
 };
 </script>

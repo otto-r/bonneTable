@@ -42,13 +42,13 @@ export async function removeTable(id) {
   }
 }
 
-export async function addTable(seats) {
+export async function addTable(tableRequest) {
   try {
-    console.log("in apis: " + seats);
+    console.log("in apis: " + tableRequest);
     const response = await axios({
       method: "post",
       url: baseUrl,
-      data: seats
+      data: tableRequest
     });
     console.log(response.data);
     return response.data;

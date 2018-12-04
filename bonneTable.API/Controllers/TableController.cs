@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using bonneTable.Models;
+using bonneTable.Models.RequestModels;
 using bonneTable.Models.ViewModels;
 using bonneTable.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
@@ -47,9 +48,9 @@ namespace bonneTable.API.Controllers
 
         // POST: api/Table
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] int numberOfSeats)
+        public async Task<IActionResult> Post([FromBody] TableRequestModel tableRequest)
         {
-            var tableToAdd = await _tableService.Add(numberOfSeats);
+            var tableToAdd = await _tableService.Add(tableRequest.numberOfSeats);
             if (!tableToAdd.Success)
             {
                 return BadRequest();
