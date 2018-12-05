@@ -9,6 +9,8 @@
             <b-button-group>
               <b-button @click="clickBookingMenu()">Booking</b-button>
               <b-button @click="clickTableMenu()">Tables</b-button>
+              <b-button v-if="displayLogOut" @click="logOut()">Log out</b-button>
+              <b-button v-if="displayLogIn" @click="logIn()">Log In</b-button>
             </b-button-group>
             <router-view></router-view>
           </div>
@@ -31,7 +33,9 @@ export default {
   data() {
     return {
       displayBookingnMenu: true,
-      displayTableMenu: false
+      displayTableMenu: false,
+      displayLogIn: true,
+      displayLogOut: false
     };
   },
   methods: {
@@ -46,6 +50,17 @@ export default {
       this.displayTableMenu = false;
 
       this.$router.push({ path: "/admin/bookingmenu" });
+    },
+    logOut() {
+      localStorage.token = "";
+      this.displayLogOut = false;
+      this.displaylogIn = true;
+    },
+    logIn() {
+      localStorage.token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjljYjM3NDM3LTBmYWQtNGFiNC1hOWJmLWYyY2QzMjhjMTM4MiIsIm5iZiI6MTU0NDAyNDM3NSwiZXhwIjoxNTQ0NjI5MTc1LCJpYXQiOjE1NDQwMjQzNzV9.LA_H_tX09ifYOxp6Cqxq4BN08I0GWofEWoGl1bgMlFI";
+      this.displaylogIn = false;
+      this.displayLogOut = true;
     }
   },
   created() {}
