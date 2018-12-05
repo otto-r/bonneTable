@@ -3,6 +3,7 @@ using bonneTable.Models;
 using bonneTable.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -34,13 +35,18 @@ namespace bonneTable.Services.Services
 
         public async Task<List<Booking>> GetByDate(DateTime dateTime)
         {
+            var dateTimeStripped = dateTime.AddMinutes(-dateTime.Minute);
+            dateTimeStripped = dateTime.AddHours(-dateTime.Hour);
+
+            var time2359 = dateTimeStripped.AddHours(23);
+            var time0001 = dateTimeStripped.AddMinutes(1);
+
             try
             {
-                return await _context.Booking.Find(b => b.Time == dateTime).ToListAsync();
+                return await _context.Booking.Find(b => b.Time > time0001 && b.Time < time2359).ToListAsync();
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -69,11 +75,6 @@ namespace bonneTable.Services.Services
 
                 throw ex;
             }
-        }
-
-        Task<List<Booking>> IBookingRepository.GetByEmail(string email)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task AddAsync(Booking entity)

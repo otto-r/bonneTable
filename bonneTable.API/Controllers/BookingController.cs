@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using bonneTable.Models;
 using bonneTable.Models.RequestModels;
 using System.Threading.Tasks;
-using bonneTable.Models.ViewModels;
+using System.Text.RegularExpressions;
 
 namespace bonneTable.API.Controllers
 {
@@ -23,9 +23,29 @@ namespace bonneTable.API.Controllers
             _bookingService = bookingServie;
         }
 
-        // GET tables from requested date
-        [HttpGet("{id}")]
-        public async Task<ActionResult<BookingResponseModel>> GetByDate(DateTime dateTime)
+        //GETALL for testing mainly. Perhaps useful for admin
+        // api/booking/getall
+        [Route("getall")]
+        [HttpGet]
+        public async Task<ActionResult> Getall()
+        {
+            var bookings = await _bookingService.Get();
+
+            return Ok(bookings);
+        }
+
+        [Route("getbyemail")]
+        [HttpGet]
+        public async Task<ActionResult> Getall(string email)
+        {
+            var bookings = await _bookingService.SearchByEmail(email);
+
+            return Ok(bookings);
+        }
+
+        // GET bookings from requested date
+        [HttpGet]
+        public async Task<ActionResult> GetAsync(DateTime dateTime)
         {
             var getBookings = await _bookingService.Get(dateTime);
             if (!getBookings.Success)
@@ -38,30 +58,28 @@ namespace bonneTable.API.Controllers
 
         // POST AKA ADD
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] BookingRequestModel bookingRequestModel)
         {
-            BookingRequestModel temprequest = new BookingRequestModel();
 
-            var bookTable = await _bookingService.ClientBookTable(temprequest);
-            if (!bookTable.Success)
-            {
-                return BadRequest();
-            }
-
-            return Ok(bookTable);
+            var bookingresponse = await _bookingService.ClientBookTable(bookingRequestModel);
+            return Ok(bookingresponse);
         }
 
         // PUT AKA EDIT
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(BookingRequestModel bookingValue, Guid guid)
+        public async Task<IActionResult> Put([FromBody] BookingRequestModel bookingRequestModel, Guid guid)
         {
-            var ediTable = await _bookingService.EditBooking(bookingValue, guid);
-            if (!ediTable.Success)
-            {
-                return BadRequest();
-            }
+            await _bookingService.EditBooking(bookingRequestModel, guid);
+            return Ok();
+        }
 
-            return Ok(ediTable);
+        // DELETE api/values/5
+        [HttpDelete("{id}")]
+        public void Delete(string id)
+        {
+            id = Regex.Replace(id, @"[ ! ]", "-");
+            Guid.TryParse(id, out Guid gid);
+            _bookingService.AdminCancelBooking(gid);
         }
     }
 }
