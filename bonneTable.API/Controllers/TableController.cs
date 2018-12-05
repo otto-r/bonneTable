@@ -8,6 +8,7 @@ using bonneTable.Models.ViewModels;
 using bonneTable.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace bonneTable.API.Controllers
 {
@@ -23,6 +24,7 @@ namespace bonneTable.API.Controllers
         }
 
         // GET: api/Table
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<TableResponseModel>> GetAll()
         {
