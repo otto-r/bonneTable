@@ -6,6 +6,7 @@
       <div class="container-fluid mt-3">
         <div class="row">
           <div class="col-6 mx-auto">
+            <logIn/>
             <b-button-group>
               <b-button @click="clickBookingMenu()">Booking</b-button>
               <b-button @click="clickTableMenu()">Tables</b-button>
@@ -27,8 +28,12 @@ import { getTables } from "@/api/TableAPI";
 import { formatTime } from "@/api/TimeFormatter";
 import TableMenu from "../admin/TableMenu";
 import BookingMenu from "../admin/BookingMenu";
+import LogIn from "../admin/LogIn"
 
 export default {
+  components: {
+    LogIn
+  },
   name: "Admin",
   data() {
     return {

@@ -73,7 +73,8 @@ const store = new Vuex.Store({
     time: null,
     name: null,
     email: null,
-    phoneNumber: null
+    phoneNumber: null,
+    loggedIn: false
   },
   mutations: {
     setDate(state, newDate) {
@@ -93,6 +94,9 @@ const store = new Vuex.Store({
     },
     setPhoneNumber(state, newPhoneNumber) {
       state.phoneNumber = newPhoneNumber;
+    },
+    setLoggedIn(state, newLoggedIn) {
+      state.loggedIn = newLoggedIn;
     }
   }
 });
