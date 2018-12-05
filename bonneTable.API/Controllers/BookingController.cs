@@ -31,6 +31,11 @@ namespace bonneTable.API.Controllers
         {
             var bookings = await _bookingService.Get();
 
+            if (!bookings.Success)
+            {
+                return BadRequest();
+            }
+
             return Ok(bookings);
         }
 
@@ -39,6 +44,11 @@ namespace bonneTable.API.Controllers
         public async Task<ActionResult> Getall(string email)
         {
             var bookings = await _bookingService.SearchByEmail(email);
+
+            if (!bookings.Success)
+            {
+                return BadRequest();
+            }
 
             return Ok(bookings);
         }
@@ -60,26 +70,43 @@ namespace bonneTable.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BookingRequestModel bookingRequestModel)
         {
-
             var bookingresponse = await _bookingService.ClientBookTable(bookingRequestModel);
+            if (!bookingresponse.Success)
+            {
+                return BadRequest();
+            }
+
             return Ok(bookingresponse);
         }
 
         // PUT AKA EDIT
+        //[Route("{id:guid}")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromBody] BookingRequestModel bookingRequestModel, Guid guid)
         {
-            await _bookingService.EditBooking(bookingRequestModel, guid);
-            return Ok();
+            var bookingputresponse = await _bookingService.EditBooking(bookingRequestModel, guid);
+            if (!bookingputresponse.Success)
+            {
+                return BadRequest();
+            }
+
+            return Ok(bookingputresponse);
         }
 
         // DELETE api/values/5
+        //[Route("{id:guid}")]
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             id = Regex.Replace(id, @"[ ! ]", "-");
             Guid.TryParse(id, out Guid gid);
-            _bookingService.AdminCancelBooking(gid);
+            var bookingcancel = await _bookingService.AdminCancelBooking(gid);
+            if (!bookingcancel.Success)
+            {
+                return BadRequest();
+            }
+
+            return Ok(bookingcancel);
         }
     }
 }
