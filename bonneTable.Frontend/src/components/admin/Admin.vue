@@ -13,7 +13,6 @@
             <router-view></router-view>
           </div>
         </div>
-        <div>hej</div>
       </div>
     </div>
   </div>
