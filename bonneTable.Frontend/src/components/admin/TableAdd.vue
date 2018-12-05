@@ -1,18 +1,18 @@
 <template>
   <div>
-    <label for="seats">Seats</label>
+    <label for="username">Seats</label>
     <input
       v-validate="'numeric'"
       v-model="tableRequest.numberOfSeats"
       data-vv-as="field"
-      name="seats_field"
+      name="username"
       type="text"
-      :class="{'has-error': errors.has('seats_field')}"
+      :class="{'has-error': errors.has('username')}"
     >
     <button class="btn btn-secondary" @click="onClickAddTable()">Add</button>
     <div class="alert-success" v-if="showSuccess"></div>
     <div class="alert-warning" v-if="!showSuccess"></div>
-    <span class="has-error">{{ errors.first('seats_field') }}</span>
+    <span class="has-error">{{ errors.first('username') }}</span>
   </div>
 </template>
 
