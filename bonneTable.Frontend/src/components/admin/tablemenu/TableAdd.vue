@@ -6,7 +6,7 @@
       v-validate="'numeric|required|min_value:1'"
       v-model="tableRequest.numberOfSeats"
       data-vv-as="field"
-      name="seats_field"
+      name="username"
       type="text"
       class="form-control"
       :class="{'input': true, 'is-invalid': errors.has('seats_field') }"
