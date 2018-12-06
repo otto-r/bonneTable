@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using bonneTable.Models;
+using bonneTable.Models.RequestModels;
 
 namespace bonneTable.Services.Interfaces
 {
@@ -11,6 +12,6 @@ namespace bonneTable.Services.Interfaces
         Task<TableResponseModel> Delete(Guid id);
         Task<TableResponseModel> Get(Guid id);
         Task<TableResponseModel> Get();
-        Task<TableResponseModel> Edit(Guid id, Table table);
+        Task<TableResponseModel> Edit(Guid id, TableRequestModel tableRequest);
     }
 }
