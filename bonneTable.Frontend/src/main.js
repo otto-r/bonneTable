@@ -11,6 +11,7 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import Admin from "./components/admin/Admin.vue";
 import TableMenu from "./components/admin/TableMenu.vue";
 import BookingMenu from "./components/admin/BookingMenu.vue";
+import LogIn from "./components/admin/LogIn.vue";
 import Book from "./components/Book.vue";
 import DateSelect from "./components/DateSelect.vue";
 import GuestsSelect from "./components/GuestsSelect.vue";
@@ -37,6 +38,7 @@ const routes = [
       { path: "bookingmenu", component: BookingMenu }
     ]
   },
+  { path: "/login", component: LogIn },
   {
     path: "/book",
     component: Book,
@@ -73,7 +75,8 @@ const store = new Vuex.Store({
     time: null,
     name: null,
     email: null,
-    phoneNumber: null
+    phoneNumber: null,
+    loggedIn: false
   },
   mutations: {
     setDate(state, newDate) {
@@ -93,6 +96,9 @@ const store = new Vuex.Store({
     },
     setPhoneNumber(state, newPhoneNumber) {
       state.phoneNumber = newPhoneNumber;
+    },
+    setLoggedIn(state, newLoggedIn) {
+      state.loggedIn = newLoggedIn;
     }
   }
 });

@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import TableList from "../admin/TableList";
-import TableAdd from "../admin/TableAdd";
+import TableList from "../admin/tablemenu/TableList";
+import TableAdd from "../admin/tablemenu/TableAdd";
 
 export default {
   components: {
@@ -34,7 +34,16 @@ export default {
     },
     menuList() {
       (this.displayAdd = false), (this.displayList = true);
+    },
+    notLoggedIn() {
+      if (!this.$store.state.loggedIn) {
+        console.log("not logged in run")
+        this.$router.push({ path: "/LogIn" });
+      }
     }
+  },
+  beforeCreate(){
+    this.notLoggedIn()
   }
 };
 </script>

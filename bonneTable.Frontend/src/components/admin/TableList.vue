@@ -13,14 +13,18 @@ export default {
   name: "TableList",
   data() {
     return {
-      tables: [{ seats: 2, id: "52090b54-23d6-461c-8206-ff79de24f6f9" }]
+      tables: [{ seats: "-", id: "Loading.." }]
     };
   },
   methods: {
     getAllTables() {
       getTables()
         .then(response => {
-          this.tables = response.tables;
+          if (response.tables < 1) {
+            this.tables = [{ seats: 0, id: "Empty" }];
+          } else {
+            this.tables = response.tables;
+          }
         })
         .catch(error => {
           console.log(error);
