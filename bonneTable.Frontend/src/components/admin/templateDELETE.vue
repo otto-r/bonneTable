@@ -1,17 +1,20 @@
 <template>
-  <div>TEMPLATE</div>
+  <div>
+    TEMPLATE
+  </div>
 </template>
 
 <script>
 export default {
-  name: "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%",
-  data() {
-    return {};
-  },
-  methods: {},
-  created() {}
-};
+  name: '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%',
+  data () {
+    return {
+
+    }
+  }
+}
 </script>
 
 <style scoped>
+
 </style>

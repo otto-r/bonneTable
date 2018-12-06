@@ -6,10 +6,7 @@ export async function getTables() {
   try {
     const response = await axios({
       method: "get",
-      url: baseUrl,
-      headers: {
-        Authorization: "Bearer " + localStorage.token
-      }
+      url: baseUrl
     });
     console.log(response.data);
     return response.data;
