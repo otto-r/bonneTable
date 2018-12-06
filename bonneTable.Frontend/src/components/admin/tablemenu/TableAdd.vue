@@ -1,20 +1,23 @@
 <template>
-  <div>
+
+  <div class="form-group" :class="{'has-error': errors.any() }">
     <label for="seats">Seats</label>
     <input
-      v-validate="'numeric'"
+      v-validate="'numeric|required|min_value:1'"
       v-model="tableRequest.numberOfSeats"
       data-vv-as="field"
       name="seats_field"
       type="text"
-      :class="{'has-error': errors.has('seats_field')}"
+      class="form-control"
+      :class="{'input': true, 'is-invalid': errors.has('seats_field') }"
     >
-    <button class="btn btn-secondary" @click="onClickAddTable()">Add</button>
-    <div class="alert-success" v-if="showSuccess"></div>
+    <button class="btn btn-secondary" @click="validateInput()">Add</button>
+    <div class="alert-success" v-if="showSuccess">Added table with {{ tableRequest.numberOfSeats }} seats</div>
     <div class="alert-warning" v-if="!showSuccess"></div>
-    <span class="has-error">{{ errors.first('seats_field') }}</span>
+    <span class="text-danger">{{ errors.first('seats_field') }}</span>
   </div>
 </template>
+
 
 <script>
 import { addTable } from "@/api/TableAPI";
@@ -30,6 +33,14 @@ export default {
     };
   },
   methods: {
+    validateInput() {
+      let self = this;
+      self.$validator.validate().then(result => {
+        if (result) {
+          self.onClickAddTable();
+        }
+      });
+    },
     onClickAddTable() {
       addTable(this.tableRequest)
         .then(response => {
@@ -47,8 +58,4 @@ export default {
 </script>
 
 <style scoped>
-.has-error {
-  border: 1;
-  border-color: red;
-}
 </style>

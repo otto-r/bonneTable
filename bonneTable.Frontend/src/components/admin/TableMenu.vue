@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import TableList from "../admin/TableList";
-import TableAdd from "../admin/TableAdd";
+import TableList from "../admin/tablemenu/TableList";
+import TableAdd from "../admin/tablemenu/TableAdd";
 
 export default {
   components: {

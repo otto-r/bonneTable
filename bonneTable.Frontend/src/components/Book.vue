@@ -4,12 +4,11 @@
       <div class="row">
         <div class="col-4 mx-auto">
           <b-button-group>
-            <b-button :disabled="dateButtonDisabled" @click="dateClick()">Date</b-button>
-            <b-button :disabled="guestsButtonDisabled" @click="guestsClick()">Guests</b-button>
-            <b-button :disabled="timeButtonDisabled" @click="timeClick()">Time</b-button>
-            <b-button :disabled="confirmButtonDisabled" @click="confirmClick()">Confirm</b-button>
+            <b-button @click="dateClick()">{{dateDisplay}}</b-button>
+            <b-button @click="guestsClick()">{{guestsDisplay}}</b-button>
+            <b-button @click="timeClick()">{{timeDisplay}}</b-button>
+            <b-button @click="confirmClick()">Confirm</b-button>
           </b-button-group>
-          {{$store.state.date}}
           <router-view></router-view>
         </div>
       </div>
@@ -27,50 +26,54 @@ export default {
   name: "Book",
   data() {
     return {
-      dateButtonDisabled: true,
-      guestsButtonDisabled: false,
-      timeButtonDisabled: false,
-      confirmButtonDisabled: false
+      
     };
+  },
+  created() {
+    this.$router.push({ path: "/book/date" });
+  },
+  computed:{
+    dateDisplay: function () {
+      if (!this.$store.state.date){
+        return 'Date';
+      }
+      var date = this.$store.state.date;
+      var formattedDate = date.toDateString();
+      return formattedDate;
+    },
+    guestsDisplay: function () {
+      if (!this.$store.state.guests){
+        return 'Guests';
+      }
+      var guests = this.$store.state.guests;
+      return 'Guests: ' + guests;
+    },
+    timeDisplay: function () {
+      if (!this.$store.state.time){
+        return 'Time';
+      }
+      var time = this.$store.state.time;
+      return time;
+    }
   },
   methods: {
     dateClick() {
       self = this;
-
-      this.dateButtonDisabled = true;
-      this.guestsButtonDisabled = false;
-      this.timeButtonDisabled = false;
-      this.confirmButtonDisabled = false;
 
       self.$router.push({ path: "/book/date" });
     },
     guestsClick() {
       self = this;
 
-      this.dateButtonDisabled = false;
-      this.guestsButtonDisabled = true;
-      this.timeButtonDisabled = false;
-      this.confirmButtonDisabled = false;
-
       self.$router.push({ path: "/book/guests" });
     },
     timeClick() {
       self = this;
 
-      this.dateButtonDisabled = false;
-      this.guestsButtonDisabled = false;
-      this.timeButtonDisabled = true;
-      this.confirmButtonDisabled = false;
-
       self.$router.push({ path: "/book/time" });
     },
     confirmClick() {
       self = this;
-
-      this.dateButtonDisabled = false;
-      this.guestsButtonDisabled = false;
-      this.timeButtonDisabled = false;
-      this.confirmButtonDisabled = true;
 
       self.$router.push({ path: "/book/confirm" });
     }
@@ -78,5 +81,22 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+.btn-pink {
+  color: #ff66b3 !important;
+  border-color: #ff66b3 !important;
+}
+.btn-pink:hover {
+  color: #ffffff !important;
+  background-color: #ff66b3 !important;
+}
+.btn-pink-filled{
+  color: #ffffff !important;
+  border-color: #ff66b3 !important;
+  background-color: #ff66b3 !important;
+}
+.btn-pink-filled:hover{
+  background-color: #fd3d9d !important;
+  border-color: #fd3d9d !important;
+}
 </style>
