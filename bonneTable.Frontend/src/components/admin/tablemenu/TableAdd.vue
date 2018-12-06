@@ -1,33 +1,20 @@
 <template>
-<<<<<<< HEAD:bonneTable.Frontend/src/components/admin/tablemenu/TableAdd.vue
 
   <div class="form-group" :class="{'has-error': errors.any() }">
     <label for="seats">Seats</label>
-=======
-  <div>
-    <label for="username">Seats</label>
->>>>>>> feature/auth1:bonneTable.Frontend/src/components/admin/TableAdd.vue
     <input
       v-validate="'numeric|required|min_value:1'"
       v-model="tableRequest.numberOfSeats"
       data-vv-as="field"
       name="username"
       type="text"
-<<<<<<< HEAD:bonneTable.Frontend/src/components/admin/tablemenu/TableAdd.vue
       class="form-control"
       :class="{'input': true, 'is-invalid': errors.has('seats_field') }"
-=======
-      :class="{'has-error': errors.has('username')}"
->>>>>>> feature/auth1:bonneTable.Frontend/src/components/admin/TableAdd.vue
     >
     <button class="btn btn-secondary" @click="validateInput()">Add</button>
     <div class="alert-success" v-if="showSuccess">Added table with {{ tableRequest.numberOfSeats }} seats</div>
     <div class="alert-warning" v-if="!showSuccess"></div>
-<<<<<<< HEAD:bonneTable.Frontend/src/components/admin/tablemenu/TableAdd.vue
     <span class="text-danger">{{ errors.first('seats_field') }}</span>
-=======
-    <span class="has-error">{{ errors.first('username') }}</span>
->>>>>>> feature/auth1:bonneTable.Frontend/src/components/admin/TableAdd.vue
   </div>
 </template>
 
