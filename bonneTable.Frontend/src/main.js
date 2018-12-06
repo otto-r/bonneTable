@@ -70,7 +70,7 @@ const router = new VueRouter({
 
 const store = new Vuex.Store({
   state: {
-    date: new Date(),
+    date: null,
     guests: null,
     time: null,
     name: null,

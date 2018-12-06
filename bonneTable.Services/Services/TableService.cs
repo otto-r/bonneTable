@@ -1,4 +1,5 @@
 ﻿using bonneTable.Models;
+using bonneTable.Models.RequestModels;
 using bonneTable.Models.ViewModels;
 using bonneTable.Services.Interfaces;
 using Serilog;
@@ -63,7 +64,7 @@ namespace bonneTable.Services.Services
             return new TableResponseModel() { ErrorMessage = null, Success = true, Tables = null };
         }
 
-        public async Task<TableResponseModel> Edit(Guid id, Table table)
+        public async Task<TableResponseModel> Edit(Guid id, TableRequestModel tableRequest)
         {
             Log.Logger = new LoggerConfiguration()
             .WriteTo.Console()
@@ -72,7 +73,7 @@ namespace bonneTable.Services.Services
 
             try
             {
-                await _repository.EditAsync(id, table);
+                await _repository.EditAsync(id, new Table {Seats = tableRequest.numberOfSeats });
             }
             catch (Exception e)
             {
