@@ -35,7 +35,7 @@ namespace bonneTable.API.Controllers
         }
 
         // GET: api/Table/{id}
-        [Route("{id:guid}")]
+        //[Route("{id:guid}")]
         [HttpGet("{id}")]
         public async Task<ActionResult<TableResponseModel>> GetByID(Guid id)
         {
