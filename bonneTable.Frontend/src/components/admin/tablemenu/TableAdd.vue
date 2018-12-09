@@ -11,10 +11,10 @@
       class="form-control"
       :class="{'input': true, 'is-invalid': errors.has('seats_field') }"
     >
+    <span class="text-danger">{{ errors.first('seats_field') }}</span>
     <button class="btn btn-secondary" @click="validateInput()">Add</button>
     <div class="alert-success" v-if="showSuccess">Added table with {{ tableRequest.numberOfSeats }} seats</div>
     <div class="alert-warning" v-if="!showSuccess"></div>
-    <span class="text-danger">{{ errors.first('seats_field') }}</span>
   </div>
 </template>
 

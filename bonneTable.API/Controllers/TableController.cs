@@ -8,18 +8,38 @@ using bonneTable.Models.ViewModels;
 using bonneTable.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using bonneTable.API.Entities;
+using bonneTable.API.Services;
 
 namespace bonneTable.API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class TableController : ControllerBase
     {
         private readonly ITableService _tableService;
+        private readonly IUserService _userService;
 
-        public TableController(ITableService tableService)
+        public TableController(ITableService tableService, IUserService userService)
         {
             _tableService = tableService;
+            _userService = userService;
+        }
+
+        // api/table/authenticate
+        // {}
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public IActionResult Authenticate([FromBody]User userParameters)
+        {
+            var user = _userService.Authenticate(userParameters.UserName, userParameters.Password);
+
+            if (user == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(user);
         }
 
         // GET: api/Table
@@ -35,7 +55,7 @@ namespace bonneTable.API.Controllers
         }
 
         // GET: api/Table/{id}
-        [Route("{id:guid}")]
+        //[Route("{id:guid}")]
         [HttpGet("{id}")]
         public async Task<ActionResult<TableResponseModel>> GetByID(Guid id)
         {

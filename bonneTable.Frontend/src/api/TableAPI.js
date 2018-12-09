@@ -6,7 +6,10 @@ export async function getTables() {
   try {
     const response = await axios({
       method: "get",
-      url: baseUrl
+      url: baseUrl,
+      headers: {
+        Authorization: "Bearer " + localStorage.token
+      }
     });
     console.log(response.data);
     return response.data;
@@ -19,7 +22,10 @@ export async function getById(id) {
   try {
     const response = await axios({
       method: "get",
-      url: baseUrl + "?id=" + id //?id= behövs inte
+      url: baseUrl + "?id=" + id, //?id= behövs inte
+      headers: {
+        Authorization: "Bearer " + localStorage.token
+      }
     });
     console.log(response.data);
     return response.data;
@@ -32,7 +38,10 @@ export async function removeTable(id) {
   try {
     const response = await axios({
       method: "delete",
-      url: baseUrl + id
+      url: baseUrl + id,
+      headers: {
+        Authorization: "Bearer " + localStorage.token
+      }
     });
     console.log(response.data);
     return response.data;
@@ -46,7 +55,10 @@ export async function addTable(tableRequest) {
     const response = await axios({
       method: "post",
       url: baseUrl,
-      data: tableRequest
+      data: tableRequest,
+      headers: {
+        Authorization: "Bearer " + localStorage.token
+      }
     });
     return response.data;
   } catch (error) {
@@ -60,7 +72,10 @@ export async function editTable(table) {
     const response = await axios({
       method: "put",
       url: baseUrl + table.id,
-      data: { numberOfSeats: table.seats }
+      data: { numberOfSeats: table.seats },
+      headers: {
+        Authorization: "Bearer " + localStorage.token
+      }
     });
     console.log(response.data);
     return response.data;
