@@ -3,6 +3,7 @@
     <div class="container-fluid mt-3">
       <div class="row">
         <div class="col-4 mx-auto">
+          <h5>BonneTable</h5>
           <b-button-group>
             <b-button @click="dateClick()">{{dateDisplay}}</b-button>
             <b-button @click="guestsClick()">{{guestsDisplay}}</b-button>
@@ -82,6 +83,21 @@ export default {
 </script>
 
 <style>
+.col-4{
+    text-align:center;
+    border: 2px solid blue;
+    border-radius: 12px;
+    margin: 0 auto;
+    padding: 10px 0 20px;
+    margin-top: 10px;
+}
+h5{
+    width:25%;
+    background:white;
+    margin-top:-1.5rem;
+    margin-left:5px;
+}
+
 .btn-pink {
   color: #ff66b3 !important;
   border-color: #ff66b3 !important;

@@ -70,4 +70,7 @@ export default {
 </script>
 
 <style scoped>
+input{
+  margin: 0 100px 0 0px;
+}
 </style>
