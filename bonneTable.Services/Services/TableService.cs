@@ -77,10 +77,10 @@ namespace bonneTable.Services.Services
             }
             catch (Exception e)
             {
-                Log.Information("Failed to edit table {Id}, info: {Table}", id, table);
+                Log.Information("Failed to edit table {Id}, info: {Table}", id, tableRequest);
                 return new TableResponseModel() { ErrorMessage = e.Message, Success = false, Tables = null };
             }
-            Log.Information("Editet, info: {Table}", table);
+            Log.Information("Editet, info: {Table}", tableRequest);
             return new TableResponseModel() { ErrorMessage = null, Success = true, Tables = null };
         }
 

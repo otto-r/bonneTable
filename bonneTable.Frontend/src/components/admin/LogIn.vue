@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { getToken } from "@/api/Authentication";
+import { getToken } from "@/api/Authentication.js";
 
 export default {
   name: "LogIn",
