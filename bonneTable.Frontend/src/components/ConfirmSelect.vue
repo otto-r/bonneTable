@@ -44,13 +44,22 @@
 </template>
 
 <script>
+import { book } from "@/api/BookingAPI";
+
 export default {
   name: "ConfirmSelect",
   data() {
     return {
       name: null,
       email: null,
-      phoneNumber: null
+      phoneNumber: null,
+      bookingRequestModel: { 
+        time: null, 
+        seats: null, 
+        customerName: null, 
+        phoneNumber: null, 
+        email: null 
+      }
     };
   },
   methods: {
@@ -58,12 +67,29 @@ export default {
       let self = this;
       self.$validator.validate().then(result => {
         if (result) {
-          self.book();
+          self.confirmBook();
         }
       });
     },
-    book() {
-      console.log('booked');
+    confirmBook() {
+      self = this;
+      self.bookingRequestModel.time = self.$store.state.date;
+      self.bookingRequestModel.time.setHours(self.$store.state.time.hours + 1);
+      self.bookingRequestModel.time.setMinutes(self.$store.state.time.minutes);
+      self.bookingRequestModel.seats = self.$store.state.guests;
+      self.bookingRequestModel.customerName = self.name;
+      self.bookingRequestModel.phoneNumber = self.phoneNumber;
+      self.bookingRequestModel.email = self.email;
+
+      console.log(self.bookingRequestModel);
+      
+      book(self.bookingRequestModel)
+      .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   }
 };
