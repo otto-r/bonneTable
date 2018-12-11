@@ -36,7 +36,7 @@ export default {
       (this.displayAdd = false), (this.displayList = true);
     },
     notLoggedIn() {
-      if (!this.$store.state.loggedIn) {
+      if (!localStorage.loggedIn) {
         console.log("not logged in run")
         this.$router.push({ path: "/LogIn" });
       }
