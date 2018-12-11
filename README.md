@@ -8,10 +8,12 @@ Backend written in dotnet core 2.1 with MongoDb database MongoDb Atlas
 - Serilog
 - NSubstitute
 - FluentAssertions
+- JWT Authentication / Authorization
 
 ###### Frontend Vue.js
 - Vue.js 
 - axios
 - vuex
 - veeValidate
+- JWT bearer authentication
 - etc etc
