@@ -49,7 +49,8 @@ export default {
         .then(response => {
           console.log(response);
           localStorage.token = response.token
-          this.$store.state.loggedIn = true;
+          localStorage.loggedIn = true;
+          console.log(localStorage.loggedIn)
           this.$router.push({ path: "/admin" });
         })
         .catch(error => {

@@ -53,7 +53,7 @@ export default {
       if (!this.$store.state.time){
         return 'Time';
       }
-      var time = this.$store.state.time;
+      var time = this.$store.state.time.hours + ':' + this.$store.state.time.minutes;
       return time;
     }
   },

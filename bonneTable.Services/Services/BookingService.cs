@@ -231,6 +231,7 @@ namespace bonneTable.Services.Services
                 if (bookingRequest.Seats <= table.Seats)
                 {
                     selectedTable = table;
+                    break;
                 }
             }
 
