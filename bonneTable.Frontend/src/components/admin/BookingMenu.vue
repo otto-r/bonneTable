@@ -1,39 +1,49 @@
 <template>
   <div>
     <h1>Booking Menu</h1>
-
-    <button @click="consoleSeats()">TEST</button>
     <div>
-      <input
-        type="text"
-        placeholder="Name"
-        name="numberOfSeats"
-        v-model="numberOfseats"
-        v-validate="'required|numeric'"
-      >
-
-      <span v-if="errors.has('name')">{{ errors.first('name') }}</span>
+      <b-nav fill tabs>
+        <b-nav-item @click="menuBook()">Book</b-nav-item>
+        <b-nav-item @click="menuList()">List</b-nav-item>
+      </b-nav>
     </div>
+    <BookingList v-if="displayList"></BookingList>
+    <TableAdd v-if="displayBook"></TableAdd>
   </div>
 </template>
 
 <script>
+import BookingList from "../admin/bookmenu/BookingList";
+// import --- from "../admin/bookmenu/---";
+
 export default {
+  components: {
+    BookingList,
+    // BookTable
+  },
   name: "BookingMenu",
   data() {
     return {
-      methods: {
-        notLoggedIn() {
-          if (!localStorage.loggedIn) {
-            console.log("not logged in run");
-            this.$router.push({ path: "/LogIn" });
-          }
-        }
-      },
-      beforeCreate() {
-        this.notLoggedIn();
-      }
+      displayList: true,
+      displayBook: false
     };
+  },
+  methods: {
+    menuBook() {
+      (this.displayBook = true), (this.displayList = false);
+    },
+    menuList() {
+      (this.displayBook = false), (this.displayList = true);
+    },
+    notLoggedIn() {
+      if (!localStorage.loggedIn) {
+        console.log("not logged in run")
+        this.$router.push({ path: "/LogIn" });
+      }
+    }
+  },
+  beforeCreate(){
+    this.notLoggedIn()
   }
 };
 </script>
