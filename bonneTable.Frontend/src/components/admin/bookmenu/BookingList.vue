@@ -27,7 +27,7 @@
       </thead>
       <tbody>
         <tr v-for="booking in bookings" :key="booking.id">
-          <td>{{booking.time}}</td>
+          <td>{{ convertDateTime(booking.time)}}</td>
           <!-- <td v-if="!booking.editing">{{booking.seats}}</td>
           <td v-if="booking.editing">
             <input
@@ -58,6 +58,7 @@
 
 <script>
 import { getByDate, getAll } from "@/api/BookingAPI";
+import { formatTime } from "@/api/TimeFormatter";
 
 export default {
   name: "BookingList",
@@ -107,6 +108,31 @@ export default {
     saveEditing(table) {
       editTable(table);
       table.editing = false;
+    },
+    convertDateTime(date) {
+      var x = new Date(date);
+      var hours = x.getHours();
+      if (hours < 10) {
+        hours += "0";
+      }
+      var min = x.getMinutes();
+      if (min < 10) {
+        min += "0";
+      }
+      var day = x.getDay();
+      var date = x.getDate();
+      if (date < 10) {
+        date += "0";
+      }
+      var month = x.getMonth() + 1;
+      if (month < 10) {
+        month += "0";
+      }
+      var year = x.getFullYear();
+      console.log(hours);
+      return (
+        date + "/" + month + "/" + year + " - " + day + " " + hours + ":" + min
+      );
     }
   },
   created() {

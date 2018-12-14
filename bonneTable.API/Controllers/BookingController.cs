@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using bonneTable.Models.RequestModels;
 using bonneTable.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using bonneTable.Models;
-using bonneTable.Models.RequestModels;
-using System.Threading.Tasks;
+using System;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace bonneTable.API.Controllers
 {

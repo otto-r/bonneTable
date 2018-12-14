@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using bonneTable.Models;
+﻿using bonneTable.API.Entities;
+using bonneTable.API.Services;
 using bonneTable.Models.RequestModels;
 using bonneTable.Models.ViewModels;
 using bonneTable.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using bonneTable.API.Entities;
-using bonneTable.API.Services;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace bonneTable.API.Controllers
 {
