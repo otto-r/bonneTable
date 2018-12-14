@@ -23,6 +23,7 @@
           <th>Guests</th>
           <th>Name</th>
           <th>E-mail</th>
+          <th>Delete</th>
         </tr>
       </thead>
       <tbody>
@@ -50,6 +51,9 @@
             <!-- <b-button @click="deleteTable(booking)">Delete</b-button> -->
           </td>
           <td>{{booking.email}}</td>
+          <td>
+            <b-button @click="deleteBooking(booking)">Delete</b-button>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -57,7 +61,7 @@
 </template>
 
 <script>
-import { getByDate, getAll } from "@/api/BookingAPI";
+import { getByDate, getAll, cancel } from "@/api/BookingAPI";
 import { formatTime } from "@/api/TimeFormatter";
 
 export default {
@@ -82,14 +86,15 @@ export default {
           console.log(error);
         });
     },
-    deleteTable(table) {
-      removeTable(table.id)
+    deleteBooking(booking) {
+      console.log("delete");
+      cancel(booking.id)
         .then(response => {
           this.deleteSuccessful = response.success;
           if (response.success) {
             this.removedTable.push(table);
           }
-          this.getAllTables();
+          this.getAllBookings();
         })
         .catch(error => {
           console.log(error);

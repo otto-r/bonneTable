@@ -2,7 +2,6 @@
 using bonneTable.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace bonneTable.API.Controllers
@@ -61,7 +60,6 @@ namespace bonneTable.API.Controllers
         }
 
         // PUT AKA EDIT
-        [Route("{id:guid}")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromBody] BookingRequestModel bookingRequestModel, Guid guid)
         {
@@ -71,11 +69,11 @@ namespace bonneTable.API.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public async Task<ActionResult> Delete(Guid id)
         {
-            id = Regex.Replace(id, @"[ ! ]", "-");
-            Guid.TryParse(id, out Guid gid);
-            _bookingService.AdminCancelBooking(gid);
+            var response = await _bookingService.AdminCancelBooking(id);
+
+            return Ok(response);
         }
     }
 }
