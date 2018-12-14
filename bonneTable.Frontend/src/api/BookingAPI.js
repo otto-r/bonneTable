@@ -53,7 +53,6 @@ export async function book(request) {
 
 export async function cancel(id) {
   try {
-    console.log("IDIDIDIDID: " + id);
     const response = await axios({
       method: "delete",
       url: baseUrl + id

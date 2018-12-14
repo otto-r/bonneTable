@@ -23,7 +23,7 @@
           <th>Guests</th>
           <th>Name</th>
           <th>E-mail</th>
-          <th>Delete</th>
+          <th>Delete / Edit</th>
         </tr>
       </thead>
       <tbody>
@@ -52,7 +52,7 @@
           </td>
           <td>{{booking.email}}</td>
           <td>
-            <b-button @click="deleteBooking(booking)">Delete</b-button>
+            <b-button @click="edit(booking)">Edit</b-button>
           </td>
         </tr>
       </tbody>
@@ -74,20 +74,19 @@ export default {
     };
   },
   methods: {
+    edit() {
+      console.log("clicked");
+    },
     getAllBookings() {
-      console.log("Get all bookings!");
       getAll(Date.now())
         .then(response => {
           this.bookings = response.bookings;
-          console.log(this.bookings);
-          // this.tables = this.addEditProperty();
         })
         .catch(error => {
           console.log(error);
         });
     },
     deleteBooking(booking) {
-      console.log("delete");
       cancel(booking.id)
         .then(response => {
           this.deleteSuccessful = response.success;
@@ -142,7 +141,6 @@ export default {
       weekday[4] = "Thursday";
       weekday[5] = "Friday";
       weekday[6] = "Saturday";
-      console.log(hours);
       return (
         date +
         "/" +
