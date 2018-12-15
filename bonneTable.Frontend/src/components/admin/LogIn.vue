@@ -1,41 +1,60 @@
 <template>
   <div>
-    <div class="form">
-    <div class="form-group">
-      <label for="username">Username:</label>
-      <input
-        v-validate="'alpha|required'"
-        v-model="userInfo.username"
-        data-vv-as="field"
-        name="username"
-        placeholder="Username"
-        type="text"
-        class="form-control"
-        :class="{'alert-danger': errors.has('username')}"
-      >
-    </div>
-    <div class="form-group">
-      <label for="password">Password:</label>
-      <input
-        v-validate="'required'"
-        v-model="userInfo.password"
-        data-vv-as="field"
-        name="password"
-        placeholder="Password"
-        type="text"
-        class="form-control"
-        :class="{'alert-danger': errors.has('password')}"
-      >
-    </div>
-    <b-button class="btn btn-default" @click="validateInput()">Log In</b-button>
+    <div class="container-fluid mt-3">
+      <div class="row">
+        <div class="col-4 mx-auto">
+          <glitch-image/>
+          <br>
+          <br>
+          <div class="form">
+            <div class="form-group row">
+              <div class="mx-auto">
+                <label class="label-thing mx-auto" for="username">★Username:</label>
+                <input
+                  v-validate="'alpha|required'"
+                  v-model="userInfo.username"
+                  data-vv-as="field"
+                  name="username"
+                  placeholder="Username"
+                  type="text"
+                  class="input-thing"
+                  :class="{'alert-danger': errors.has('username')}"
+                >
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="mx-auto">
+                <label class="label-thing" for="password">Password:</label>
+                <input
+                  v-validate="'required'"
+                  v-model="userInfo.password"
+                  data-vv-as="field"
+                  name="password"
+                  placeholder="Password"
+                  type="password"
+                  class="input-thing"
+                  :class="{'alert-danger': errors.has('password')}"
+                >
+              </div>
+            </div>
+            <div class="row">
+              <b-button class="btn mx-auto login" @click="validateInput()">Log In</b-button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { getToken } from "@/api/Authentication.js";
+import glitchImage from "../admin/glitchImage";
 
 export default {
+  components: {
+    glitchImage
+  },
   name: "LogIn",
   data() {
     return {
@@ -48,13 +67,13 @@ export default {
       getToken(this.userInfo)
         .then(response => {
           console.log(response);
-          localStorage.token = response.token
+          localStorage.token = response.token;
           localStorage.loggedIn = true;
-          console.log(localStorage.loggedIn)
+          console.log(localStorage.loggedIn);
           this.$router.push({ path: "/admin" });
         })
         .catch(error => {
-          console.log("ERRRRRRORROROROR or failed login")
+          console.log("ERRRRRRORROROROR or failed login");
           console.log(error);
         });
     },
@@ -71,4 +90,26 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css?family=Arizonia');
+
+.label-thing {
+  font-size: 1.2em;
+}
+
+.input-thing {
+  color: #ffe6ff;
+  border: none;
+  background: none;
+  border-bottom: #ffe6ff;
+  border-bottom-color: #ffe6ff;
+  border-bottom-width: 3px;
+  border-bottom: 4px solid #ffe6ff;
+  outline: none;
+}
+
+/* .login{
+  font-family: 'Arizonia', cursive;
+  font-size: 3em;
+  border: none;
+} */
 </style>

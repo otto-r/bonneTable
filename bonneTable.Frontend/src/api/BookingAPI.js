@@ -18,7 +18,7 @@ export async function getByDate(dateTime) {
   try {
     const response = await axios({
       method: "get",
-      url: baseUrl + "?dateTime=" + dateTime
+      url: baseUrl + dateTime
     });
     return response.data;
   } catch (error) {
@@ -30,7 +30,7 @@ export async function getByEmail(email) {
   try {
     const response = await axios({
       method: "get",
-      url: baseUrl + "/getbyemail/" + "?email=" + email
+      url: baseUrl + "getbyemail/" + email
     });
     return response.data;
   } catch (error) {

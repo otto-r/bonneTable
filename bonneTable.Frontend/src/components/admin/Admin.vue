@@ -1,13 +1,14 @@
 <template>
   <div>
-    <h1>Admin</h1>
+    <glitchImage/>
+    <!-- <b-img class="logo" src="/static/logo.png"/> -->
     <div>
       <div class="container-fluid mt-3">
         <div class="row">
           <div class="col-6 mx-auto">
             <!-- <logIn/> -->
             <b-button-group>
-              <b-button @click="clickBookingMenu()">Booking</b-button>
+              <button class="btn" @click="clickBookingMenu()">Booking</button>
               <b-button @click="clickTableMenu()">Tables</b-button>
               <b-button v-if="displayLogOut" @click="logOut()">Log out</b-button>
             </b-button-group>
@@ -16,10 +17,13 @@
         </div>
       </div>
     </div>
+    <Footer/>
   </div>
 </template>
 
 <script>
+import glitchImage from "../admin/glitchImage";
+import Footer from "../admin/Footer";
 import { getAll, book, getByDate, getByEmail, cancel } from "@/api/BookingAPI";
 import { getTables } from "@/api/TableAPI";
 import { formatTime } from "@/api/TimeFormatter";
@@ -29,7 +33,9 @@ import LogIn from "../admin/LogIn";
 
 export default {
   components: {
-    LogIn
+    LogIn,
+    glitchImage,
+    Footer
   },
   name: "Admin",
   data() {
@@ -55,13 +61,18 @@ export default {
     },
     logOut() {
       localStorage.token = "";
+      localStorage.loggedIn = false;
       this.displayLogOut = false;
       this.displaylogIn = true;
       this.$router.push({ path: "/login" });
     },
     notLoggedIn() {
-      if (!localStorage.loggedIn) {
-        this.$router.push({ path: "/LogIn" });
+      console.log("notloggedin: " + localStorage.loggedIn);
+      console.log(localStorage.loggedIn);
+      if (localStorage.loggedIn == "false") {
+        console.log("notloggedin in if");
+
+        this.$router.push({ path: "/login" });
       }
     }
   },
@@ -71,5 +82,73 @@ export default {
 };
 </script>
 
-<style scoped>
+<style >
+@import url("https://fonts.googleapis.com/css?family=Staatliches");
+
+h1{
+  /* font-family: 'Times New Roman';
+  font-size: 2em; */
+}
+
+.bg {
+  color: pink;
+  height: 100%;
+  min-height: 100%;
+}
+
+.btn {
+  border-color: #ffe6ff;
+  border-width: 2px;
+  color: #ffe6ff;
+  background: none;
+  font-family: "Staatliches", cursive;
+}
+
+.btn:hover {
+  border-color: #99ffff;
+  border-width: 2px;
+  color: none;
+  background: #99ffff;
+}
+
+.btn:active {
+  border-color: #99ffff;
+  border-width: 2px;
+  color: #99ffff;
+  background: none;
+}
+
+.btn:focus {
+  border-color: #99ffff;
+  border-width: 4px;
+  color: #99ffff;
+  background: none;
+  box-shadow: #99ffff;
+}
+
+.btn.active {
+  border-color: #99ffff;
+  border-width: 4px;
+  color: #99ffff;
+  background: none;
+  box-shadow: #99ffff;
+}
+
+html,
+body {
+  background: linear-gradient(
+    to bottom right,
+    #f056ff 0%,
+    #2989d8 50%,
+    #00fffa 100%
+  );
+  color: pink;
+  background-attachment: fixed;
+  height: 100%;
+}
+
+.logo {
+  max-width: 100px;
+  height: auto;
+}
 </style>

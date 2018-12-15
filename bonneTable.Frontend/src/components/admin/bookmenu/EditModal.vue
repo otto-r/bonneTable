@@ -3,23 +3,59 @@
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
-          <div class="modal-header">
-            <slot name="header">Edit</slot>
-          </div>
-
           <div class="modal-body">
-            <slot name="body">default body</slot>
+            <div class="form-group" :class="{'has-error': errors.any() }">
+              <label class="control-label" for="Name">Name</label>
+              <input
+                class="form-control"
+                :class="{'input': true, 'is-invalid': errors.has('Name') }"
+                v-model="$store.state.name"
+                v-validate="'required'"
+                name="Name"
+                type="text"
+                placeholder="Name"
+              >
+              <p class="text-danger" v-if="errors.has('Name')">{{ errors.first('Name') }}</p>
+            </div>
+            <div class="form-group" :class="{'has-error': errors.any() }">
+              <label class="control-label" for="Email">Email</label>
+              <input
+                class="form-control"
+                :class="{'input': true, 'is-invalid': errors.has('Email') }"
+                v-model="$store.state.email"
+                v-validate="'required|email'"
+                name="Email"
+                type="text"
+                placeholder="Email"
+              >
+              <p class="text-danger" v-if="errors.has('Email')">{{ errors.first('Email') }}</p>
+            </div>
+            <div class="form-group" :class="{'has-error': errors.any() }">
+              <label class="control-label" for="PhoneNumber">Phone Number</label>
+              <input
+                class="form-control"
+                :class="{'input': true, 'is-invalid': errors.has('PhoneNumber') }"
+                v-model="$store.state.phoneNumber"
+                v-validate="'required|numeric'"
+                name="PhoneNumber"
+                type="text"
+                placeholder="PhoneNumber"
+              >
+              <p
+                class="text-danger"
+                v-if="errors.has('PhoneNumber')"
+              >{{ errors.first('PhoneNumber') }}</p>
+            </div>
           </div>
 
-          <div class="">
-            <slot name="footer">
-            </slot>
-              <div class="float-left row">
-                <button class="btn pull-left" @click="$emit('save')">Save</button>
-              </div>
-              <div class="float-right row">
-                <button class="btn pull-right" @click="$emit('close')">Close</button>
-              </div>
+          <div class>
+            <slot name="footer"></slot>
+            <div class="float-left row">
+              <button class="btn pull-left" @click="$emit('save')">Save</button>
+            </div>
+            <div class="float-right row">
+              <button class="btn pull-right" @click="$emit('close')">Close</button>
+            </div>
           </div>
         </div>
       </div>
@@ -39,6 +75,10 @@ export default {
 </script>
 
 <style scoped>
+.logo {
+  max-width: 100%;
+  height: auto;
+}
 .modal-mask {
   position: fixed;
   z-index: 9998;
@@ -57,6 +97,8 @@ export default {
 }
 
 .modal-container {
+  background-image: url("/static/bg.jpg");
+  background-position: center center;
   width: 300px;
   margin: 0px auto;
   padding: 20px 30px;
@@ -64,6 +106,7 @@ export default {
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
+  z-index: 9999;
   font-family: Helvetica, Arial, sans-serif;
 }
 
@@ -92,5 +135,15 @@ export default {
 .modal-leave-active .modal-container {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
+}
+
+.headerw95 {
+  margin: 2px 2px 0;
+  padding: 1px 2px;
+  color: white;
+  background: linear-gradient(to right, blue, white);
+  font-weight: bold;
+  font-size: 11px;
+  line-height: 16px;
 }
 </style>
