@@ -55,7 +55,7 @@ namespace bonneTable.Services.Services
         {
             try
             {
-                return await _context.Booking.Find(b => b.Email == email).ToListAsync();
+                return await _context.Booking.Find(b => b.Email.ToLower().Contains(email.ToLower())).ToListAsync();
             }
             catch (Exception ex)
             {
@@ -107,7 +107,7 @@ namespace bonneTable.Services.Services
         {
             try
             {
-               
+
 
                 var filter = Builders<Booking>.Filter.Eq(t => t.Id, ID);
                 ReplaceOneResult replaceOneResult = await _context.Booking.ReplaceOneAsync(filter, entity,
@@ -126,6 +126,6 @@ namespace bonneTable.Services.Services
         {
             throw new NotImplementedException();
         }
-               
+
     }
 }

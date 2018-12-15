@@ -10,9 +10,7 @@ namespace bonneTable.API.Controllers
     [ApiController]
     public class BookingController : ControllerBase
     {
-        // Temporary objects will be replaced later on
-
-
+        
         private readonly IBookingService _bookingService;
 
         public BookingController(IBookingService bookingServie)
@@ -21,7 +19,6 @@ namespace bonneTable.API.Controllers
 
         }
 
-        //GETALL for testing mainly. Perhaps useful for admin
         // api/booking/getall
         [Route("getall")]
         [HttpGet]
@@ -32,7 +29,7 @@ namespace bonneTable.API.Controllers
             return Ok(bookings);
         }
 
-        [Route("getbyemail")]
+        [Route("getbyemail/{email}")]
         [HttpGet]
         public async Task<ActionResult> Getall(string email)
         {
@@ -54,7 +51,6 @@ namespace bonneTable.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BookingRequestModel bookingRequestModel)
         {
-
             var bookingresponse = await _bookingService.ClientBookTable(bookingRequestModel);
             return Ok(bookingresponse);
         }

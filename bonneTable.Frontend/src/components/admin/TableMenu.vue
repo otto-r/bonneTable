@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Table Menu</h1>
+    <h1>Ｔａｂｌｅ　Ｍｅｎｕ</h1>
     <div>
       <b-nav fill tabs>
         <b-nav-item @click="menuAdd()">Add</b-nav-item>
@@ -36,7 +36,7 @@ export default {
       (this.displayAdd = false), (this.displayList = true);
     },
     notLoggedIn() {
-      if (!localStorage.loggedIn) {
+      if (localStorage.loggedIn == "false") {
         console.log("not logged in run")
         this.$router.push({ path: "/LogIn" });
       }

@@ -1,21 +1,33 @@
 <template>
   <div>
-    <h1 class="page-header">Bookings</h1>
-    <!-- <h4 v-if="removedTable.length > 0">Deleted:</h4> -->
-    <!-- <table v-if="removedTable.length > 0" class="table table-hover danger">
-      <thead class="danger">
-        <tr>
-          <th>Id</th>
-          <th>Seats</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="table-danger" v-for="table in removedTable" :key="table.id">
-          <td>{{table.id}}</td>
-          <td>{{table.seats}}</td>
-        </tr>
-      </tbody>
-    </table>-->
+    <h1 class="page-header">Ｂｏｏｋｉｎｇｓ</h1>
+    <div class="mt-3">
+      <v-date-picker
+        class="datepicker"
+        @click="toGuests()"
+        :pane-width="290"
+        is-inline
+        mode="single"
+        v-model="$store.state.date"
+        :min-date="today"
+      ></v-date-picker>
+    </div>
+    <div class="row label-thing">
+      <div class="form-group mx-auto">
+        <label class="control-label label-thing" for="Email">Σｍａｉｌ</label>
+        <input
+          class="input-thing"
+          :class="{'input': true, 'is-invalid': errors.has('Email') }"
+          v-model="searchEmail"
+          name="Email"
+          type="text"
+          placeholder="Email"
+        >
+        <p class="text-danger" v-if="errors.has('Email')">{{ errors.first('Email') }}</p>
+        <b-button @click="getBookingsEmail()">Search</b-button>
+      </div>
+    </div>
+    <EditModal v-if="displayModal" @close="displayModal = false"/>
     <table v-if="bookings.length > 0" class="table table-striped table-sm table-md mt-2">
       <thead>
         <tr>
@@ -29,30 +41,12 @@
       <tbody>
         <tr v-for="booking in bookings" :key="booking.id">
           <td>{{ convertDateTime(booking.time)}}</td>
-          <!-- <td v-if="!booking.editing">{{booking.seats}}</td>
-          <td v-if="booking.editing">
-            <input
-              v-validate="'numeric'"
-              v-model="booking.seats"
-              data-vv-as="field"
-              name="seats_field"
-              type="text"
-              class="form-control"
-              :class="{'has-error': errors.has('seats_field')}"
-            >
-          </td>-->
-          <td>
-            {{booking.seats}}
-            <!-- <b-button v-if="!booking.editing" @click="activateEditing(booking)">Edit</b-button> -->
-            <!-- <b-button v-if="booking.editing" @click="saveEditing(booking)">Save</b-button> -->
-          </td>
-          <td>
-            {{ booking.customerName}}
-            <!-- <b-button @click="deleteTable(booking)">Delete</b-button> -->
-          </td>
+          <td>{{booking.seats}}</td>
+          <td>{{ booking.customerName}}</td>
           <td>{{booking.email}}</td>
           <td>
-            <b-button @click="edit(booking)">Edit</b-button>
+            <button class="btn" @click="openModal(booking)">Edit</button>
+            <button class="btn" @click="deleteBooking(booking)">Del</button>
           </td>
         </tr>
       </tbody>
@@ -61,26 +55,50 @@
 </template>
 
 <script>
-import { getByDate, getAll, cancel } from "@/api/BookingAPI";
+import { getByDate, getAll, getByEmail, cancel } from "@/api/BookingAPI";
+import EditModal from "../bookmenu/EditModal";
 import { formatTime } from "@/api/TimeFormatter";
 
 export default {
+  components: {
+    EditModal
+  },
   name: "BookingList",
   data() {
     return {
       deletedBooking: [],
       deleteSuccessful: false,
-      bookings: [{}]
+      bookings: [],
+      displayModal: false,
+      searchEmail: ""
     };
   },
   methods: {
+    openModal(booking) {
+      this.displayModal = true;
+      this.$store.state.time = booking.time;
+      this.$store.state.guests = booking.seats;
+      this.$store.state.name = booking.customerName;
+      this.$store.state.email = booking.email;
+      this.$store.state.phoneNumber = booking.phoneNumber;
+    },
     edit() {
       console.log("clicked");
     },
-    getAllBookings() {
-      getAll(Date.now())
+    getBookingsEmail() {
+      getByEmail(this.searchEmail)
         .then(response => {
           this.bookings = response.bookings;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getAllBookings() {
+      getAll()
+        .then(response => {
+          this.bookings = response.bookings;
+          this.bookings.sort((b, a) => a.time.localeCompare(b.time));
         })
         .catch(error => {
           console.log(error);
@@ -90,10 +108,16 @@ export default {
       cancel(booking.id)
         .then(response => {
           this.deleteSuccessful = response.success;
-          if (response.success) {
-            this.removedTable.push(table);
-          }
           this.getAllBookings();
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getBookingsByDate(booking) {
+      getByDate(booking.time)
+        .then(response => {
+          this.bookings = response.bookings;
         })
         .catch(error => {
           console.log(error);
@@ -115,7 +139,7 @@ export default {
     },
     convertDateTime(date) {
       var x = new Date(date);
-      var hours = x.getHours();
+      var hours = x.getUTCHours();
       if (hours < 10) {
         hours += "0";
       }
@@ -163,4 +187,24 @@ export default {
 };
 </script>
 <style scoped>
+.label-thing {
+  font-size: 1.2em;
+}
+
+.input-thing {
+  color: #ffe6ff;
+  border: none;
+  background: none;
+  border-bottom: #ffe6ff;
+  border-bottom-color: #ffe6ff;
+  border-bottom-width: 3px;
+  border-bottom: 4px solid #ffe6ff;
+  outline: none;
+}
+
+.datepicker {
+  font-family: sans-serif;
+  /* background: rgb(7, 7, 7); */
+  background: rgb(212, 45, 45);
+}
 </style>
