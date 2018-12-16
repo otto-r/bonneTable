@@ -1,18 +1,30 @@
 <template>
   <div>
-    <h1 class="page-header">Ｂｏｏｋｉｎｇｓ</h1>
-    <div class="mt-3">
-      <v-date-picker
-        class="datepicker"
-        @click="toGuests()"
-        :pane-width="290"
-        is-inline
-        mode="single"
-        v-model="$store.state.date"
-        :min-date="today"
-      ></v-date-picker>
+    <div class="row">
+      <div>
+        <h1 class="page-header">Ｂｏｏｋｉｎｇｓ</h1>
+      </div>
+      <div class="row">
+        <div class="star mx-3">★</div>
+        <div class="mx-2">search by:</div>
+        <div class="search" v-if="displayCalendarSearchPicker" @click="toggleSearch()">Ξｍａｉｌ</div>
+        <div class="search">／</div>
+        <div class="search" v-if="displayEmailSearchPicker" @click="toggleSearch()">Ｄａｔｅ</div>
+      </div>
     </div>
-    <div class="row label-thing">
+    <div class="mt-3 row" v-if="displayCalendarSearch">
+      <div class="mx-auto">
+        <v-date-picker
+          class="datepicker"
+          @click="getBookingsByDate()"
+          :pane-width="290"
+          is-inline
+          mode="single"
+          v-model="dateSelected"
+        ></v-date-picker>
+      </div>
+    </div>
+    <div class="row label-thing" v-if="displayEmailSearch">
       <div class="form-group mx-auto">
         <label class="control-label label-thing" for="Email">Σｍａｉｌ</label>
         <input
@@ -70,10 +82,25 @@ export default {
       deleteSuccessful: false,
       bookings: [],
       displayModal: false,
-      searchEmail: ""
+      searchEmail: "",
+      displayEmailSearch: false,
+      displayCalendarSearch: true,
+      dateSelected: new Date(),
+      displayEmailSearchPicker: true,
+      displayCalendarSearchPicker: true,
+      today: new Date(this.getTodayDate())
     };
   },
   methods: {
+    toggleSearch() {
+      if (this.displayEmailSearch) {
+        this.displayCalendarSearch = true;
+        this.displayEmailSearch = false;
+      } else {
+        this.displayCalendarSearch = false;
+        this.displayEmailSearch = true;
+      }
+    },
     openModal(booking) {
       this.displayModal = true;
       this.$store.state.time = booking.time;
@@ -114,8 +141,9 @@ export default {
           console.log(error);
         });
     },
-    getBookingsByDate(booking) {
-      getByDate(booking.time)
+    getBookingsByDate() {
+      console.log("date: " + this.dateSelected);
+      getByDate(formatTime(this.dateSelected))
         .then(response => {
           this.bookings = response.bookings;
         })
@@ -178,10 +206,39 @@ export default {
         ":" +
         min
       );
+    },
+    getTodayDate() {
+      var day = new Date().getDate();
+      var month = new Date().getMonth() + 1;
+      var year = new Date().getFullYear();
+
+      if (day < 10) {
+        day = "0" + day;
+      }
+
+      if (month < 10) {
+        month = "0" + month;
+      }
+
+      var fullDateString = year + "-" + month + "-" + day;
+      return fullDateString;
     }
   },
   created() {
     this.getAllBookings();
+  },
+  mounted() {
+    self = this;
+    self.$watch(
+      () => {
+        return this.dateSelected;
+      },
+      (newDate, oldDate) => {
+        console.log(this.dateSelected);
+        this.getBookingsByDate();
+        this.displayCalendarSearch = false;
+      }
+    );
   },
   beforeCreate() {}
 };
@@ -206,5 +263,15 @@ export default {
   font-family: sans-serif;
   /* background: rgb(7, 7, 7); */
   background: rgb(212, 45, 45);
+  z-index: 100;
+  position: absolute;
+}
+
+.search {
+  font-size: 1.5em;
+}
+
+.star {
+  font-size: 2em;
 }
 </style>

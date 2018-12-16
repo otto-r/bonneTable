@@ -7,6 +7,6 @@ export function formatTime(date) {
   var second = date.getSeconds();
 
   var time =
-    month + "/" + day + "/" + year + " " + hour + ":" + minute + ":" + second;
+    month + "-" + day + "-" + year + " " + hour + ":" + minute + ":" + second;
   return time;
 }
