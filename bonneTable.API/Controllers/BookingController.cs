@@ -39,10 +39,11 @@ namespace bonneTable.API.Controllers
         }
 
         // GET bookings from requested date
+        [Route("getbydate/{date}")]
         [HttpGet]
-        public async Task<ActionResult> GetAsync(DateTime dateTime)
+        public async Task<ActionResult> GetByDate(DateTime date)
         {
-            var bookings = await _bookingService.Get(dateTime);
+            var bookings = await _bookingService.Get(date);
 
             return Ok(bookings);
         }

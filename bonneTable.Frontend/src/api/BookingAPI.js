@@ -18,7 +18,7 @@ export async function getByDate(dateTime) {
   try {
     const response = await axios({
       method: "get",
-      url: baseUrl + dateTime
+      url: baseUrl + "getbydate/" +dateTime
     });
     return response.data;
   } catch (error) {
