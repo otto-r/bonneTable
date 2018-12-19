@@ -43,6 +43,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>
@@ -90,7 +91,7 @@ export default {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css?family=Arizonia');
+@import url("https://fonts.googleapis.com/css?family=Arizonia");
 
 .label-thing {
   font-size: 1.2em;

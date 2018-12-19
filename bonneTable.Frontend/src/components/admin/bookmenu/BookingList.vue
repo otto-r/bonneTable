@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="row">
+      <edit-window/>
       <div>
         <h1 class="page-header">Ｂｏｏｋｉｎｇｓ</h1>
       </div>
@@ -12,18 +13,20 @@
         <div class="search" v-if="displayEmailSearchPicker" @click="toggleSearch()">Ｄａｔｅ</div>
       </div>
     </div>
-    <div class="mt-3 row" v-if="displayCalendarSearch">
-      <div class="mx-auto">
+    <div class="row">
+      <div class="mt-3 mx-auto" v-if="displayCalendarSearch">
         <v-date-picker
-          class="datepicker"
           @click="getBookingsByDate()"
           :pane-width="290"
           is-inline
+          class="datepicker"
           mode="single"
+          :theme-styles="themeStyles"
           v-model="dateSelected"
         ></v-date-picker>
       </div>
     </div>
+
     <div class="row label-thing" v-if="displayEmailSearch">
       <div class="form-group mx-auto">
         <label class="control-label label-thing" for="Email">Σｍａｉｌ</label>
@@ -40,6 +43,9 @@
       </div>
     </div>
     <EditModal v-if="displayModal" @close="displayModal = false"/>
+    <h1
+      v-if="bookings.length < 1"
+    >No Bookings on: {{ dateSelected.getDate() }} ／ {{ dateSelected.getMonth() +1 }}</h1>
     <table v-if="bookings.length > 0" class="table table-striped table-sm table-md mt-2">
       <thead>
         <tr>
@@ -54,7 +60,7 @@
         <tr v-for="booking in bookings" :key="booking.id">
           <td>{{ convertDateTime(booking.time)}}</td>
           <td>{{booking.seats}}</td>
-          <td>{{ booking.customerName}}</td>
+          <td>{{booking.customerName}}</td>
           <td>{{booking.email}}</td>
           <td>
             <button class="btn" @click="openModal(booking)">Edit</button>
@@ -63,17 +69,28 @@
         </tr>
       </tbody>
     </table>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="row">
+      <div class="mx-auto">
+        <b-img class="logo" src="/static/logo.png"/>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { getByDate, getAll, getByEmail, cancel } from "@/api/BookingAPI";
 import EditModal from "../bookmenu/EditModal";
+import EditWindow from "../bookmenu/EditWindow";
 import { formatTime } from "@/api/TimeFormatter";
 
 export default {
   components: {
-    EditModal
+    EditModal,
+    EditWindow
   },
   name: "BookingList",
   data() {
@@ -88,7 +105,42 @@ export default {
       dateSelected: new Date(),
       displayEmailSearchPicker: true,
       displayCalendarSearchPicker: true,
-      today: new Date(this.getTodayDate())
+      today: new Date(this.getTodayDate()),
+      themeStyles: {
+        wrapper: {
+          background: "rgb(200, 200, 200)",
+          color: "black",
+          borderRadius: "0px",
+          boxShadow:
+            "0 4px 8px 0 rgba(0, 0, 0, 0.14), 0 6px 20px 0 rgba(0, 0, 0, 0.13)"
+        },
+        header: {
+          color: "white",
+          padding: `2px`,
+          background: "linear-gradient(to right, #000099, #8080ff)"
+        },
+        headerHorizontalDivider: {
+          borderTop: "solid rgba(255, 255, 255, 0.2) 1px",
+          width: "80%"
+        },
+        highlight: {
+          backgroundColor: "black"
+        }
+        // weekdays: {
+        //   color: "#6eded1",
+        //   fontWeight: "600",
+        //   padding: `20px ${hSpacing} 5px ${hSpacing}`
+        // },
+        // weeks: {
+        //   padding: `0 ${hSpacing} ${hSpacing} ${hSpacing}`
+        // },
+        // dayContent: {
+        //   fontSize: "0.9rem"
+        // },
+        // dayCellNotInMonth: {
+        //   opacity: 0
+        // }
+      }
     };
   },
   methods: {
@@ -177,13 +229,7 @@ export default {
       }
       var day = x.getDay();
       var date = x.getDate();
-      if (date < 10) {
-        date += "0";
-      }
       var month = x.getMonth() + 1;
-      if (month < 10) {
-        month += "0";
-      }
       var year = x.getFullYear();
       var weekday = new Array(7);
       weekday[0] = "Sunday";
@@ -261,10 +307,20 @@ export default {
 
 .datepicker {
   font-family: sans-serif;
-  /* background: rgb(7, 7, 7); */
+  border-style: solid;
+  border-width: 3px;
+  border-color: rgb(200, 200, 200) rgb(39, 39, 39) rgb(39, 39, 39)
+    rgb(200, 200, 200);
   background: rgb(212, 45, 45);
   z-index: 100;
   position: absolute;
+}
+
+.headerbar {
+  border-style: solid;
+  border-width: 3px;
+  border-color: rgb(200, 200, 200) rgb(39, 39, 39) rgb(39, 39, 39)
+    rgb(200, 200, 200);
 }
 
 .search {
