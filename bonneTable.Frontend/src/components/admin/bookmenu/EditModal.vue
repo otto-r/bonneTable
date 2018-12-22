@@ -54,7 +54,6 @@
               <button class="float-left" @click="editBooking()">Save</button>
               <button class="float-right" @click="$emit('close')">Close</button>
             </div>
-            <div class="mx-4"></div>
           </div>
         </div>
       </div>
@@ -199,17 +198,17 @@ export default {
     rgb(200, 200, 200);
 }
 
-.w98input {
-  margin: 0px 0px 0px 0px;
-  width: 100%;
-  padding: 5px;
-  background: white;
-  color: black;
-  border-style: solid;
-  border-width: 3px;
-  border-color: rgb(200, 200, 200) rgb(39, 39, 39) rgb(39, 39, 39)
-    rgb(200, 200, 200);
-}
+  .w98input {
+    margin: 0px 0px 0px 0px;
+    width: 100%;
+    padding: 5px;
+    background: white;
+    color: black;
+    border-style: solid;
+    border-width: 3px;
+    border-color: rgb(200, 200, 200) rgb(39, 39, 39) rgb(39, 39, 39)
+      rgb(200, 200, 200);
+  }
 
 .edit-input {
   padding: 10px 10px 10px 10px;

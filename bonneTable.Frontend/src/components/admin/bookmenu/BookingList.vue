@@ -68,15 +68,7 @@
         </tr>
       </tbody>
     </table>
-    <br>
-    <br>
-    <br>
-    <br>
-    <div class="row">
-      <div class="mx-auto">
-        <b-img class="logo" src="/static/logo.png"/>
-      </div>
-    </div>
+
   </div>
 </template>
 
@@ -275,7 +267,6 @@ export default {
         return this.dateSelected;
       },
       (newDate, oldDate) => {
-        console.log(this.dateSelected);
         this.getBookingsByDate();
         this.displayCalendarSearch = false;
       }
