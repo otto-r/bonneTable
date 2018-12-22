@@ -18,7 +18,7 @@ export async function getByDate(dateTime) {
   try {
     const response = await axios({
       method: "get",
-      url: baseUrl + "getbydate/" +dateTime
+      url: baseUrl + "getbydate/" + dateTime
     });
     return response.data;
   } catch (error) {
@@ -56,6 +56,19 @@ export async function cancel(id) {
     const response = await axios({
       method: "delete",
       url: baseUrl + id
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function edit(booking) {
+  try {
+    const response = await axios({
+      method: "put",
+      url: baseUrl + booking.id,
+      data: booking
     });
     return response.data;
   } catch (error) {
