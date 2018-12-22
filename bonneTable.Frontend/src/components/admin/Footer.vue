@@ -2,7 +2,7 @@
   <div>
     <div class="mx-auto">
       <div class="footer float-right">
-        Ｂｅｓｔ ｖｉｅｗｅｄ ｉｎ
+        Ｂｅｓｔ　Ｖｉｅｗｅｄ　Ｉｎ　ほベゖ
         <a
           href="https://www.microsoft.com/en-us/download/internet-explorer-7-details.aspx"
         >

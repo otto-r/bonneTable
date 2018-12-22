@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Ｂｏｏｋｉｎｇ　Ｍｅｎｕ</h1>
+    <h1>Ｂｏｏｋｉｎｇ Ｍｅｎｕ</h1>
     <div>
       <b-nav fill tabs>
         <button class="btn col-6 nav-btn" @click="menuBook()">Book</button>
@@ -8,15 +8,27 @@
       </b-nav>
     </div>
     <BookingList v-if="displayList"></BookingList>
+    <BookAdmin v-if="displayBook"></BookAdmin>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="row">
+      <div class="mx-auto">
+        <b-img class="logo" src="/static/logo.png"/>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import BookingList from "../admin/bookmenu/BookingList";
+import BookAdmin from "../admin/bookmenu/BookAdmin";
 
 export default {
   components: {
-    BookingList
+    BookingList,
+    BookAdmin
   },
   name: "BookingMenu",
   data() {
@@ -46,14 +58,14 @@ export default {
 </script>
 
 <style scoped>
-.nav-btn{
+.nav-btn {
   border-bottom: 0px none none;
   border: 0px #ffe6ff solid;
   color: beige;
   border-radius: 0;
   text-decoration: underline;
 }
-.btn:hover{
+.btn:hover {
   background: pink;
 }
 </style>

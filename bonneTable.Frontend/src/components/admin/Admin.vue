@@ -1,12 +1,10 @@
 <template>
   <div>
     <glitchImage/>
-    <!-- <b-img class="logo" src="/static/logo.png"/> -->
     <div>
       <div class="container-fluid mt-3">
         <div class="row">
           <div class="col-6 mx-auto">
-            <!-- <logIn/> -->
             <b-button-group>
               <button class="btn" @click="clickBookingMenu()">Booking</button>
               <b-button @click="clickTableMenu()">Tables</b-button>
