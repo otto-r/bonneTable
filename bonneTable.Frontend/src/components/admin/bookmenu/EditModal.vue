@@ -3,10 +3,10 @@
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
-          <div class="modal-body t55">
-            <div class="row headerw95">
-              <div class>Edit Booking</div>
-              <div class="xbutton float-right">x</div>
+          <div class="modal-body">
+            <div class="headerw95">
+              <div class="headertext">Edit Booking</div>
+              <button class="float-right" @click="$emit('close')">ｘ</button>
             </div>
             <div class="edit-input">
               <div class="form-group" :class="{'has-error': errors.any() }">
@@ -25,7 +25,7 @@
               <div class="form-group" :class="{'has-error': errors.any() }">
                 <label class="control-label" for="Email">Email</label>
                 <input
-                  class="form-control"
+                  class="w98input"
                   :class="{'input': true, 'is-invalid': errors.has('Email') }"
                   v-model="$store.state.email"
                   v-validate="'required|email'"
@@ -38,7 +38,7 @@
               <div class="form-group" :class="{'has-error': errors.any() }">
                 <label class="control-label" for="PhoneNumber">Phone Number</label>
                 <input
-                  class="form-control"
+                  class="w98input"
                   :class="{'input': true, 'is-invalid': errors.has('PhoneNumber') }"
                   v-model="$store.state.phoneNumber"
                   v-validate="'required|numeric'"
@@ -51,11 +51,10 @@
                   v-if="errors.has('PhoneNumber')"
                 >{{ errors.first('PhoneNumber') }}</p>
               </div>
-              <div class="row">
-                <button class="btn float-left" @click="$emit('save')">Save</button>
-                <button class="btn float-right" @click="$emit('close')">Close</button>
-              </div>
+              <button class="float-left" @click="editBooking()">Save</button>
+              <button class="float-right" @click="$emit('close')">Close</button>
             </div>
+            <div class="mx-4"></div>
           </div>
         </div>
       </div>
@@ -64,12 +63,43 @@
 </template>
 
 <script>
+import { edit } from "@/api/BookingAPI";
+
 export default {
   name: "EditModal",
   data() {
-    return {};
+    return {
+      bookingRequestModel: {
+        id: null,
+        time: null,
+        seats: null,
+        customerName: null,
+        phoneNumber: null,
+        email: null
+      }
+    };
   },
-  methods: {},
+  methods: {
+    editBooking() {
+      self = this;
+      self.bookingRequestModel.time = self.$store.state.time;
+      self.bookingRequestModel.seats = self.$store.state.guests;
+      self.bookingRequestModel.customerName = self.$store.state.name;
+      self.bookingRequestModel.phoneNumber = self.$store.state.phoneNumber;
+      self.bookingRequestModel.email = self.$store.state.email;
+      self.bookingRequestModel.id = self.$store.state.id;
+      console.log(this.bookingRequestModel.id);
+
+      edit(this.bookingRequestModel)
+        .then(response => {
+          console.log(response.data);
+          this.$emit("save");
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  },
   created() {}
 };
 </script>
@@ -139,11 +169,11 @@ export default {
 }
 
 .headerw95 {
+  height: auto;
   margin: 0px 0px 0px 0px;
   padding: 5px 5px;
   color: white;
   background: linear-gradient(to right, #000099, #8080ff);
-  /* font-weight: bold; */
   font-size: 1.2em;
   line-height: 16px;
   border-style: solid;
@@ -152,7 +182,14 @@ export default {
     rgb(200, 200, 200);
 }
 
+.headertext {
+  float: left;
+  width: auto;
+}
+
 .xbutton {
+  width: auto;
+  float: right;
   padding: 5px;
   background: rgb(200, 200, 200);
   color: black;

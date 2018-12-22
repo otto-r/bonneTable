@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="row">
-      <edit-window/>
       <div>
         <h1 class="page-header">Ｂｏｏｋｉｎｇｓ</h1>
       </div>
@@ -10,7 +9,7 @@
         <div class="mx-2">search by:</div>
         <div class="search" v-if="displayCalendarSearchPicker" @click="toggleSearch()">Ξｍａｉｌ</div>
         <div class="search">／</div>
-        <div class="search" v-if="displayEmailSearchPicker" @click="toggleSearch()">Ｄａｔｅ</div>
+        <div class="search" v-if="displayEmailSearchPicker" @click="toggleCalendarSearch()">Ｄａｔｅ</div>
       </div>
     </div>
     <div class="row">
@@ -42,7 +41,7 @@
         <b-button @click="getBookingsEmail()">Search</b-button>
       </div>
     </div>
-    <EditModal v-if="displayModal" @close="displayModal = false"/>
+    <EditModal v-if="displayModal" @save="updateAndSave()" @close="displayModal = false"/>
     <h1
       v-if="bookings.length < 1"
     >No Bookings on: {{ dateSelected.getDate() }} ／ {{ dateSelected.getMonth() +1 }}</h1>
@@ -84,13 +83,11 @@
 <script>
 import { getByDate, getAll, getByEmail, cancel } from "@/api/BookingAPI";
 import EditModal from "../bookmenu/EditModal";
-import EditWindow from "../bookmenu/EditWindow";
 import { formatTime } from "@/api/TimeFormatter";
 
 export default {
   components: {
-    EditModal,
-    EditWindow
+    EditModal
   },
   name: "BookingList",
   data() {
@@ -101,7 +98,7 @@ export default {
       displayModal: false,
       searchEmail: "",
       displayEmailSearch: false,
-      displayCalendarSearch: true,
+      displayCalendarSearch: false,
       dateSelected: new Date(),
       displayEmailSearchPicker: true,
       displayCalendarSearchPicker: true,
@@ -126,31 +123,26 @@ export default {
         highlight: {
           backgroundColor: "black"
         }
-        // weekdays: {
-        //   color: "#6eded1",
-        //   fontWeight: "600",
-        //   padding: `20px ${hSpacing} 5px ${hSpacing}`
-        // },
-        // weeks: {
-        //   padding: `0 ${hSpacing} ${hSpacing} ${hSpacing}`
-        // },
-        // dayContent: {
-        //   fontSize: "0.9rem"
-        // },
-        // dayCellNotInMonth: {
-        //   opacity: 0
-        // }
       }
     };
   },
   methods: {
+    updateAndSave() {
+      this.displayModal = false;
+      this.getBookingsByDate();
+    },
     toggleSearch() {
       if (this.displayEmailSearch) {
-        this.displayCalendarSearch = true;
         this.displayEmailSearch = false;
       } else {
-        this.displayCalendarSearch = false;
         this.displayEmailSearch = true;
+      }
+    },
+    toggleCalendarSearch() {
+      if (this.displayCalendarSearch) {
+        this.displayCalendarSearch = false;
+      } else {
+        this.displayCalendarSearch = true;
       }
     },
     openModal(booking) {
@@ -160,6 +152,8 @@ export default {
       this.$store.state.name = booking.customerName;
       this.$store.state.email = booking.email;
       this.$store.state.phoneNumber = booking.phoneNumber;
+      this.$store.state.id = booking.id;
+      console.log(this.$store.state.time);
     },
     edit() {
       console.log("clicked");
@@ -198,6 +192,7 @@ export default {
       getByDate(formatTime(this.dateSelected))
         .then(response => {
           this.bookings = response.bookings;
+          console.log(this.bookings[0].time);
         })
         .catch(error => {
           console.log(error);
@@ -271,7 +266,7 @@ export default {
     }
   },
   created() {
-    this.getAllBookings();
+    this.getBookingsByDate(this.getTodayDate());
   },
   mounted() {
     self = this;

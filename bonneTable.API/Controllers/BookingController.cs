@@ -16,7 +16,6 @@ namespace bonneTable.API.Controllers
         public BookingController(IBookingService bookingServie)
         {
             _bookingService = bookingServie;
-
         }
 
         // api/booking/getall
@@ -58,9 +57,9 @@ namespace bonneTable.API.Controllers
 
         // PUT AKA EDIT
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] BookingRequestModel bookingRequestModel, Guid guid)
+        public async Task<IActionResult> Put([FromBody] BookingRequestModel bookingRequestModel, [FromRoute] Guid id)
         {
-            await _bookingService.EditBooking(bookingRequestModel, guid);
+            await _bookingService.EditBooking(bookingRequestModel, id);
             return Ok();
         }
 
