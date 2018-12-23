@@ -43,7 +43,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -90,7 +89,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 @import url("https://fonts.googleapis.com/css?family=Arizonia");
 
 .label-thing {
@@ -108,9 +107,16 @@ export default {
   outline: none;
 }
 
-/* .login{
-  font-family: 'Arizonia', cursive;
-  font-size: 3em;
-  border: none;
-} */
+html,
+body {
+  background: linear-gradient(
+    to bottom right,
+    #f056ff 0%,
+    #2989d8 50%,
+    #00fffa 100%
+  );
+  color: pink;
+  background-attachment: fixed;
+  height: 100%;
+}
 </style>

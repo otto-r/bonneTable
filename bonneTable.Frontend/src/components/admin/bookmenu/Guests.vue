@@ -26,8 +26,7 @@ export default {
   },
   methods: {
     toTime(guests) {
-      this.$store.commit("setGuests", guests);
-      this.$emit("toTime");
+      this.$emit("toTime", guests);
     }
   },
   created() {}

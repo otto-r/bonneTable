@@ -1,13 +1,12 @@
 <template>
   <div class="mx-auto">
     <v-date-picker
-      @click="$emit('toguests')"
       :pane-width="290"
       is-inline
       class="datepicker"
       mode="single"
       :theme-styles="themeStyles"
-      v-model="$store.state.date"
+      v-model="date"
       :min-date="today"
     ></v-date-picker>
   </div>
@@ -61,7 +60,17 @@ export default {
       return fullDateString;
     }
   },
-  created() {}
+  created() {},
+  mounted() {
+    this.$watch(
+      () => {
+        return this.date;
+      },
+      (newDate, oldDate) => {
+        this.$emit("toguests", this.date);
+      }
+    );
+  }
 };
 </script>
 <style scoped>
