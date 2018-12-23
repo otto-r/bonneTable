@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-3 mx-auto">
+  <div class="mx-auto">
     <v-date-picker
       @click="$emit('toguests')"
       :pane-width="290"

@@ -57,7 +57,7 @@
       </thead>
       <tbody>
         <tr v-for="booking in bookings" :key="booking.id">
-          <td>{{ convertDateTime(booking.time)}}</td>
+          <td>{{convertDateTime(booking.time)}}</td>
           <td>{{booking.seats}}</td>
           <td>{{booking.customerName}}</td>
           <td>{{booking.email}}</td>
@@ -68,7 +68,6 @@
         </tr>
       </tbody>
     </table>
-
   </div>
 </template>
 
@@ -173,7 +172,7 @@ export default {
       cancel(booking.id)
         .then(response => {
           this.deleteSuccessful = response.success;
-          this.getAllBookings();
+          this.getBookingsByDate();
         })
         .catch(error => {
           console.log(error);
@@ -269,6 +268,14 @@ export default {
       (newDate, oldDate) => {
         this.getBookingsByDate();
         this.displayCalendarSearch = false;
+      }
+    );
+    this.$watch(
+      () => {
+        return this.bookings;
+      },
+      (newBooking, oldBooking) => {
+        this.bookings.sort((b, a) => a.time.localeCompare(b.time));
       }
     );
   },

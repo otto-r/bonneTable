@@ -8,6 +8,11 @@
         >
           <b-img class="logo" src="/static/ie4.gif"/>
         </a>
+        <a
+          href="https://en.wikipedia.org/wiki/Netscape"
+        >
+          <b-img class="logo netscape" src="/static/netscape.gif"/>
+        </a>
       </div>
     </div>
   </div>
@@ -25,6 +30,9 @@ export default {
 </script>
 
 <style scoped>
+.netscape {
+  height: 31px;
+}
 .footer {
   color: pink;
   margin: 15px;

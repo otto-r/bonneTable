@@ -43,12 +43,16 @@
 </template>
 
 <script>
+import { book } from "@/api/BookingAPI";
+
 export default {
   name: "Confirm",
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    book(){}
+  },
   created() {}
 };
 </script>

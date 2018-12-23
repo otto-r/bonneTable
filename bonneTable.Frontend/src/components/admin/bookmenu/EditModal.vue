@@ -3,9 +3,9 @@
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
-          <div class="modal-body">
-            <div class="headerw95">
-              <div class="headertext">Edit Booking</div>
+          <div class="modal-body row">
+            <div class="headerw95 col-12">
+              <div class="headertext ">Edit Booking</div>
               <button class="float-right" @click="$emit('close')">ｘ</button>
             </div>
             <div class="edit-input">
@@ -168,7 +168,7 @@ export default {
 }
 
 .headerw95 {
-  height: auto;
+  /* height: auto; */
   margin: 0px 0px 0px 0px;
   padding: 5px 5px;
   color: white;
