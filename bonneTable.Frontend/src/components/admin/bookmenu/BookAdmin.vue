@@ -1,23 +1,23 @@
 <template>
-  <div class="backdrop col-8 mx-auto">
-    <div class="headerw95">Ｂｏｏｋ
-      <div class="float-right">
-        -
-        <span class="slash">／</span>
-        {{convertDateTime($store.state.date)}}
-        <span class="slash">／</span>
-        {{$store.state.guests}}
-        <span class="slash">／</span>
-        {{timeDisplay()}}
+  <div class="container-fluid col-8">
+    <div class="headerw95 row mt-3">
+      <div class="col-12 px-1">
+        <div class="float-left">Ｂｏｏｋ</div>
+        <div class="float-right">
+          <span class="slash">📅:</span>
+          {{convertDateTime($store.state.date)}}
+          <span class="slash">👤:</span>
+          {{guestsToDisplay()}}
+          <span class="slash">🕖:</span>
+          {{timeDisplay()}}
+        </div>
       </div>
     </div>
-    <div class="bgbody">
-      <div class="row">
-        <Calendar v-if="displayCalendar" @toguests="toGuests()"></Calendar>
-        <Guests v-if="displayGuests" @toTime="toTime()"></Guests>
-        <Time v-if="displayTime" @toConfirm="toConfirm()"></Time>
-        <Confirm v-if="displayConfirm"></Confirm>
-      </div>
+    <div class="row bgbody pt-2">
+      <Calendar v-if="displayCalendar" @toguests="toGuests()"></Calendar>
+      <Guests v-if="displayGuests" @toTime="toTime()"></Guests>
+      <Time v-if="displayTime" @toConfirm="toConfirm()"></Time>
+      <Confirm v-if="displayConfirm"></Confirm>
     </div>
   </div>
 </template>
@@ -58,16 +58,28 @@ export default {
       (this.displayTime = false), (this.displayConfirm = true);
     },
     convertDateTime(date) {
+      if (date == null) {
+        return "~";
+      }
       var x = new Date(date);
       var date = x.getDate();
       var month = x.getMonth() + 1;
-      return date + "/" + month + "/";
+      return date + "/" + month;
     },
     timeDisplay() {
+      if (this.$store.state.time == null) {
+        return "~";
+      }
       let time =
         this.$store.state.time.hours + ":" + this.$store.state.time.minutes;
 
       return time;
+    },
+    guestsToDisplay() {
+      if (this.$store.state.guests == null) {
+        return "~";
+      }
+      return this.$store.state.guests;
     }
   },
   created() {},
@@ -86,24 +98,26 @@ export default {
 
 <style scoped>
 .bgbody {
-  height: auto;
+  /* height: auto; */
   border-style: solid;
   border-width: 3px;
   border-color: rgb(200, 200, 200) rgb(39, 39, 39) rgb(39, 39, 39)
     rgb(200, 200, 200);
-  padding: 0 0 0 0;
+  /* padding: 0 0 0 0; */
+  background-color: rgb(200, 200, 200);
+  min-height: 300px;
 }
 
 .backdrop {
+  /* margin: 5px; */
   background-color: rgb(200, 200, 200);
   padding: 0 0 0 0;
-  height: 350px;
 }
 
 .headerw95 {
   height: auto;
-  margin: 0px 0px 0px 0px;
-  padding: 5px 5px;
+  /* margin: 0px 0px 0px 0px; */
+  padding: 5px 0px 5px 0px;
   color: white;
   background: linear-gradient(to right, #000099, #8080ff);
   font-size: 1.2em;

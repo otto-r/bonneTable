@@ -292,10 +292,10 @@ namespace bonneTable.Services.Services
             now = now.AddMilliseconds(-now.Millisecond);
             now = now.AddSeconds(-now.Second - 1);
 
-            if (bookingRequest.Time < now)
-            {
-                return new BookingResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
-            }
+            //if (bookingRequest.Time < now)
+            //{
+            //    return new BookingResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
+            //}
 
             List<Booking> bookingsOnDate;
             List<Table> tables;
@@ -356,10 +356,11 @@ namespace bonneTable.Services.Services
                 {
                     selectedTable = table;
                 }
-                else
-                {
-                    return new BookingResponseModel { Success = false, ErrorMessage = "No table available" };
-                }
+            }
+
+            if (selectedTable == null || (selectedTable.Seats <= 0))
+            {
+                return new BookingResponseModel { Success = false, ErrorMessage = "No table available" };
             }
 
             oldBookingToChange.Seats = bookingRequest.Seats;
