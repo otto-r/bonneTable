@@ -31,8 +31,7 @@ export default {
   },
   methods: {
     setTime(time) {
-      this.$store.commit("setTime", time);
-      this.$emit("toConfirm");
+      this.$emit("toConfirm", time);
     }
   },
   created() {}

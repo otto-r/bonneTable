@@ -41,7 +41,7 @@ export default {
       displayBookingnMenu: true,
       displayTableMenu: false,
       displayLogIn: true,
-      displayLogOut: true
+      displayLogOut: true,
     };
   },
   methods: {

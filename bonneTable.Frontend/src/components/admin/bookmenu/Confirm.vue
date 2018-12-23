@@ -5,7 +5,7 @@
       <input
         class="w98input"
         :class="{'input': true, 'is-invalid': errors.has('Name') }"
-        v-model="$store.state.name"
+        v-model="confirmInfo.customerName"
         v-validate="'required'"
         name="Name"
         type="text"
@@ -18,7 +18,7 @@
       <input
         class="w98input"
         :class="{'input': true, 'is-invalid': errors.has('Email') }"
-        v-model="$store.state.email"
+        v-model="confirmInfo.email"
         v-validate="'required|email'"
         name="Email"
         type="text"
@@ -31,7 +31,7 @@
       <input
         class="w98input"
         :class="{'input': true, 'is-invalid': errors.has('PhoneNumber') }"
-        v-model="$store.state.phoneNumber"
+        v-model="confirmInfo.phoneNumber"
         v-validate="'required|numeric'"
         name="PhoneNumber"
         type="text"
@@ -39,6 +39,7 @@
       >
       <p class="text-danger" v-if="errors.has('PhoneNumber')">{{ errors.first('PhoneNumber') }}</p>
     </div>
+    <button class="mx-auto" @click="book()">Book</button>
   </div>
 </template>
 
@@ -48,10 +49,18 @@ import { book } from "@/api/BookingAPI";
 export default {
   name: "Confirm",
   data() {
-    return {};
+    return {
+      confirmInfo: {
+        customerName: "",
+        phoneNumber: "",
+        email: ""
+      }
+    };
   },
   methods: {
-    book(){}
+    book() {
+      this.$emit("finalizeBooking", this.confirmInfo);
+    }
   },
   created() {}
 };
@@ -72,5 +81,6 @@ export default {
 
 .fontz {
   color: black;
+  font-family: Helvetica, Arial, sans-serif;
 }
 </style>
