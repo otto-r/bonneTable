@@ -1,8 +1,11 @@
 <template>
   <div class="container-fluid col-8">
     <div class="centered" v-if="loading">
-      <b-img src="/static/win.png"/>
-      <br>Ｌｏａｄｉｎｇ．．
+      <div class="headerw95">Ｌｏａｄｉｎｇ．．</div>.
+      <div class="bgloading">
+        <b-img src="/static/win.png"/>
+      </div>
+      <br>
     </div>
     <div class="headerw95 row mt-3">
       <div class="col-12 px-1">
@@ -24,11 +27,18 @@
       </div>
     </div>
     <div class="row bgbody pt-2">
-      <Calendar v-if="displayCalendar" @toguests="bookingRequest.time = $event"></Calendar>
-      <Guests v-if="displayGuests" @toTime="bookingRequest.seats = $event"></Guests>
-      <Time v-if="displayTime" @toConfirm="timeToAppend = $event"></Time>
-      <Confirm v-if="displayConfirm" @finalizeBooking="confirmInfo = $event"></Confirm>
-      <h2 v-if="bookingSuccess" style="color: black">Ｂｏｏｋｉｎｇ Ｓｕｃｃｅｓｓｆｕｌ</h2>
+      <Calendar v-if="displayCalendar" @toguests="pickDate($event)"></Calendar>
+      <Guests v-if="displayGuests" @toTime="pickGuests($event)"></Guests>
+      <Time v-if="displayTime" @toConfirm="pickTime($event)"></Time>
+      <Confirm v-if="displayConfirm" @finalizeBooking="pickConfirmInfo($event)"></Confirm>
+      <div v-if="bookingSuccess">
+        <div class="row">
+          <div class="mx-4">
+            <h2 style="color: black">Ｂｏｏｋｉｎｇ Ｓｕｃｃｅｓｓｆｕｌ</h2>
+          </div>
+          <button class="mx-auto" @click="newBooking()">Ｎｅｗ Ｂｏｏｋｉｎｇ</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -51,6 +61,7 @@ export default {
   },
   data() {
     return {
+      confirmBooking: "",
       loading: false,
       bookingSuccess: false,
       displayCalendar: true,
@@ -58,11 +69,11 @@ export default {
       displayTime: false,
       displayConfirm: false,
       timeToAppend: new Date(),
-      confirmInfo: {
-        customerName: null,
-        phoneNumber: null,
-        email: null
-      },
+      // confirmInfo: {
+      //   customerName: null,
+      //   phoneNumber: null,
+      //   email: null
+      // },
       bookingRequest: {
         time: null,
         seats: null,
@@ -73,6 +84,11 @@ export default {
     };
   },
   methods: {
+    newBooking() {
+      this.$emit("newBooking");
+      this.displayCalendar = true;
+      this.bookingSuccess = false;
+    },
     changeStep(step) {
       if (step === 1) {
         this.displayCalendar = true;
@@ -93,14 +109,46 @@ export default {
         this.displayConfirm = false;
       }
     },
-    onDateChange(datePicked) {
-      console.log("Time changed onDateChange()!: " + bookingRequest.time);
+    pickDate(datePicked) {
       this.bookingRequest.time = datePicked;
       this.toGuests();
     },
+    pickGuests(guests) {
+      this.bookingRequest.seats = guests;
+      this.toTime();
+    },
+    pickTime(timeToAppend) {
+      this.bookingRequest.time.setHours(timeToAppend.hours + 1);
+      this.bookingRequest.time.setMinutes(timeToAppend.minutes);
+      this.toConfirm();
+    },
+    pickConfirmInfo(Info) {
+      this.bookingRequest.customerName = Info.customerName;
+      this.bookingRequest.email = Info.email;
+      this.bookingRequest.phoneNumber = Info.phoneNumber;
+
+      this.loading = true;
+      book(this.bookingRequest)
+        .then(response => {
+          this.bookingSuccess = true;
+          this.displayConfirm = false;
+          this.loading = false;
+          this.resetBookingRequest();
+          console.log(response.data);
+        })
+        .catch(error => {
+          this.loading = false;
+          console.log(error);
+        });
+    },
+    resetBookingRequest() {
+      (this.bookingRequest.time = null),
+        (this.bookingRequest.seats = null),
+        (this.bookingRequest.customerName = null),
+        (this.bookingRequest.phoneNumber = null),
+        (this.bookingRequest.email = null);
+    },
     toGuests() {
-      console.log("to guests!");
-      console.log(this.$store.state.date);
       this.displayCalendar = false;
       this.displayGuests = true;
     },
@@ -110,6 +158,7 @@ export default {
     toConfirm() {
       (this.displayTime = false), (this.displayConfirm = true);
     },
+    toSuccess() {},
     convertDateTime(date) {
       if (date == null) {
         return "~";
@@ -159,64 +208,7 @@ export default {
     }
   },
   created() {},
-  mounted() {
-    this.$watch(
-      () => {
-        return this.bookingRequest.time;
-      },
-      (newDate, oldDate) => {
-        (this.displayCalendar = false), (this.displayGuests = true);
-      }
-    );
-    this.$watch(
-      () => {
-        return this.bookingRequest.seats;
-      },
-      (newDate, oldDate) => {
-        (this.displayGuests = false), (this.displayTime = true);
-      }
-    );
-    this.$watch(
-      () => {
-        return this.timeToAppend;
-      },
-      (newDate, oldDate) => {
-        (this.displayTime = false), (this.displayConfirm = true);
-        this.bookingRequest.time.setHours(this.timeToAppend.hours + 1);
-        this.bookingRequest.time.setMinutes(this.timeToAppend.minutes);
-        console.log("time: " + this.bookingRequest.time);
-      }
-    );
-    this.$watch(
-      () => {
-        return this.confirmInfo;
-      },
-      (newDate, oldDate) => {
-        this.bookingRequest.customerName = this.confirmInfo.customerName;
-        this.bookingRequest.email = this.confirmInfo.email;
-        this.bookingRequest.phoneNumber = this.confirmInfo.phoneNumber;
-      }
-    );
-    this.$watch(
-      () => {
-        return this.bookingRequest.phoneNumber;
-      },
-      (newDate, oldDate) => {
-        this.loading = true;
-        book(this.bookingRequest)
-          .then(response => {
-            this.bookingSuccess = true;
-            this.displayConfirm = false;
-            this.loading = false;
-            console.log(response.data);
-          })
-          .catch(error => {
-            this.loading = false;
-            console.log(error);
-          });
-      }
-    );
-  }
+  mounted() {}
 };
 </script>
 
@@ -230,6 +222,17 @@ export default {
   /* padding: 0 0 0 0; */
   background-color: rgb(200, 200, 200);
   min-height: 300px;
+}
+
+.bgloading {
+  border-style: solid;
+  border-width: 3px;
+  border-color: rgb(200, 200, 200) rgb(39, 39, 39) rgb(39, 39, 39)
+    rgb(200, 200, 200);
+  /* padding: 0 0 0 0; */
+  background-color: rgb(200, 200, 200);
+  z-index: 11999;
+  margin: 0 0 0 0;
 }
 
 .backdrop {
