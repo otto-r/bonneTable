@@ -8,7 +8,7 @@
       </b-nav>
     </div>
     <BookingList v-if="displayList"></BookingList>
-    <BookAdmin v-if="displayBook"></BookAdmin>
+    <BookAdmin v-if="displayBook" @newBooking="reloadBookAdmin()"></BookAdmin>
     <br>
     <br>
     <br>
@@ -38,6 +38,10 @@ export default {
     };
   },
   methods: {
+    reloadBookAdmin(){
+      this.displayBook = false;
+      this.displayBook = true;
+    },
     menuBook() {
       (this.displayBook = true), (this.displayList = false);
     },

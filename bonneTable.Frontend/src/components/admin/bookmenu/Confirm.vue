@@ -1,7 +1,7 @@
 <template>
-  <div class="mx-auto col-7 fontz">
+  <div class="mx-auto fontz col-8">
     <div class="form-group" :class="{'has-error': errors.any() }">
-      <label class="control-label" for="Name">Name</label>
+      <label class="control-label mb-0" for="Name">Name</label>
       <input
         class="w98input"
         :class="{'input': true, 'is-invalid': errors.has('Name') }"
@@ -14,7 +14,7 @@
       <p class="text-danger" v-if="errors.has('Name')">{{ errors.first('Name') }}</p>
     </div>
     <div class="form-group" :class="{'has-error': errors.any() }">
-      <label class="control-label" for="Email">Email</label>
+      <label class="control-label mb-0" for="Email">Email</label>
       <input
         class="w98input"
         :class="{'input': true, 'is-invalid': errors.has('Email') }"
@@ -27,19 +27,19 @@
       <p class="text-danger" v-if="errors.has('Email')">{{ errors.first('Email') }}</p>
     </div>
     <div class="form-group" :class="{'has-error': errors.any() }">
-      <label class="control-label" for="PhoneNumber">Phone Number</label>
+      <label class="control-label mb-0" for="PhoneNumber">Phone Number</label>
       <input
         class="w98input"
         :class="{'input': true, 'is-invalid': errors.has('PhoneNumber') }"
         v-model="confirmInfo.phoneNumber"
-        v-validate="'required|numeric'"
+        v-validate="'required|numeric|min:6'"
         name="PhoneNumber"
         type="text"
         placeholder="PhoneNumber"
       >
       <p class="text-danger" v-if="errors.has('PhoneNumber')">{{ errors.first('PhoneNumber') }}</p>
     </div>
-    <button class="mx-auto" @click="book()">Book</button>
+    <button class="mx-auto mb-3" @click="book()">Book</button>
   </div>
 </template>
 
