@@ -91,11 +91,9 @@ export default {
     },
     addEditProperty() {
       var newList = [];
-      console.log(this.tables[0]);
       this.tables.forEach(table => {
         newList.push({ id: table.id, seats: table.seats, editing: false });
       });
-      console.log(newList[0]);
       return newList;
     },
     activateEditing(table) {

@@ -60,7 +60,7 @@ export default {
       this.$router.push({ path: "/login" });
     },
     notLoggedIn() {
-      if (!this.$store.state.loggedIn) {
+      if (!localStorage.loggedIn) {
         this.$router.push({ path: "/LogIn" });
       }
     }
