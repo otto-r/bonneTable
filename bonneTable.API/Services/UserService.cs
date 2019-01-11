@@ -1,4 +1,5 @@
 ﻿using bonneTable.Admin;
+using bonneTable.Admin.Entities;
 using bonneTable.Admin.Service;
 using bonneTable.API.Entities;
 using bonneTable.API.Helpers;
@@ -27,7 +28,13 @@ namespace bonneTable.API.Services
         // Make async
         public User Authenticate(string username, string password)
         {
+
             var fetchedUser = _context.AdminUsers.Where(x => x.Username == username).FirstOrDefault();
+
+            if (fetchedUser == null)
+            {
+                return null;
+            }
 
             var hashedIncomingPassword = HashingFunction.HashPassword(password, fetchedUser.Salt);
 

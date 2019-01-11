@@ -27,7 +27,7 @@ namespace bonneTable.Services.Services
                 return new BookingResponseModel { Success = false, ErrorMessage = "Bad request" };
             }
 
-            if (bookingRequest.Seats <= 0 || bookingRequest.Seats > 6)
+            if (bookingRequest.Seats <= 0 || bookingRequest.Seats > 9)
             {
                 return new BookingResponseModel { Success = false, ErrorMessage = "Bad number of seats" };
             }
@@ -54,8 +54,18 @@ namespace bonneTable.Services.Services
                 return new BookingResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
             }
 
-            var bookingsOnDate = await _bookingRepository.GetByDate(bookingRequest.Time);
-            var tables = await _tableRepository.GetAll();
+            List<Booking> bookingsOnDate;
+            List<Table> tables;
+            try
+            {
+                bookingsOnDate = await _bookingRepository.GetByDate(bookingRequest.Time);
+                tables = await _tableRepository.GetAll();
+            }
+            catch (Exception)
+            {
+                // logg error
+                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+            }
 
             List<Table> freeTables = new List<Table>();
 
@@ -69,12 +79,15 @@ namespace bonneTable.Services.Services
                 var oldBookingStart = oldBooking.Time.AddMinutes(1);
                 var oldBookingEnd = oldBooking.Time.AddHours(2).AddMinutes(-1);
 
+                var sameTimeHour = bookingRequest.Time.Hour == oldBooking.Time.Hour;
+                var sameTimeMinute = bookingRequest.Time.Minute == oldBooking.Time.Minute;
+
                 // if these are true add to interval
                 var overlapOldBookingFirst = newBookingStart < oldBookingEnd && newBookingStart > oldBookingStart;
                 var overlapNewBookingFirst = newBookingEnd > oldBookingStart && newBookingEnd < oldBookingEnd;
 
 
-                if (overlapNewBookingFirst || overlapOldBookingFirst)
+                if (overlapNewBookingFirst || overlapOldBookingFirst || (sameTimeHour && sameTimeMinute))
                 {
                     bookingsDuring2hInterval.Add(oldBooking);
                 }
@@ -98,6 +111,7 @@ namespace bonneTable.Services.Services
                 if (bookingRequest.Seats <= table.Seats)
                 {
                     selectedTable = table;
+                    break;
                 }
             }
 

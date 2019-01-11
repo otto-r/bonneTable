@@ -1,12 +1,12 @@
 <template>
   <div class="mx-auto fontz col-8">
-    <div class="form-group" :class="{'has-error': errors.any() }">
+      <div class="form-group" :class="{'has-error': errors.any() }">
       <label class="control-label mb-0" for="Name">Name</label>
       <input
         class="w98input"
         :class="{'input': true, 'is-invalid': errors.has('Name') }"
         v-model="confirmInfo.customerName"
-        v-validate="'required'"
+        v-validate="'required|min:2'"
         name="Name"
         type="text"
         placeholder="Name"
@@ -48,6 +48,9 @@ import { book } from "@/api/BookingAPI";
 
 export default {
   name: "Confirm",
+  props: {
+    confProp: { type: Object }
+  },
   data() {
     return {
       confirmInfo: {
@@ -59,10 +62,40 @@ export default {
   },
   methods: {
     book() {
+      console.log("BOOK: " + this.confirmInfo.email)
       this.$emit("finalizeBooking", this.confirmInfo);
     }
   },
-  created() {}
+  created() {},
+  mounted() {
+    this.confirmInfo.customerName = this.confProp.customerName;
+    this.confirmInfo.phoneNumber = this.confProp.phoneNumber;
+    this.confirmInfo.email = this.confProp.email;
+    this.$watch(
+      () => {
+        return this.confirmInfo.customerName;
+      },
+      (newConf, oldConf) => {
+        this.$emit("updateConfInfo", this.confirmInfo);
+      }
+    );
+    this.$watch(
+      () => {
+        return this.confirmInfo.phoneNumber;
+      },
+      (newConf, oldConf) => {
+        this.$emit("updateConfInfo", this.confirmInfo);
+      }
+    );
+    this.$watch(
+      () => {
+        return this.confirmInfo.email;
+      },
+      (newConf, oldConf) => {
+        this.$emit("updateConfInfo", this.confirmInfo);
+      }
+    );
+  }
 };
 </script>
 

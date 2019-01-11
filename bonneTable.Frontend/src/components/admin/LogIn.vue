@@ -40,6 +40,9 @@
             <div class="row">
               <b-button class="btn mx-auto login" @click="validateInput()">Log In</b-button>
             </div>
+            <div class="row">
+              <div class="mx-auto" v-if="logInFailure">⚠️Login failed : {{ errorMsg }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -59,6 +62,7 @@ export default {
   name: "LogIn",
   data() {
     return {
+      errorMsg: "",
       logInFailure: false,
       userInfo: { username: "", password: "" }
     };
@@ -75,8 +79,9 @@ export default {
           this.$router.push({ path: "/admin" });
         })
         .catch(error => {
-          console.log("ERRRRRRORROROROR or failed login");
-          console.log(error);
+          this.logInFailure = true;
+          this.errorMsg = "Incorrect username or password";
+          console.log("Error: " + this.errorMsg);
         });
     },
     validateInput() {

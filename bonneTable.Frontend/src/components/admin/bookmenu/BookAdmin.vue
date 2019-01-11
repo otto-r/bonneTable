@@ -30,7 +30,12 @@
       <Calendar v-if="displayCalendar" @toguests="pickDate($event)"></Calendar>
       <Guests v-if="displayGuests" @toTime="pickGuests($event)"></Guests>
       <Time v-if="displayTime" @toConfirm="pickTime($event)"></Time>
-      <Confirm v-if="displayConfirm" @finalizeBooking="pickConfirmInfo($event)"></Confirm>
+      <Confirm
+        :confProp="confirmInfo"
+        v-if="displayConfirm"
+        @updateConfInfo="onChangeUpdate($event)"
+        @finalizeBooking="pickConfirmInfo($event)"
+      ></Confirm>
       <div v-if="bookingSuccess">
         <div class="row">
           <div class="mx-4">
@@ -48,7 +53,7 @@ import Calendar from "../bookmenu/Calendar";
 import Guests from "../bookmenu/Guests";
 import Time from "../bookmenu/Time";
 import Confirm from "../bookmenu/Confirm";
-import { book } from "@/api/BookingAPI";
+import { adminBook } from "@/api/BookingAPI";
 import { getClockEmoji } from "@/api/EmojiHelper";
 
 export default {
@@ -69,11 +74,11 @@ export default {
       displayTime: false,
       displayConfirm: false,
       timeToAppend: new Date(),
-      // confirmInfo: {
-      //   customerName: null,
-      //   phoneNumber: null,
-      //   email: null
-      // },
+      confirmInfo: {
+        customerName: "",
+        phoneNumber: "",
+        email: ""
+      },
       bookingRequest: {
         time: null,
         seats: null,
@@ -128,7 +133,7 @@ export default {
       this.bookingRequest.phoneNumber = Info.phoneNumber;
 
       this.loading = true;
-      book(this.bookingRequest)
+      adminBook(this.bookingRequest)
         .then(response => {
           this.bookingSuccess = true;
           this.displayConfirm = false;
@@ -140,6 +145,15 @@ export default {
           this.loading = false;
           console.log(error);
         });
+    },
+    onChangeUpdate(Info) {
+      this.bookingRequest.customerName = Info.customerName;
+      this.bookingRequest.email = Info.email;
+      this.bookingRequest.phoneNumber = Info.phoneNumber;
+
+      this.confirmInfo.customerName = Info.customerName;
+      this.confirmInfo.phoneNumber = Info.phoneNumber;
+      this.confirmInfo.email = Info.email;
     },
     resetBookingRequest() {
       (this.bookingRequest.time = null),

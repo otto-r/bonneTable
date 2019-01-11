@@ -1,5 +1,6 @@
 ﻿using bonneTable.Models.RequestModels;
 using bonneTable.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -7,10 +8,11 @@ using System.Threading.Tasks;
 namespace bonneTable.API.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class BookingController : ControllerBase
     {
-        
+
         private readonly IBookingService _bookingService;
 
         public BookingController(IBookingService bookingServie)
@@ -39,6 +41,7 @@ namespace bonneTable.API.Controllers
 
         // GET bookings from requested date
         [Route("getbydate/{date}")]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult> GetByDate(DateTime date)
         {
@@ -48,10 +51,20 @@ namespace bonneTable.API.Controllers
         }
 
         // POST AKA ADD
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] BookingRequestModel bookingRequestModel)
         {
             var bookingresponse = await _bookingService.ClientBookTable(bookingRequestModel);
+            return Ok(bookingresponse);
+        }
+
+        // POST AKA ADD (Admin book)
+        [Route("adminbook")]
+        [HttpPost]
+        public async Task<IActionResult> AdminPost([FromBody] BookingRequestModel bookingRequestModel)
+        {
+            var bookingresponse = await _bookingService.AdminBookTable(bookingRequestModel);
             return Ok(bookingresponse);
         }
 
