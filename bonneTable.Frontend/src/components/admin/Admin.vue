@@ -32,6 +32,7 @@ import TableMenu from "../admin/TableMenu";
 import BookingMenu from "../admin/BookingMenu";
 import LogIn from "../admin/LogIn";
 import TokenTimer from "../admin/TokenTimer";
+import { decode } from "@/Helper/JWT.js";
 
 export default {
   components: {
@@ -70,16 +71,28 @@ export default {
       this.$router.push({ path: "/login" });
     },
     notLoggedIn() {
-      console.log("notloggedin: " + localStorage.loggedIn);
       console.log(localStorage.loggedIn);
       if (localStorage.loggedIn == "false") {
         console.log("notloggedin in if");
 
         this.$router.push({ path: "/login" });
       }
+    },
+    seeIfLoggedIn() {
+      if (localStorage.token == "null" || localStorage.token == "") {
+        console.log("No token found " + localStorage.token);
+        this.logOut();
+        return;
+      }
+      var time = decode(localStorage.token);
+      if (time <= 0) {
+        console.log("time is up: " + time);
+        this.logOut();
+      }
     }
   },
   created() {
+    this.seeIfLoggedIn();
     this.notLoggedIn();
   }
 };

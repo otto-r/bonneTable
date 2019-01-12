@@ -24,6 +24,7 @@
 <script>
 import BookingList from "../admin/bookmenu/BookingList";
 import BookAdmin from "../admin/bookmenu/BookAdmin";
+import { decode } from "@/Helper/JWT.js";
 
 export default {
   components: {
@@ -38,7 +39,7 @@ export default {
     };
   },
   methods: {
-    reloadBookAdmin(){
+    reloadBookAdmin() {
       this.displayBook = false;
       this.displayBook = true;
     },
@@ -48,10 +49,29 @@ export default {
     menuList() {
       (this.displayBook = false), (this.displayList = true);
     },
+    logOut() {
+      localStorage.token = "";
+      localStorage.loggedIn = false;
+      this.displayLogOut = false;
+      this.displaylogIn = true;
+      this.$router.push({ path: "/login" });
+    },
     notLoggedIn() {
+      console.log("notlogged in method");
+      if (localStorage.token == "null" || localStorage.token == "") {
+        console.log("No token found " + localStorage.token);
+        this.logOut();
+        return;
+      }
       if (localStorage.loggedIn == "false") {
         console.log("not logged in run");
         this.$router.push({ path: "/LogIn" });
+        return;
+      }
+      var time = decode(localStorage.token);
+      if (time <= 0) {
+        console.log("time is up: " + time);
+        this.logOut();
       }
     }
   },
