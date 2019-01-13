@@ -7,9 +7,9 @@
       <div class="row">
         <div class="star mx-3">★</div>
         <div class="mx-2">search by:</div>
-        <div class="search" v-if="displayCalendarSearchPicker" @click="toggleSearch()">Ξｍａｉｌ</div>
+        <div class="search clickable" v-if="displayCalendarSearchPicker" @click="toggleSearch()">Ξｍａｉｌ</div>
         <div class="search">／</div>
-        <div class="search" v-if="displayEmailSearchPicker" @click="toggleCalendarSearch()">Ｄａｔｅ</div>
+        <div class="search clickable" v-if="displayEmailSearchPicker" @click="toggleCalendarSearch()">Ｄａｔｅ</div>
       </div>
     </div>
     <div class="row">
@@ -280,6 +280,14 @@ export default {
 };
 </script>
 <style scoped>
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  opacity: 0.5;
+}
+
 .label-thing {
   font-size: 1.2em;
 }

@@ -50,7 +50,7 @@ export default {
         localStorage.token = null;
       } else {
         var min0 = "";
-        if (new Date(time).getUTCMinutes() < 9) {
+        if (new Date(time).getUTCMinutes() <= 9) {
           min0 = "0";
         }
         this.timeLeft =

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>【 Λｄｍｉｎ 】</h1>
+    <h1 class="mx-auato" @click="clickAdminHeader()">【 Λｄｍｉｎ 】</h1>
   </div>
 </template>
 
@@ -10,13 +10,16 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    clickAdminHeader() {
+      this.$router.push({ path: "/admin" });
+    }
+  },
   created() {}
 };
 </script>
 
 <style scoped>
-
 @import "https://fonts.googleapis.com/css?family=Bree+Serif";
 
 body {
@@ -29,6 +32,7 @@ h1 {
   color: pink;
   font-size: 3em;
   text-align: center;
+  cursor: pointer;
 }
 
 @media (min-width: 480px) {
