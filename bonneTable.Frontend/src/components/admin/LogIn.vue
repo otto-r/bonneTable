@@ -38,9 +38,13 @@
               </div>
             </div>
             <div class="row">
-              <b-button class="btn mx-auto login" @click="validateInput()">Log In</b-button>
+              <b-button class="btn mx-auto login" @click="validateInput()">
+                <div v-if="!loading">Log In</div>
+                <div v-if="loading" class="loader"></div>
+              </b-button>
             </div>
             <div class="row">
+              <div class="mx-auto" v-if="validationFailed">⚠️Please enter username and password.</div>
               <div class="mx-auto" v-if="logInFailure">⚠️Login failed : {{ errorMsg }}</div>
             </div>
           </div>
@@ -64,13 +68,17 @@ export default {
     return {
       errorMsg: "",
       logInFailure: false,
+      loading: false,
+      validationFailed: false,
       userInfo: { username: "", password: "" }
     };
   },
   methods: {
     logIn() {
+      this.loading = true;
       getToken(this.userInfo)
         .then(response => {
+          this.loading = false;
           console.log(response);
           localStorage.token = response.token;
 
@@ -87,8 +95,11 @@ export default {
     validateInput() {
       let self = this;
       self.$validator.validate().then(result => {
+        this.validationFailed = false;
         if (result) {
           self.logIn();
+        } else {
+          this.validationFailed = true;
         }
       });
     }
@@ -125,5 +136,24 @@ body {
   color: pink;
   background-attachment: fixed;
   height: 100%;
+}
+
+.loader {
+  border: 3px solid #ffe6ff;
+  border-radius: 50%;
+  border-top: 3px solid #00fffa;
+  width: 25px;
+  height: 25px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

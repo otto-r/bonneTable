@@ -2,7 +2,6 @@ export function getClockEmoji(time) {
   if (time == null) {
     return "🕓"
   }
-  console.log("EMOJI: " + time)
   time = time.getHours() - 1+ ":" + time.getMinutes();
 
   if (time === "16:0") {

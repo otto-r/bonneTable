@@ -71,7 +71,6 @@ export default {
       this.$router.push({ path: "/login" });
     },
     notLoggedIn() {
-      console.log(localStorage.loggedIn);
       if (localStorage.loggedIn == "false") {
         console.log("notloggedin in if");
 

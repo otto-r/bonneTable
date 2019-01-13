@@ -144,7 +144,6 @@ export default {
       this.$store.state.email = booking.email;
       this.$store.state.phoneNumber = booking.phoneNumber;
       this.$store.state.id = booking.id;
-      console.log(this.$store.state.time);
     },
     edit() {
       console.log("clicked");
@@ -179,11 +178,9 @@ export default {
         });
     },
     getBookingsByDate() {
-      console.log("date: " + this.dateSelected);
       getByDate(formatTime(this.dateSelected))
         .then(response => {
           this.bookings = response.bookings;
-          console.log(this.bookings[0].time);
         })
         .catch(error => {
           console.log(error);
@@ -218,7 +215,7 @@ export default {
       var month = x.getMonth() + 1;
       var year = x.getFullYear();
       var weekday = new Array(7);
-      weekday[0] = "Sund";
+      weekday[0] = "Sun";
       weekday[1] = "Mon";
       weekday[2] = "Tue";
       weekday[3] = "Wed";

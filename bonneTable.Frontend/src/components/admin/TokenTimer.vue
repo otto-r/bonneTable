@@ -31,6 +31,11 @@ export default {
     };
   },
   methods: {
+    delayTimerStart(newState) {
+      setTimeout(function() {
+       this.setTimer();
+      }, 1000);
+    },
     timer() {
       this.timeLeft = decode(localStorage.token);
 
@@ -61,6 +66,7 @@ export default {
   created() {
     this.timer();
     this.setTimer();
+    this.delayTimerStart();
   }
 };
 </script>

@@ -139,7 +139,6 @@ export default {
           this.displayConfirm = false;
           this.loading = false;
           this.resetBookingRequest();
-          console.log(response.data);
         })
         .catch(error => {
           this.loading = false;
