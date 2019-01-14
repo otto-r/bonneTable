@@ -14,6 +14,10 @@
           </div>
         </div>
       </div>
+      <div v-if="loaded && displayChart" class="mx-auto col-lg-6 col-sm-12">
+        <h2>Ｂｏｏｋｉｎｇｓ ｔｏｎｉｇｈｔ</h2>
+        <bar-chart v-if="loaded && displayChart" :dataArray="bookingsArray"></bar-chart>
+      </div>
     </div>
     <div class="col-8 mx-auto">
       <token-timer/>
@@ -33,13 +37,15 @@ import BookingMenu from "../admin/BookingMenu";
 import LogIn from "../admin/LogIn";
 import TokenTimer from "../admin/TokenTimer";
 import { decode } from "@/Helper/JWT.js";
+import BarChart from "../admin/Chart.js";
 
 export default {
   components: {
     LogIn,
     glitchImage,
     Footer,
-    TokenTimer
+    TokenTimer,
+    BarChart
   },
   name: "Admin",
   data() {
@@ -47,25 +53,32 @@ export default {
       displayBookingnMenu: true,
       displayTableMenu: false,
       displayLogIn: true,
-      displayLogOut: true
+      displayLogOut: true,
+      bookings: [],
+      bookingsArray: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      loaded: false,
+      displayChart: true
     };
   },
   methods: {
     clickTableMenu() {
       this.displayTableMenu = true;
       this.displayBookingnMenu = false;
+      this.displayChart = false;
 
       this.$router.push({ path: "/admin/tablemenu" });
     },
     clickBookingMenu() {
       this.displayBookingnMenu = true;
       this.displayTableMenu = false;
+      this.displayChart = false;
 
       this.$router.push({ path: "/admin/bookingmenu" });
     },
     logOut() {
       localStorage.token = "";
       localStorage.loggedIn = false;
+      this.displayChart = false;
       this.displayLogOut = false;
       this.displaylogIn = true;
       this.$router.push({ path: "/login" });
@@ -88,9 +101,57 @@ export default {
         console.log("time is up: " + time);
         this.logOut();
       }
-    }
+    },
+    fetchBookingsForChart() {
+      getByDate(formatTime(new Date()))
+        .then(response => {
+          this.bookings = response.bookings;
+
+          this.bookings.forEach(booking => {
+            var time =
+              new Date(booking.time).getUTCHours() +
+              "" +
+              new Date(booking.time).getUTCMinutes();
+            console.log("not if " + time);
+
+            if (time === "160") {
+              this.bookingsArray[0] += booking.seats;
+            } else if (time === "1630") {
+              this.bookingsArray[1] += booking.seats;
+            } else if (time === "170") {
+              this.bookingsArray[2] += booking.seats;
+            } else if (time === "1730") {
+              this.bookingsArray[3] += booking.seats;
+            } else if (time === "180") {
+              this.bookingsArray[4] += booking.seats;
+            } else if (time === "1830") {
+              this.bookingsArray[5] += booking.seats;
+            } else if (time === "190") {
+              console.log("1900 ??");
+              this.bookingsArray[6] += booking.seats;
+            } else if (time === "1930") {
+              this.bookingsArray[7] += booking.seats;
+            } else if (time === "200") {
+              this.bookingsArray[8] += booking.seats;
+            } else if (time === "2030") {
+              this.bookingsArray[9] += booking.seats;
+            } else if (time === "210") {
+              this.bookingsArray[10] += booking.seats;
+            } else if (time === "2130") {
+              this.bookingsArray[11] += booking.seats;
+            }
+          });
+          this.loaded = true;
+          console.log(this.bookingsArray[0]);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    feedHungryHungryChart() {}
   },
   created() {
+    this.fetchBookingsForChart();
     this.seeIfLoggedIn();
     this.notLoggedIn();
   }

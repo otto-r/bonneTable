@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto fontz col-8">
-      <div class="form-group" :class="{'has-error': errors.any() }">
+    <div class="form-group" :class="{'has-error': errors.any() }">
       <label class="control-label mb-0" for="Name">Name</label>
       <input
         class="w98input"
@@ -40,6 +40,7 @@
       <p class="text-danger" v-if="errors.has('PhoneNumber')">{{ errors.first('PhoneNumber') }}</p>
     </div>
     <button class="mx-auto mb-3" @click="book()">Book</button>
+    <div v-if="!errorMsg.success">⚠️Error: {{errorMsg.text}}</div>
   </div>
 </template>
 
@@ -49,7 +50,8 @@ import { book } from "@/api/BookingAPI";
 export default {
   name: "Confirm",
   props: {
-    confProp: { type: Object }
+    confProp: { type: Object },
+    errorMsg: { type: Object }
   },
   data() {
     return {
@@ -62,7 +64,7 @@ export default {
   },
   methods: {
     book() {
-      console.log("BOOK: " + this.confirmInfo.email)
+      console.log("BOOK: " + this.confirmInfo.email);
       this.$emit("finalizeBooking", this.confirmInfo);
     }
   },

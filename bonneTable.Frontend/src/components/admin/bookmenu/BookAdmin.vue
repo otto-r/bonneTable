@@ -32,6 +32,7 @@
       <Time v-if="displayTime" @toConfirm="pickTime($event)"></Time>
       <Confirm
         :confProp="confirmInfo"
+        :errorMsg="bookingErrorMsg"
         v-if="displayConfirm"
         @updateConfInfo="onChangeUpdate($event)"
         @finalizeBooking="pickConfirmInfo($event)"
@@ -74,6 +75,7 @@ export default {
       displayTime: false,
       displayConfirm: false,
       timeToAppend: new Date(),
+      bookingErrorMsg: { success: true, text: "" },
       confirmInfo: {
         customerName: "",
         phoneNumber: "",
@@ -135,6 +137,14 @@ export default {
       this.loading = true;
       adminBook(this.bookingRequest)
         .then(response => {
+          if (response.success == false) {
+            console.log(response.errorMessage);
+            this.loading = false;
+            this.bookingErrorMsg.text = response.errorMessage;
+            this.bookingErrorMsg.success = response.success;
+            return;
+          }
+
           this.bookingSuccess = true;
           this.displayConfirm = false;
           this.loading = false;
@@ -155,11 +165,18 @@ export default {
       this.confirmInfo.email = Info.email;
     },
     resetBookingRequest() {
-      (this.bookingRequest.time = null),
-        (this.bookingRequest.seats = null),
-        (this.bookingRequest.customerName = null),
-        (this.bookingRequest.phoneNumber = null),
-        (this.bookingRequest.email = null);
+      this.bookingRequest.time = null;
+      this.bookingRequest.seats = null;
+      this.bookingRequest.customerName = null;
+      this.bookingRequest.phoneNumber = null;
+      this.bookingRequest.email = null;
+
+      this.bookingErrorMsg.success = true;
+      this.bookingErrorMsg.text = "";
+
+      this.confirmInfo.customerName = "";
+      this.confirmInfo.phoneNumber = "";
+      this.confirmInfo.email = "";
     },
     toGuests() {
       this.displayCalendar = false;
