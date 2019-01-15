@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import BootstrapVue from "bootstrap-vue";
+import Toasted from 'vue-toasted';
 import App from "./App";
 import VueRouter from "vue-router";
 import VCalendar from "v-calendar";
@@ -20,6 +21,7 @@ import ConfirmSelect from "./components/ConfirmSelect.vue";
 import VeeValidate from "vee-validate";
 
 Vue.use(BootstrapVue);
+Vue.use(Toasted);
 Vue.use(VueRouter);
 Vue.use(Vuex);
 Vue.use(VeeValidate);

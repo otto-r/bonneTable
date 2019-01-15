@@ -68,6 +68,7 @@ export default {
       self.$validator.validate().then(result => {
         if (result) {
           self.confirmBook();
+          this.appear();
         }
       });
     },
@@ -90,6 +91,16 @@ export default {
         .catch(error => {
           console.log(error);
         });
+    },
+    appear () {
+    this.$toasted.show('Reservation is successfully completed', {
+        //theme of the toast you prefer
+        theme: 'toasted-primary',
+        //position of the toast container
+        position: 'bottom-center',
+        //display time of the toast
+        duration: 3000
+      })
     }
   }
 };
