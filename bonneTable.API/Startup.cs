@@ -1,4 +1,6 @@
-﻿using bonneTable.API.Helpers;
+﻿using bonneTable.Admin;
+using bonneTable.Admin.Service;
+using bonneTable.API.Helpers;
 using bonneTable.API.Services;
 using bonneTable.Models;
 using bonneTable.Services.Interfaces;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -59,12 +62,17 @@ namespace bonneTable.API
                 };
             });
 
+            services.AddDbContext<AdminDbContext>(options =>
+                options.UseSqlServer(Configuration.GetSection("AdminSQLDb:ConnectionString").Value));
+
             services.Configure<Settings>(options =>
             {
                 options.ConnectionString = Configuration.GetSection("MongoConnection:ConnectionString").Value;
                 options.Database = Configuration.GetSection("MongoConnection:Database").Value;
             });
 
+
+            services.AddScoped<IAdminDbContext, AdminDbContext>();      //  Scoped or transient?
             services.AddTransient<IRepository<Table>, TableRepository>();
             services.AddTransient<IBookingRepository, BookingRepository>();
 

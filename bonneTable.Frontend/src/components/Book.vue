@@ -105,18 +105,18 @@ export default {
 	outline: none;
 	display: block;
 	float: left;
-	font-size: 12px;
+	font-size: 1rem;
 	line-height: 36px;
 	color: white;
 	/*need more margin on the left of links to accomodate the numbers*/
-	padding: 0 10px 0 60px;
+	padding: 0 0.5rem 0 1.4rem;
 	background: #666;
 	background: linear-gradient(#666, #333);
 	position: relative;
 }
 /*since the first link does not have a triangle before it we can reduce the left padding to make it look consistent with other links*/
 .breadcrumb button:first-child {
-	padding-left: 46px;
+	padding: 0 0.5rem 0 1rem;
 	border-radius: 5px 0 0 5px; /*to match with the parent's radius*/
 }
 .breadcrumb button:first-child:before {
@@ -124,7 +124,6 @@ export default {
 }
 .breadcrumb button:last-child {
 	border-radius: 0 5px 5px 0; /*this was to prevent glitches on hover*/
-	padding-right: 20px;
 }
 
 /*hover/active styles*/
@@ -208,7 +207,7 @@ export default {
     margin-top: 10px;
 }
 h5{
-    width:30%;
+    width:10rem;
     background:white;
     margin-top:-1.5rem;
     margin-left:5px;
