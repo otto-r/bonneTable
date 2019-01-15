@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace bonneTable.Services.Services
 {
@@ -18,18 +19,23 @@ namespace bonneTable.Services.Services
         {
             _bookingRepository = bookingRepository;
             _tableRepository = tableRepository;
+
+            Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console()
+            .WriteTo.File("C:\\test\\log.txt")
+            .CreateLogger();
         }
 
         public async Task<BookingResponseModel> AdminBookTable(BookingRequestModel bookingRequest)
         {
             if (bookingRequest == null)
             {
-                return new BookingResponseModel { Success = false, ErrorMessage = "Bad request" };
+                return BookingResponseModel.Create(false, "Bad request");
             }
 
             if (bookingRequest.Seats <= 0 || bookingRequest.Seats > 9)
             {
-                return new BookingResponseModel { Success = false, ErrorMessage = "Bad number of seats" };
+                return BookingResponseModel.Create(false, "Bad number of seats");
             }
 
             var nameGreaterThan1 = bookingRequest.CustomerName.Length <= 1 ? true : false;
@@ -39,7 +45,7 @@ namespace bonneTable.Services.Services
 
             if (nameGreaterThan1 || nameNotLongerThan50 || phoneNotShorterThan6 || phoneNotLongerThan25)
             {
-                return new BookingResponseModel { Success = false, ErrorMessage = "Invalid name or phone number" };
+                return BookingResponseModel.Create(false, "Invalid name or phone number");
             }
 
             bookingRequest.Time = bookingRequest.Time.AddMilliseconds(-bookingRequest.Time.Millisecond);
@@ -51,7 +57,7 @@ namespace bonneTable.Services.Services
 
             if (bookingRequest.Time < now)
             {
-                return new BookingResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
+                return BookingResponseModel.Create(false, "Invalid date.");
             }
 
             List<Booking> bookingsOnDate;
@@ -137,10 +143,11 @@ namespace bonneTable.Services.Services
             catch (Exception)
             {
                 // log error and method
-                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+                Log.Information($"Error on {this.GetType().FullName}. Failed to connect to database.");
+                return BookingResponseModel.Create(false, "Error connecting to database");
             }
 
-            return new BookingResponseModel { Success = true };
+            return BookingResponseModel.Create(true);
         }
 
         public async Task<BookingResponseModel> AdminCancelBooking(Guid id)
@@ -148,12 +155,13 @@ namespace bonneTable.Services.Services
             try
             {
                 await _bookingRepository.Delete(id);
-                return new BookingResponseModel { Success = true };
+                return BookingResponseModel.Create(true);
             }
             catch (Exception)
             {
                 // log exception and method
-                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+                Log.Information($"Error on {this.GetType().FullName}. Failed to connect to database.");
+                return BookingResponseModel.Create(false, "Error connecting to database");
             }
         }
 
@@ -161,12 +169,12 @@ namespace bonneTable.Services.Services
         {
             if (bookingRequest == null)
             {
-                return new BookingResponseModel { Success = false, ErrorMessage = "Bad request" };
+                return BookingResponseModel.Create(false, "Bad request");
             }
 
             if (bookingRequest.Seats <= 0 || bookingRequest.Seats > 6)
             {
-                return new BookingResponseModel { Success = false, ErrorMessage = "Bad number of seats" };
+                return BookingResponseModel.Create(false, "Bad number of seats");
             }
 
             var nameGreaterThan1 = bookingRequest.CustomerName.Length <= 1 ? true : false;
@@ -176,7 +184,7 @@ namespace bonneTable.Services.Services
 
             if (nameGreaterThan1 || nameNotLongerThan50 || phoneNotShorterThan6 || phoneNotLongerThan25)
             {
-                return new BookingResponseModel { Success = false, ErrorMessage = "Invalid name or phone number" };
+                return BookingResponseModel.Create(false, "Invalid name or phone number");
             }
 
             bookingRequest.Time = bookingRequest.Time.AddMilliseconds(-bookingRequest.Time.Millisecond);
@@ -188,7 +196,7 @@ namespace bonneTable.Services.Services
 
             if (bookingRequest.Time < now)
             {
-                return new BookingResponseModel { Success = false, ErrorMessage = "Can't make a booking in the past" };
+                return BookingResponseModel.Create(false, "Can't make a booking in the past");
             }
 
             List<Booking> bookingsOnDate;
@@ -201,11 +209,11 @@ namespace bonneTable.Services.Services
             catch (Exception)
             {
                 // logg error
-                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+                Log.Information($"Error on {this.GetType().FullName} method. Failed to connect to database.");
+                return BookingResponseModel.Create(false, "Error connecting to database");
             }
 
             List<Table> freeTables = new List<Table>();
-
             List<Booking> bookingsDuring2hInterval = new List<Booking>();
 
             foreach (var oldBooking in bookingsOnDate)
@@ -238,7 +246,10 @@ namespace bonneTable.Services.Services
             freeTables.Sort((x, y) => x.Seats.CompareTo(y.Seats));
             Table selectedTable = null;
 
-            if (!freeTables.Any()) { return new BookingResponseModel { Success = false, ErrorMessage = "No table available" }; };
+            if (!freeTables.Any())
+            {
+                return BookingResponseModel.Create(false, "No table available");
+            }
 
             foreach (var table in freeTables)
             {
@@ -251,7 +262,7 @@ namespace bonneTable.Services.Services
 
             if (selectedTable == null)
             {
-                return new BookingResponseModel { Success = false, ErrorMessage = "No table available with correct amount of seats" };
+                return BookingResponseModel.Create(false, "No table available with correct amount of seats");
             }
 
             Booking booking = new Booking
@@ -271,22 +282,23 @@ namespace bonneTable.Services.Services
             catch (Exception)
             {
                 // log error and method
-                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+                Log.Information($"Error on {this.GetType().FullName}. Failed to connect to database.");
+                return BookingResponseModel.Create(false, "Error connecting to database");
             }
 
-            return new BookingResponseModel { Success = true };
+            return BookingResponseModel.Create(true);
         }
 
         public async Task<BookingResponseModel> EditBooking(BookingRequestModel bookingRequest, Guid bookingId)
         {
             if (bookingRequest == null)
             {
-                return new BookingResponseModel { Success = false, ErrorMessage = "Bad request" };
+                return BookingResponseModel.Create(false, "Bad request");
             }
 
             if (bookingRequest.Seats <= 0 || bookingRequest.Seats > 6)
             {
-                return new BookingResponseModel { Success = false, ErrorMessage = "Bad number of seats" };
+                return BookingResponseModel.Create(false, "Bad number of seats");
             }
 
             var nameGreaterThan1 = bookingRequest.CustomerName.Length <= 1 ? true : false;
@@ -296,7 +308,7 @@ namespace bonneTable.Services.Services
 
             if (nameGreaterThan1 || nameNotLongerThan50 || phoneNotShorterThan6 || phoneNotLongerThan25)
             {
-                return new BookingResponseModel { Success = false, ErrorMessage = "Invalid name or phone number" };
+                return BookingResponseModel.Create(false, "Invalid name or phone number");
             }
 
             bookingRequest.Time = bookingRequest.Time.AddMilliseconds(-bookingRequest.Time.Millisecond);
@@ -321,7 +333,8 @@ namespace bonneTable.Services.Services
             catch (Exception)
             {
                 // logg error
-                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+                Log.Information($"Error on {this.GetType().FullName}. Failed to connect to database.");
+                return BookingResponseModel.Create(false, "Error connecting to database");
             }
 
             List<Table> freeTables = new List<Table>();
@@ -391,10 +404,11 @@ namespace bonneTable.Services.Services
             catch (Exception)
             {
                 // log error
-                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+                Log.Information($"Error on {this.GetType().FullName}. Failed to connect to database.");
+                return BookingResponseModel.Create(false, "Error connecting to database");
             }
 
-            return new BookingResponseModel { Success = true };
+            return BookingResponseModel.Create(true);
         }
 
         public async Task<BookingResponseModel> Get()
@@ -407,9 +421,11 @@ namespace bonneTable.Services.Services
             catch (Exception)
             {
                 // log error
-                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+                Log.Information($"Error on {this.GetType().FullName}. Failed to connect to database.");
+                return BookingResponseModel.Create(false, "Error connecting to database");
             }
-            return new BookingResponseModel { Success = true, Bookings = bookings };
+
+            return BookingResponseModel.Create(true, "Getting bookings", "", bookings);
         }
 
         public async Task<BookingResponseModel> Get(DateTime dateTime)
@@ -423,9 +439,11 @@ namespace bonneTable.Services.Services
             catch (Exception)
             {
                 // log error
-                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+                Log.Information($"Error on {this.GetType().FullName}. Failed to connect to database.");
+                return BookingResponseModel.Create(false, "Error connecting to database");
             }
-            return new BookingResponseModel { Success = true, Bookings = bookings };
+
+            return BookingResponseModel.Create(true, $"Getting bookings on selected date: {dateTime}", "", bookings);
         }
 
         public async Task<BookingResponseModel> Get(Guid id)
@@ -440,9 +458,11 @@ namespace bonneTable.Services.Services
             catch (Exception)
             {
                 // log error
-                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+                Log.Information($"Error on {this.GetType().FullName}. Failed to connect to database.");
+                return BookingResponseModel.Create(false, "Error connecting to database");
             }
-            return new BookingResponseModel { Success = true, Bookings = bookings };
+
+            return BookingResponseModel.Create(true, $"Getting booking with id: {id}", "", bookings);
         }
 
         public async Task<BookingResponseModel> SearchByEmail(string email)
@@ -456,9 +476,11 @@ namespace bonneTable.Services.Services
             catch (Exception)
             {
                 // log error
-                return new BookingResponseModel { Success = false, ErrorMessage = "Error connecting to database" };
+                Log.Information($"Error on {this.GetType().FullName}. Failed to connect to database.");
+                return BookingResponseModel.Create(false, "Error connecting to database");
             }
-            return new BookingResponseModel { Success = true, Bookings = bookings };
+
+            return BookingResponseModel.Create(true, $"Searching for booking with user email: {email}", "", bookings);
         }
     }
 }

@@ -76,6 +76,7 @@ namespace bonneTable.API.Controllers
         }
 
         // PUT: api/Table/5
+        //[Route("{id:guid}")]
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(Guid id, [FromBody] TableRequestModel tableRequest)
         {
@@ -89,6 +90,7 @@ namespace bonneTable.API.Controllers
         }
 
         // DELETE: api/ApiWithActions/5
+        //[Route("{id:guid}")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(Guid id)
         {

@@ -17,80 +17,70 @@ namespace bonneTable.Services.Services
         public TableService(IRepository<Table> repository)
         {
             _repository = repository;
-        }
 
-        public async Task<TableResponseModel> Add(int numberOfSeats)
-        {
             Log.Logger = new LoggerConfiguration()
             .WriteTo.Console()
             .WriteTo.File("C:\\test\\log.txt")
             .CreateLogger();
+        }
+
+        public async Task<TableResponseModel> Add(int numberOfSeats)
+        {
             if (numberOfSeats <= 0)
             {
-                return new TableResponseModel() { ErrorMessage = "Seats cannot be less than or equal to 0", Success = false, Tables = null };
+                return TableResponseModel.Create(false, "Seats cannot be less than or equal to 0", null);
             }
 
             var table = new Table() { Seats = numberOfSeats };
+
             try
             {
                 await _repository.AddAsync(table);
             }
             catch (Exception e)
             {
-                Log.Information("Failed to add table with {Seats} seats", numberOfSeats);
-                return new TableResponseModel() { ErrorMessage = e.Message, Success = false, Tables = null };
+                Log.Information("Failed to add table with {0} seats", numberOfSeats);
+                return TableResponseModel.Create(false, e.Message, null);
             }
-            Log.Information("Added table with {Seats} seats", numberOfSeats);
-            return new TableResponseModel() { ErrorMessage = null, Success = true, Tables = null };
+
+            Log.Information("Added table with {0} seats", numberOfSeats);
+            return TableResponseModel.Create(true, null, null);
         }
 
         public async Task<TableResponseModel> Delete(Guid id)
         {
-            Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console()
-            .WriteTo.File("C:\\test\\log.txt")
-            .CreateLogger();
-
             try
             {
                 await _repository.Delete(id);
             }
             catch (Exception e)
             {
-                Log.Debug("Failed to delete table {Id}", id);
-                return new TableResponseModel() { ErrorMessage = e.Message, Success = false, Tables = null };
+                Log.Debug("Failed to delete table {0}", id);
+                return TableResponseModel.Create(false, e.Message, null);
             }
-            Log.Information("Deleted table {Id}", id);
-            return new TableResponseModel() { ErrorMessage = null, Success = true, Tables = null };
+
+            Log.Information("Deleted table {0}", id);
+            return TableResponseModel.Create(true, null, null);
         }
 
         public async Task<TableResponseModel> Edit(Guid id, TableRequestModel tableRequest)
         {
-            Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console()
-            .WriteTo.File("C:\\test\\log.txt")
-            .CreateLogger();
-
             try
             {
-                await _repository.EditAsync(id, new Table {Seats = tableRequest.numberOfSeats });
+                await _repository.EditAsync(id, new Table { Seats = tableRequest.numberOfSeats });
             }
             catch (Exception e)
             {
-                Log.Information("Failed to edit table {Id}, info: {Table}", id, tableRequest);
-                return new TableResponseModel() { ErrorMessage = e.Message, Success = false, Tables = null };
+                Log.Information("Failed to edit table {0}, info: {1}", id, tableRequest);
+                return TableResponseModel.Create(false, e.Message, null);
             }
-            Log.Information("Editet, info: {Table}", tableRequest);
-            return new TableResponseModel() { ErrorMessage = null, Success = true, Tables = null };
+
+            Log.Information("Editet, info: {0}", tableRequest);
+            return TableResponseModel.Create(true, null, null);
         }
 
         public async Task<TableResponseModel> Get(Guid id)
         {
-            Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console()
-            .WriteTo.File("C:\\test\\log.txt")
-            .CreateLogger();
-
             Table table;
             try
             {
@@ -98,26 +88,22 @@ namespace bonneTable.Services.Services
             }
             catch (Exception e)
             {
-                Log.Debug("Tried to find a table with id {Id}. Error message: {Error}", id, e.Message);
-                return new TableResponseModel() { ErrorMessage = e.Message, Success = false, Tables = null };
+                Log.Debug("Tried to find a table with id {0}. Error message: {1}", id, e.Message);
+                return TableResponseModel.Create(false, e.Message, null);
             }
 
             if (table == null)
             {
-                Log.Information("Failed to find table with id {Id}", id);
-                return new TableResponseModel() { ErrorMessage = $"Unable to find table with Id {id}", Success = false, Tables = null };
+                Log.Information("Failed to find table with id {0}", id);
+                return TableResponseModel.Create(false, $"Unable to find table with Id {id}", null);
             }
-            Log.Information("Got table with id {Id}", id);
-            return new TableResponseModel() { ErrorMessage = null, Success = true, Tables = new List<Table>() { table } };
+
+            Log.Information("Got table with id {0}", id);
+            return TableResponseModel.Create(true, null, new List<Table>() { table });
         }
 
         public async Task<TableResponseModel> Get()
         {
-            Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console()
-            .WriteTo.File("C:\\test\\log.txt")
-            .CreateLogger();
-
             List<Table> tables;
             try
             {
@@ -126,10 +112,11 @@ namespace bonneTable.Services.Services
             catch (Exception e)
             {
                 Log.Information("Failed to get all tables");
-                return new TableResponseModel() { ErrorMessage = e.Message, Success = false, Tables = null };
+                return TableResponseModel.Create(false, e.Message, null);
             }
+
             Log.Information("Got all tables");
-            return new TableResponseModel() { ErrorMessage = null, Success = true, Tables = tables };
+            return TableResponseModel.Create(true, null, tables);
         }
     }
 }

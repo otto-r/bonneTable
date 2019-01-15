@@ -27,6 +27,11 @@ namespace bonneTable.API.Controllers
         {
             var bookings = await _bookingService.Get();
 
+            if (!bookings.Success)
+            {
+                return BadRequest();
+            }
+
             return Ok(bookings);
         }
 
@@ -35,6 +40,11 @@ namespace bonneTable.API.Controllers
         public async Task<ActionResult> Getall(string email)
         {
             var bookings = await _bookingService.SearchByEmail(email);
+
+            if (!bookings.Success)
+            {
+                return BadRequest();
+            }
 
             return Ok(bookings);
         }
@@ -46,8 +56,12 @@ namespace bonneTable.API.Controllers
         public async Task<ActionResult> GetByDate(DateTime date)
         {
             var bookings = await _bookingService.Get(date);
+            if (!bookings.Success)
+            {
+                return BadRequest();
+            }
 
-            return Ok(bookings);
+            return Ok(getBookings);
         }
 
         // POST AKA ADD
@@ -56,6 +70,11 @@ namespace bonneTable.API.Controllers
         public async Task<IActionResult> Post([FromBody] BookingRequestModel bookingRequestModel)
         {
             var bookingresponse = await _bookingService.ClientBookTable(bookingRequestModel);
+            if (!bookingresponse.Success)
+            {
+                return BadRequest();
+            }
+
             return Ok(bookingresponse);
         }
 
@@ -72,11 +91,13 @@ namespace bonneTable.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromBody] BookingRequestModel bookingRequestModel, [FromRoute] Guid id)
         {
+
             await _bookingService.EditBooking(bookingRequestModel, id);
             return Ok();
         }
 
         // DELETE api/values/5
+        //[Route("{id:guid}")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(Guid id)
         {

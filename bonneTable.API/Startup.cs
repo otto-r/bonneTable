@@ -5,6 +5,7 @@ using bonneTable.API.Services;
 using bonneTable.Models;
 using bonneTable.Services.Interfaces;
 using bonneTable.Services.Services;
+using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,6 +23,11 @@ namespace bonneTable.API
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console()
+            .WriteTo.File("C:\\test\\log.txt")
+            .CreateLogger();
         }
 
         public IConfiguration Configuration { get; }
