@@ -1,10 +1,10 @@
 <template>
   <div>
-    <h1>Table Menu</h1>
+    <h1>Ｔａｂｌｅ Ｍｅｎｕ</h1>
     <div>
       <b-nav fill tabs>
-        <b-nav-item @click="menuAdd()">Add</b-nav-item>
-        <b-nav-item @click="menuList()">List</b-nav-item>
+        <button class="btn col-6 nav-btn" @click="menuAdd()">Add</button>
+        <button class="btn col-6 nav-btn" @click="menuList()">List</button>
       </b-nav>
     </div>
     <TableList v-if="displayList"></TableList>
@@ -36,17 +36,27 @@ export default {
       (this.displayAdd = false), (this.displayList = true);
     },
     notLoggedIn() {
-      if (!localStorage.loggedIn) {
-        console.log("not logged in run")
+      if (localStorage.loggedIn == "false") {
+        console.log("not logged in run");
         this.$router.push({ path: "/LogIn" });
       }
     }
   },
-  beforeCreate(){
-    this.notLoggedIn()
+  beforeCreate() {
+    this.notLoggedIn();
   }
 };
 </script>
 
 <style scoped>
+.nav-btn {
+  border-bottom: 0px none none;
+  border: 0px #ffe6ff solid;
+  color: beige;
+  border-radius: 0;
+  text-decoration: underline;
+}
+.btn:hover {
+  background: pink;
+}
 </style>
