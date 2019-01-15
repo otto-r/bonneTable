@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace bonneTalble.Models
+namespace bonneTable.Models
 {
     public class Restaurant
     {

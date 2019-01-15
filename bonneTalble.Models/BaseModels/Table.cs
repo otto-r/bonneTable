@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace bonneTalble.Models
+namespace bonneTable.Models
 {
     public class Table
     {
