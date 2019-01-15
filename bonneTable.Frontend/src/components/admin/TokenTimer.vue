@@ -7,7 +7,7 @@
         class="img float-left"
         src="/static/token.jpg"
       />
-      <div v-if="toolTip" class="bgtp float-left px-1">
+      <div v-if="toolTip" class="bgtp float-left px-1 mx-5 ">
         <div class="title">Token</div>
         <div class="dev">Devs only</div>
         <div>
@@ -73,6 +73,9 @@ export default {
 
 <style scoped>
 .bgtp {
+  position: absolute;
+  left: 13px;
+  bottom: -45px;
   background: black;
   border: 2px solid white;
   border-radius: 5px;

@@ -112,7 +112,6 @@ export default {
               new Date(booking.time).getUTCHours() +
               "" +
               new Date(booking.time).getUTCMinutes();
-            console.log("not if " + time);
 
             if (time === "160") {
               this.bookingsArray[0] += booking.seats;
@@ -127,7 +126,6 @@ export default {
             } else if (time === "1830") {
               this.bookingsArray[5] += booking.seats;
             } else if (time === "190") {
-              console.log("1900 ??");
               this.bookingsArray[6] += booking.seats;
             } else if (time === "1930") {
               this.bookingsArray[7] += booking.seats;
@@ -142,7 +140,6 @@ export default {
             }
           });
           this.loaded = true;
-          console.log(this.bookingsArray[0]);
         })
         .catch(error => {
           console.log(error);
