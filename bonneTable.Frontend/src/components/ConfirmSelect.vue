@@ -7,10 +7,10 @@
         v-model="name"
         v-validate="'required'"
         name="Name"
-        required=''
+        required
         type="text"
       >
-      <label alt='Enter Your Name' placeholder='Name' class="control-label" for="Name"></label>
+      <label alt="Enter Your Name" placeholder="Name" class="control-label" for="Name"></label>
       <p class="text-danger" v-if="errors.has('Name')">{{ errors.first('Name') }}</p>
     </div>
     <div class="form-group" :class="{'has-error': errors.any() }">
@@ -20,10 +20,10 @@
         v-model="email"
         v-validate="'required|email'"
         name="Email"
-        required=''
+        required
         type="text"
       >
-      <label alt='Type your Email' placeholder='Email' class="control-label" for="Email"></label>
+      <label alt="Type your Email" placeholder="Email" class="control-label" for="Email"></label>
       <p class="text-danger" v-if="errors.has('Email')">{{ errors.first('Email') }}</p>
     </div>
     <div class="form-group" :class="{'has-error': errors.any() }">
@@ -33,13 +33,18 @@
         v-model="phoneNumber"
         v-validate="'required|numeric'"
         name="PhoneNumber"
-        required=''
+        required
         type="text"
       >
-      <label alt='Enter Your PhoneNumber' placeholder='Phone Number' class="control-label" for="PhoneNumber"></label>
+      <label
+        alt="Enter Your PhoneNumber"
+        placeholder="Phone Number"
+        class="control-label"
+        for="PhoneNumber"
+      ></label>
       <p class="text-danger" v-if="errors.has('PhoneNumber')">{{ errors.first('PhoneNumber') }}</p>
     </div>
-    <button class="btn btn-pink-filled submit" @click="validateInput">Book</button>
+    <button :disabled="disableConfirm" class="btn btn-pink-filled submit" @click="validateInput">Book</button>
   </div>
 </template>
 
@@ -53,13 +58,14 @@ export default {
       name: null,
       email: null,
       phoneNumber: null,
-      bookingRequestModel: { 
-        time: null, 
-        seats: null, 
-        customerName: null, 
-        phoneNumber: null, 
-        email: null 
-      }
+      bookingRequestModel: {
+        time: null,
+        seats: null,
+        customerName: null,
+        phoneNumber: null,
+        email: null
+      },
+      disableConfirm: false
     };
   },
   methods: {
@@ -68,6 +74,8 @@ export default {
       self.$validator.validate().then(result => {
         if (result) {
           self.confirmBook();
+          this.appear();
+          this.disableConfirm = true;
         }
       });
     },
@@ -82,25 +90,36 @@ export default {
       self.bookingRequestModel.email = self.email;
 
       console.log(self.bookingRequestModel);
-      
+
       book(self.bookingRequestModel)
-      .then(response => {
+        .then(response => {
           console.log(response);
         })
         .catch(error => {
           console.log(error);
         });
+    },
+    appear() {
+      this.$toasted.show("Reservation is successfully completed", {
+        //theme of the toast you prefer
+        theme: "toasted-primary",
+        //position of the toast container
+        position: "bottom-center",
+        //display time of the toast
+        duration: 5000
+      });
     }
   }
 };
 </script>
 
 <style scoped>
-input{
+input {
   margin: 0 100px 0 0px;
 }
 
-html, body {
+html,
+body {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -128,7 +147,7 @@ input[type="text"][required]:focus + label[placeholder]:before {
 }
 input[type="text"][required]:focus + label[placeholder]:before,
 input[type="text"][required]:valid + label[placeholder]:before {
-  transition-duration: .2s;
+  transition-duration: 0.2s;
   transform: translate(0, -1.5em) scale(0.9, 0.9);
 }
 

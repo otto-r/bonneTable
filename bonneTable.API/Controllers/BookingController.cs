@@ -55,8 +55,8 @@ namespace bonneTable.API.Controllers
         [HttpGet]
         public async Task<ActionResult> GetByDate(DateTime date)
         {
-            var bookings = await _bookingService.Get(date);
-            if (!bookings.Success)
+            var getBookings = await _bookingService.Get(date);
+            if (!getBookings.Success)
             {
                 return BadRequest();
             }
